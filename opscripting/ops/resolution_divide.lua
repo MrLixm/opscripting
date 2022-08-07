@@ -7,7 +7,7 @@ The divider amount can be supplied or by creating an OpArg (user.divider) or by 
 [OpScript]
 location = "/root"
 applyWhere = "at specific location"
-user.divider (int):
+user.divider = "(int) amount to divide the current resolution by"
 ]]
 local luaing = {}
 luaing.mathing = require("opscripting.luaing.mathing")
