@@ -1,4 +1,4 @@
-# katanaingcore
+# opscripting
 
 Low level package creating a lua API for interaction with Katana. Must
 have Katana and `llloger` for only dependency.
