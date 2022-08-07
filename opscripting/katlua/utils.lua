@@ -1,9 +1,11 @@
+local luaing = {}
+luaing.formatting = require("opscripting.luaing.formatting")
 local logging = require("lllogger")
+
 local logger = logging:get_logger("katlua.utils")
 
 local _M = {}
 _M["logger"] = logger
-
 
 function _M.getKatanaVersion()
   --[[
@@ -19,5 +21,16 @@ function _M.getKatanaVersion()
 
 end
 
+function _M.getLocationName(location)
+  --[[
+  Args:
+    location(str): ex: "/root/world/geo/primitive"
+
+  Returns:
+    str: name of the location without its hierarchy. ex: "primitive"
+  ]]
+  local name = luaing.formatting.split(location, "/")
+  return name[#name]  -- return the last element of the list
+end
 
 return _M
