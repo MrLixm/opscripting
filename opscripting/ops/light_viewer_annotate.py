@@ -25,7 +25,7 @@ script()"""
     node.getParameter("applyWhere").setValue("at locations matching CEL", 0)
     node.getParameter("script.lua").setValue(script, 0)
 
-    userparam = node.getParameters().createChildGroup("user")
+    userparam = node.getParameter("user")
     p = userparam.createChildString(
         "annotation_template", "<name> e:<exposure> <color>"
     )
@@ -105,13 +105,6 @@ def configNodeTool(nodetool):
     }
     p.setHintString(repr(hint))
 
-    pgrp = userparam.createChildGroup("about")
-    pgrp.createChildString("author_", "Liam Collod")
-    pgrp.createChildString(
-        "info_", "Annotate (& color) lights in the viewer using their attributes."
-    )
-    pgrp.createChildString("version_", str(VERSION))
-
     return
 
 
@@ -119,6 +112,11 @@ def build():
     # type: () -> NodegraphAPI.Node
 
     nodetool = createDefaultCustomTool(name=NAME)
+    nodetool.setInfo(
+        author="Liam Collod",
+        description="Annotate (& color) lights in the viewer using their attributes.",
+        version=VERSION,
+    )
     configNodeTool(nodetool)
     configOpScript(nodetool.getDefaultOpScriptNode())
 

@@ -12,6 +12,13 @@ __all__ = (
 logger = logging.getLogger(__name__)
 
 
+class AboutParams:
+    name = "name_"
+    version = "version_"
+    description = "info_"
+    author = "author_"
+
+
 def addAboutToNode(node, name, version, description="", author=""):
     # type: (NodegraphAPI.Node, str, str, str, str) -> None
     """
@@ -37,10 +44,10 @@ def addAboutToNode(node, name, version, description="", author=""):
         usergrp.setHintString(repr(hint))
 
     aboutgrp = usergrp.createChildGroup("about")
-    aboutgrp.createChildString("name_", name)
-    aboutgrp.createChildString("version_", version)
-    aboutgrp.createChildString("info_", description)
-    aboutgrp.createChildString("author_", author)
+    aboutgrp.createChildString(AboutParams.name, name)
+    aboutgrp.createChildString(AboutParams.version, version)
+    aboutgrp.createChildString(AboutParams.description, description)
+    aboutgrp.createChildString(AboutParams.author, author)
     return
 
 
@@ -126,7 +133,19 @@ class CustomTool(object):
             version: ex: "0.1.0"
         """
 
-        self.getUserParam().getChild("version_").setValue(version, 0)
+        self.getUserParam().getChild(AboutParams.version).setValue(version, 0)
+
+    def setInfo(self, author=None, description=None, version=None):
+        # type: (Optional[str], Optional[str], Optional[str]) -> None
+        if author:
+            self.getUserParam().getChild(AboutParams.author).setValue(author, 0)
+        if description:
+            self.getUserParam().getChild(AboutParams.description).setValue(
+                description, 0
+            )
+        if version:
+            self.setVersion(version)
+        return
 
     def getDefaultOpScriptNode(self):
         # type: () -> Optional[NodegraphAPI.Node]

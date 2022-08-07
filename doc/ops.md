@@ -86,7 +86,12 @@ def build():
     # type: () -> NodegraphAPI.Node
     
     nodetool = createDefaultCustomTool(NAME)    
-    
+    nodetool.setInfo(
+        author="Liam Collod",
+        description="Demo.",
+        version=VERSION,
+    )
+
     script_path = str(__file__).replace(".py", ".lua")
     with open(script_path, "r") as file:
         script = file.read()
