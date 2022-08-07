@@ -8,7 +8,14 @@ Welcome on the `opscripting` documentation.
 
 # Install
 
-Add the repo root directory to the `LUA_PATH` env variable.
+1. Add the repo root directory to the `PYTHONPATH` env variable.
+
+```shell
+PYTHONPATH="z/any/opscripting"
+# where opscripting/ contains `README.md`, ...
+```
+
+2. Add the repo root directory to the `LUA_PATH` env variable.
 
 ```shell
 LUA_PATH="z/any/opscripting/?.lua"

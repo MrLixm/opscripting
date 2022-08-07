@@ -48,8 +48,6 @@ else than an OpScript node). This function must return the created node.
 Here is a basic example :
 
 ```python
-import os.path
-
 from Katana import NodegraphAPI
 
 
@@ -70,5 +68,37 @@ def build():
 
 if __name__ in ["__main__", "__builtin__", "Katana"]:
     build()
+
+```
+
+But what would be preferred is creating a custom tool inside. It just a styled 
+group node with an opscript node but will allow more flexibility.
+
+```python
+import os.path
+
+from opscripting.tooling import createDefaultCustomTool
+
+NAME = os.path.splitext(os.path.basename(__file__))[0]
+VERSION = "0.1.0"
+
+def build():
+    # type: () -> NodegraphAPI.Node
+    
+    nodetool = createDefaultCustomTool(NAME)    
+    
+    script_path = str(__file__).replace(".py", ".lua")
+    with open(script_path, "r") as file:
+        script = file.read()
+
+    node_opscript = nodetool.getDefaultOpScriptNode()
+    node_opscript.getParameter("script.lua").setValue(script, 0)
+
+    return nodetool.node
+
+
+if __name__ in ["__main__", "__builtin__", "Katana"]:
+    build()
+
 
 ```
