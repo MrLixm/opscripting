@@ -1,18 +1,24 @@
+import os.path
+
 from Katana import NodegraphAPI
 
 
 def build():
     # type: () -> NodegraphAPI.Node
 
-    script_path = str(__file__).replace(".py", ".lua")
-    with open(script_path, "r") as file:
-        script = file.read()
+    ops_name = os.path.splitext(os.path.basename(__file__))[0]
+
+    script = """
+local script = require("opscripting.ops.{NAME}")
+script()"""
+    script = script.format(NAME=ops_name)
 
     node = NodegraphAPI.CreateNode("OpScript", NodegraphAPI.GetRootNode())
-    node.setName("OpScript_attrTypeSwap_1")
+    node.setName("OpScript_{}_1".format(ops_name))
 
     node.getParameter("applyWhere").setValue("at specific location", 0)
     node.getParameter("script.lua").setValue(script, 0)
+
     userparam = node.getParameters().createChildGroup("user")
     p = userparam.createChildStringArray("attributes", 2)
     p.setTupleSize(2)
