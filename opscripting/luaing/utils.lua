@@ -10,17 +10,23 @@ local tostring = tostring
 local select = select
 local tableconcat = table.concat
 
-
 function _M.conkat(...)
   --[[
   The loop-safe string concatenation method.
   All args passed are converted to string using tostring()
   ]]
   local buf = {}
-  for i=1, select("#",...) do
-    buf[ #buf + 1 ] = tostring(select(i,...))
+  for i = 1, select("#", ...) do
+    buf[#buf + 1] = tostring(select(i, ...))
   end
   return tableconcat(buf)
+end
+
+function _M:errorc(...)
+  --[[
+  Conacatened error. Arguments are string concatened together.
+  ]]
+  error(self.conkat(...))
 end
 
 return _M
