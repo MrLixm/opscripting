@@ -2,6 +2,7 @@
 
 [![root](https://img.shields.io/badge/back_to_root-536362?)](../README.md)
 [![INDEX](https://img.shields.io/badge/index-blue?labelColor=blue)](INDEX.md)
+[![ops](https://img.shields.io/badge/ops-4f4f4f)](ops.md)
 
 Welcome on the `opscripting` documentation.
 
