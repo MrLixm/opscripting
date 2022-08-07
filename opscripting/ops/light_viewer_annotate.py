@@ -2,21 +2,24 @@ import os.path
 
 from Katana import NodegraphAPI
 
+from opscripting.tooling import createDefaultCustomTool
+
 
 NAME = os.path.splitext(os.path.basename(__file__))[0]
 VERSION = "1.5.0"
 
 
-def createOpScript(parent):
-    # type: (NodegraphAPI.GroupNode) -> NodegraphAPI.Node
+def configOpScript(node):
+    # type: (NodegraphAPI.Node) -> NodegraphAPI.Node
+    """
+    Args:
+        node: an already existing OpScript node
+    """
 
     script = """
 local script = require("opscripting.ops.{NAME}")
 script()"""
     script = script.format(NAME=NAME)
-
-    node = NodegraphAPI.CreateNode("OpScript", parent)
-    node.setName("OpScript_lgva_0001")
 
     node.getParameter("CEL").setExpression("=^/user.CEL", True)
     node.getParameter("applyWhere").setValue("at locations matching CEL", 0)
@@ -45,24 +48,12 @@ script()"""
     p = userparam.createChildNumber("color_value", 1)
     p.setExpression("=^/user.color.value", True)
 
-    return node
+    return
 
 
-def createGroupNode():
+def configNodeTool(nodetool):
 
-    node = NodegraphAPI.CreateNode("Group", NodegraphAPI.GetRootNode())
-    node.addInputPort("in")
-    node.addOutputPort("out")
-    node.setName("{}_0001".format(NAME.capitalize()))
-
-    attr = node.getAttributes()
-    attr["ns_basicDisplay"] = 1  # remove group shape
-    attr["ns_iconName"] = ""  # remove group icon
-    node.setAttributes(attr)
-
-    userparam = node.getParameters().createChildGroup("user")
-    hint = {"hideTitle": True}
-    userparam.setHintString(repr(hint))
+    userparam = nodetool.getUserParam()
 
     p = userparam.createChildString("annotation", "<name> e:<exposure> <color>")
     hint = {
@@ -121,42 +112,17 @@ def createGroupNode():
     )
     pgrp.createChildString("version_", str(VERSION))
 
-    return node
+    return
 
 
 def build():
     # type: () -> NodegraphAPI.Node
 
-    node = createGroupNode()
+    nodetool = createDefaultCustomTool(name=NAME)
+    configNodeTool(nodetool)
+    configOpScript(nodetool.getDefaultOpScriptNode())
 
-    # Create content of the Group
-
-    node_opscript = createOpScript(node)
-    pos = NodegraphAPI.GetNodePosition(node)
-
-    node_dot_up = NodegraphAPI.CreateNode("Dot", node)
-    NodegraphAPI.SetNodePosition(node_dot_up, (pos[0], pos[1] + 150))
-
-    node_dot_down = NodegraphAPI.CreateNode("Dot", node)
-    NodegraphAPI.SetNodePosition(node_dot_down, (pos[0], pos[1] - 150))
-
-    port_a = node.getSendPort("in")
-    port_b = node_dot_up.getInputPortByIndex(0)
-    port_a.connect(port_b)
-
-    port_a = node_dot_up.getOutputPortByIndex(0)
-    port_b = node_opscript.getInputPortByIndex(0)
-    port_a.connect(port_b)
-
-    port_a = node_opscript.getOutputPortByIndex(0)
-    port_b = node_dot_down.getInputPortByIndex(0)
-    port_a.connect(port_b)
-
-    port_a = node_dot_down.getOutputPortByIndex(0)
-    port_b = node.getReturnPort("out")
-    port_a.connect(port_b)
-
-    return node
+    return nodetool.node
 
 
 if __name__ in ["__main__", "__builtin__", "Katana"]:
