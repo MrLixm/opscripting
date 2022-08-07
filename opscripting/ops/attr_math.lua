@@ -26,7 +26,7 @@ user.op_order = """
 local katlua = {}
 katlua.retrieve = require("opscripting.katlua.retrieve")
 local luaing = {}
-luaing.utils = require("opscripting.luaing.utils")
+luaing.formatting = require("opscripting.luaing.formatting")
 local logging = require("lllogger")
 
 local logger = logging:get_logger("ops.attr_math")
@@ -38,7 +38,7 @@ local function err(...)
   ]]
   local arg = { ... }
   arg.insert("[attr_math]", 1)
-  luaing.utils.errorc(unpack(arg))
+  luaing.formatting.errorc(unpack(arg))
 
 end
 

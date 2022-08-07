@@ -9,7 +9,7 @@ user.divider = "(int) amount to divide the current resolution by"
 ]]
 local luaing = {}
 luaing.mathing = require("opscripting.luaing.mathing")
-luaing.utils = require("opscripting.luaing.utils")
+luaing.formatting = require("opscripting.luaing.formatting")
 local logging = require("lllogger")
 
 local logger = logging:get_logger("ops.resolution_divide")
@@ -63,7 +63,7 @@ local function run()
 
   local new_resolution_x = luaing.mathing.round(resolution:getXRes() / divider, 0)
   local new_resolution_y = luaing.mathing.round(resolution:getYRes() / divider, 0)
-  local new_resolution =  luaing.utils.conkat(new_resolution_x,"x",new_resolution_y) -- str
+  local new_resolution =  luaing.formatting.conkat(new_resolution_x,"x",new_resolution_y) -- str
 
   Interface.SetAttr("renderSettings.resolution", StringAttribute(new_resolution))
   logger:info("[run] Resolution set to ", new_resolution)

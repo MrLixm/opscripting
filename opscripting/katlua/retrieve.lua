@@ -1,5 +1,5 @@
 local luaing = {}
-luaing.utils = require("opscripting.luaing.utils")
+luaing.formatting = require("opscripting.luaing.formatting")
 local logging = require("lllogger")
 
 local logger = logging:get_logger("opscripting.katlua.retrieve")
@@ -47,7 +47,7 @@ function _M.getAttr(attr_path)
   local lattr = Interface.GetAttr(attr_path)
 
   if not lattr then
-    luaing.utils:errorc(
+    luaing.formatting:errorc(
         "[getAttr] Attr <",
         attr_path,
         "> not found on location ",
@@ -77,7 +77,7 @@ function _M.getAttributeClass(dataattribute)
   elseif Attribute.IsString(dataattribute) == true then
     return StringAttribute
   else
-    luaing.utils:errorc(
+    luaing.formatting:errorc(
         "[getAttributeClass] passed class type <",
         dataattribute,
         "> is not supported."
