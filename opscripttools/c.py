@@ -11,7 +11,7 @@ SHORTCUT = "S"
 Shortcut to use in the Nodegraph to make the LayeredMenu appears.
 """
 
-ENVVAR_EXCLUDED_TOOLS = "OPSCRIPTING_TOOLS_EXCLUDED"
+ENVVAR_EXCLUDED_TOOLS = "OPSCRIPTTOOLS_EXCLUDED_TOOLS"
 """
 Environment variable name that must specify a list of tools name to NOT show in
 the LayeredMenu. Separator is the system path sperator (; or :):

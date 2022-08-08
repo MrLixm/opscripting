@@ -14,8 +14,8 @@ else:
 from Katana import NodegraphAPI
 from Katana import LayeredMenuAPI
 
-from opscripting import tools
-from opscripting import c
+from . import tools
+from . import c
 
 __all__ = (
     "getAllTools",
