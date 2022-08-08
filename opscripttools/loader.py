@@ -1,5 +1,4 @@
 import logging
-import os
 import pkgutil
 import sys
 import traceback
@@ -33,6 +32,8 @@ def getAllTools():
 
     SRC: https://stackoverflow.com/a/1310912/13806195
     """
+    import os  # defer import to get the latest version of os.environ
+
     pkgpath = os.path.dirname(toollibrary.__file__)
     out = dict()
     for module_loader, name, ispkg in pkgutil.iter_modules([pkgpath]):
@@ -48,6 +49,8 @@ def getAvailableTools():
     """
     getAllTools() but filtered to remove the tools that have been asked to be ignored.
     """
+    import os  # defer import to get the latest version of os.environ
+
     all_tools = getAllTools()
 
     excluded_tool_var = os.environ.get(c.ENVVAR_EXCLUDED_TOOLS)
@@ -100,7 +103,7 @@ def _populateCallback(layered_menu):
         entry_name = module_name.title()
         try:
             entry_color = module.COLOR
-        except Exception:
+        except AttributeError:
             entry_color = c.COLORS.default
 
         layered_menu.addEntry(
