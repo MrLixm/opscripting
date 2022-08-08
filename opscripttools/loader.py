@@ -13,8 +13,8 @@ else:
 
 from Katana import NodegraphAPI
 from Katana import LayeredMenuAPI
+import opscriptlibrary as toollibrary
 
-from . import tools
 from . import c
 
 __all__ = (
@@ -33,7 +33,7 @@ def getAllTools():
 
     SRC: https://stackoverflow.com/a/1310912/13806195
     """
-    pkgpath = os.path.dirname(tools.__file__)
+    pkgpath = os.path.dirname(toollibrary.__file__)
     out = dict()
     for module_loader, name, ispkg in pkgutil.iter_modules([pkgpath]):
         if ispkg:  # tools can only be modules
