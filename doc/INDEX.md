@@ -25,6 +25,40 @@ LUA_PATH="z/any/opscripting/?.lua"
 If you are familiar with the LUA module syntax, this means that all the
 lua modules will be accesible from the `opscripting` namespace.
 
+3. Add the only dependency `llloger` to the `LUA_PATH` too.
+
+> **Download** : https://github.com/MrLixm/llloger/blob/main/lllogger.lua
+
+```shell
+LUA_PATH="$LUA_PATH:z/any/lllogerInstallDirectory/?.lua"
+# where opscripting/ contains `README.md`, ...
+```
+
+llloger is directly imported as `require("llloger")`
+
+## Registering tools
+
+For the artist to access the created tool, you need to register the
+LayerMenu created for them.
+
+For this you will just need to run during Katana startup something like:
+
+```python
+from Katana import LayeredMenuAPI
+
+import opscripting.integrating
+
+layeredMenu = opscripting.integrating.getLayeredMenu()
+LayeredMenuAPI.RegisterLayeredMenu(layeredMenu, "opscripting")
+```
+
+As you can see the `integrating` python already offer a convenient function
+that create the LayeredMenu to register.
+
+There is a proof-of-concept in [dev/KatanaResources/UIPlugins](dev/KatanaResources/UIPlugins).
+(you can add [dev/KatanaResources](dev/KatanaResources) to the `KATANA_RESOURCES` variable.)
+
+
 # Use
 
 To import a module, use the [`require`](https://www.lua.org/pil/8.1.html) function.
@@ -60,3 +94,12 @@ script()
 Make sure to check what the tools script is returning. In most of the case
 it will be returning the `run()` function, so you can directly call the result
 , but it might also return a table with different functions.
+
+# Recommandation
+
+This package was made with a studio pipeline in mind but still accesible at a 
+smaller case. 
+
+In my opinion the `tools/` directory might better live in a seperate repository,
+and even same for `katlua` and `luaing` that should also have their own
+repository to keep things clean.

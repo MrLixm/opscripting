@@ -107,3 +107,13 @@ if __name__ in ["__main__", "__builtin__", "Katana"]:
 
 
 ```
+
+### Global variables
+
+You might have noticed that there is 2 global variables in the examples above,
+but there is for now actually 3 availables :
+
+- `NAME` `(str)`: name of the tool (NOT a pretty name)
+- `VERSION` `(str)`: tool version. Following [semver](https://semver.org/) specs.
+- `COLOR` `(tuple[float, float, float])`: color to use for the tool in the Layered Menu.
+A default value is used if not declared.
