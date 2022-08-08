@@ -1,5 +1,5 @@
 import logging
-import opscripttools.integrating
+import opscripttools.loader
 
 from Katana import LayeredMenuAPI
 
@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 def registerLayeredMenus():
-    layeredMenu = opscripttools.integrating.getLayeredMenu()
+    layeredMenu = opscripttools.loader.getLayeredMenu()
     LayeredMenuAPI.RegisterLayeredMenu(layeredMenu, "opscripting")
     logger.info(
         "[registerLayeredMenus] Registered <opscripting> with shortcut <{}>"
