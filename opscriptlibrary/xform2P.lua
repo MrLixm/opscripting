@@ -14,7 +14,7 @@ local katlua = {}
 katlua.retrieve = require("luakat.retrieve")
 local logging = require("lllogger")
 
-local logger = logging:get_logger("opscripttools.tools.xform2P")
+local logger = logging:get_logger("opscriptlibrary.xform2P")
 
 -- make a global local to improve perfs in big loops
 local v3d = Imath.V3d

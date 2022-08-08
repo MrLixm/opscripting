@@ -4,7 +4,7 @@ So we can iterate over this package to retrieve all the nodes to create.
 
 This mean you can create tools in subdirectory as long as they are imported here like::
 
-    from opscripttools.tools.myCategory import *
+    from opscriptlibrary.myCategory import *
 
 This also means that you could tools even from an external package, as long as it
 has been added to the LUA_PATH and PYTHONPATH.

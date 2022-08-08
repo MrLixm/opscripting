@@ -14,7 +14,7 @@ luabase.mathing = require("luabase.mathing")
 luabase.formatting = require("luabase.formatting")
 local logging = require("lllogger")
 
-local logger = logging:get_logger("opscripttools.tools.resolution_divide")
+local logger = logging:get_logger("opscriptlibrary.resolution_divide")
 
 
 local function getDivider()

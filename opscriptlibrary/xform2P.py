@@ -11,7 +11,7 @@ VERSION = "1.0.0"
 def configOpScript(node):
     # type: (NodegraphAPI.Node) -> None
     script = """
-local script = require("opscripttools.tools.{NAME}")
+local script = require("opscriptlibrary.{NAME}")
 script()"""
     script = script.format(NAME=NAME)
 

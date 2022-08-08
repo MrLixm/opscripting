@@ -24,7 +24,7 @@ luabase.formatting = require("luabase.formatting")
 luabase.mathing = require("luabase.mathing")
 local logging = require("lllogger")
 
-local logger = logging:get_logger("opscripttools.tools.light_viewer_annotate")
+local logger = logging:get_logger("opscriptlibrary.light_viewer_annotate")
 
 local LOCATION = Interface.GetInputLocationPath()
 -- scene graph location of the current light visited

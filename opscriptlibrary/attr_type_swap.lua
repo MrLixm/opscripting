@@ -19,7 +19,7 @@ local luabase = {}
 luabase.formatting = require("luabase.formatting")
 local logging = require("lllogger")
 
-local logger = logging:get_logger("opscripttools.tools.attr_type_swap")
+local logger = logging:get_logger("opscriptlibrary.attr_type_swap")
 
 local function err(...)
   --[[

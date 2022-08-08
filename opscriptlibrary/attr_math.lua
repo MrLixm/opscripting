@@ -29,7 +29,7 @@ local luabase = {}
 luabase.formatting = require("luabase.formatting")
 local logging = require("lllogger")
 
-local logger = logging:get_logger("opscripttools.tools.attr_math")
+local logger = logging:get_logger("opscriptlibrary.attr_math")
 
 local function err(...)
   --[[

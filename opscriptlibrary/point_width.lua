@@ -11,7 +11,7 @@ local katlua = {}
 katlua.retrieve = require("luakat.retrieve")
 local logging = require("lllogger")
 
-local logger = logging:get_logger("opscripttools.tools.point_width")
+local logger = logging:get_logger("opscriptlibrary.point_width")
 
 
 local function run()
