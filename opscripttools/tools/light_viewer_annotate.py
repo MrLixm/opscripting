@@ -17,7 +17,7 @@ def configOpScript(node):
     """
 
     script = """
-local script = require("opscripting.tools.{NAME}")
+local script = require("opscripttools.tools.{NAME}")
 script()"""
     script = script.format(NAME=NAME)
 
