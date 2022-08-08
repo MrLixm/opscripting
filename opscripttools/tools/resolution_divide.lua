@@ -7,6 +7,8 @@ location = "/root"
 applyWhere = "at specific location"
 user.divider = "(int) amount to divide the current resolution by"
 ]]
+local katlua = {}
+katlua.retrieve = require("luakat.retrieve")
 local luabase = {}
 luabase.mathing = require("luabase.mathing")
 luabase.formatting = require("luabase.formatting")
@@ -43,15 +45,14 @@ end
 
 local function run()
 
-  local frame = Interface.GetCurrentTime() -- int
-  local divider = getDivider(frame)
+  local divider = getDivider()
 
   -- divider == 0 or 1 means we doesn't want to apply any resolution reformating.
   if divider == 0 or divider==1 then
     return
   end
 
-  local resolution = Interface.GetAttr("renderSettings.resolution"):getValue()
+  local resolution = katlua.retrieve.getAttr("renderSettings.resolution"):getValue()
   resolution = ResolutionTable.GetResolution(resolution)
   if not resolution then
     error(
