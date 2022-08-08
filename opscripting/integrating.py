@@ -35,6 +35,8 @@ SHORTCUT = "S"
 Shortcut to use in the Nodegraph to make the LayeredMenu appears.
 """
 
+ENVVAR_EXCLUDED_TOOLS = "OPSCRIPTING_TOOLS_EXCLUDED"
+
 
 def getAllTools():
     # type: () -> Dict[str, ModuleType]
@@ -60,7 +62,7 @@ def getAvailableTools():
     """
     all_tools = getAllTools()
 
-    excluded_tool_var = os.environ.get("OPSCRIPTING_TOOLS_EXCLUDED")
+    excluded_tool_var = os.environ.get(ENVVAR_EXCLUDED_TOOLS)
     if not excluded_tool_var:
         return all_tools
 
@@ -84,11 +86,20 @@ def getLayeredMenu():
         checkAvailabilityCallback=None,
     )
 
+    all_tools = getAvailableTools()
+    logger.debug(
+        "[getLayeredMenu] Created menu for {} tools : {}"
+        "".format(len(all_tools), all_tools)
+    )
+
     return layeredMenu
 
 
 def _loadModule(module_loader, module_name):
     # type: (FileFinder, str) -> ModuleType
+    """
+    Python 2 and 3 compatible.
+    """
     module = module_loader.find_module(module_name).load_module(module_name)
     return module
 
