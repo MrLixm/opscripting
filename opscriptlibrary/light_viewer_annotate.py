@@ -112,7 +112,7 @@ def build():
     # type: () -> NodegraphAPI.Node
 
     nodetool = createDefaultCustomTool(name=NAME)
-    nodetool.setInfo(
+    nodetool.getAboutParam().update(
         author="Liam Collod",
         description="Annotate (& color) lights in the viewer using their attributes.",
         version=VERSION,

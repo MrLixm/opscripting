@@ -10,6 +10,7 @@ VERSION = "1.0.0"
 
 def configOpScript(node):
     # type: (NodegraphAPI.Node) -> None
+
     script = """
 local script = require("opscriptlibrary.{NAME}")
 script()"""
@@ -28,6 +29,7 @@ script()"""
     }
     p.setHintString(repr(hint))
     p.setExpression("=^/user.point_scale", True)
+
     return
 
 
@@ -55,7 +57,7 @@ def build():
     # type: () -> NodegraphAPI.Node
 
     nodetool = createDefaultCustomTool(NAME)
-    nodetool.setInfo(
+    nodetool.getAboutParam().update(
         author="Liam Collod",
         description="Change scale of the geometry points.",
         version=VERSION,

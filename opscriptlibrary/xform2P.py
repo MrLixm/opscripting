@@ -10,6 +10,7 @@ VERSION = "1.0.0"
 
 def configOpScript(node):
     # type: (NodegraphAPI.Node) -> None
+
     script = """
 local script = require("opscriptlibrary.{NAME}")
 script()"""
@@ -37,7 +38,7 @@ def build():
     # type: () -> NodegraphAPI.Node
 
     nodetool = createDefaultCustomTool(NAME)
-    nodetool.setInfo(
+    nodetool.getAboutParam().update(
         author="Liam Collod",
         description="Merge xform transformations to the geometry.point.P attribute.",
         version=VERSION,

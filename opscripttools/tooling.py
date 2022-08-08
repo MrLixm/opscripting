@@ -4,60 +4,80 @@ from typing import Optional
 from Katana import NodegraphAPI
 
 __all__ = (
+    "AboutParam",
     "CustomTool",
-    "addAboutToNode",
+    "addAboutParamToNode",
     "createDefaultCustomTool",
 )
 
 logger = logging.getLogger(__name__)
 
 
-class AboutParams:
-    self = "about"
-    name = "name_"
-    version = "version_"
-    description = "info_"
-    author = "author_"
+class AboutParam:
+    class Names:
 
+        root = "about"
+        name = "name_"
+        version = "version_"
+        description = "info_"
+        author = "author_"
 
-def addAboutToNode(node, name, version, description="", author=""):
-    # type: (NodegraphAPI.Node, str, str, str, str) -> None
-    """
-    Add the "about" group parameter to the given node.
-    This is added on custom tool to better track their origin.
+    def __init__(self, node):
+        # type: (NodegraphAPI.Node) -> None
 
-    This section contains 4 params::
+        self.param = node.getParameter("user.{}".format(self.Names.root))
 
-        ["name_", "version_", "info_", "author_"]
+        assert self.param, "user.{} doesn't exists on node {}".format(
+            self.Names.root, node
+        )
 
-    Args:
-        node: node to add the "user.about" parameter on.
-        name: name of the tool
-        version: version of the tool
-        description: short describtion about what the tool does
-        author: initial author of the tool
-    """
+        self.name = self.param.getChild(self.Names.name)
+        self.version = self.param.getChild(self.Names.version)
+        self.description = self.param.getChild(self.Names.description)
+        self.author = self.param.getChild(self.Names.author)
 
-    usergrp = node.getParameter("user")
-    if not usergrp:
-        usergrp = node.getParameters().createChildGroup("user")
-        hint = {"hideTitle": True}
-        usergrp.setHintString(repr(hint))
+        return
 
-    aboutgrp = usergrp.createChildGroup(AboutParams.self)
-    aboutgrp.createChildString(AboutParams.name, name)
-    aboutgrp.createChildString(AboutParams.version, version)
-    aboutgrp.createChildString(AboutParams.description, description)
-    aboutgrp.createChildString(AboutParams.author, author)
-    return
+    def moveToBottom(self):
+        """
+        Move the AboutParam parameter to the bottom of the `user` parameter layout.
+        """
+        parent = self.param.getParent()
+        parent.reorderChild(self.param, parent.getNumChildren() - 1)
+        return
 
+    def update(self, name="", version="", description="", author=""):
+        # type: (str, str, str, str) -> None
+        if name:
+            self.name.setValue(name, 0)
+        if version:
+            self.version.setValue(version, 0)
+        if description:
+            self.description.setValue(description, 0)
+        if author:
+            self.author.setValue(author, 0)
+        return
 
-def createDefaultCustomTool(name):
-    # type: (str) -> CustomTool
-    """
-    Create and return a default custom tool node with a basic setup.
-    """
-    return CustomTool.createDefault(name)
+    @classmethod
+    def createOn(cls, node, name="", version="0.1.0", description="", author=""):
+        # type: (NodegraphAPI.Node, str, str, str, str) -> AboutParam
+
+        usergrp = node.getParameter("user")
+        if not usergrp:
+            usergrp = node.getParameters().createChildGroup("user")
+            hint = {"hideTitle": True}
+            usergrp.setHintString(repr(hint))
+
+        assert not node.getParameter(
+            "user.{}".format(cls.Names.root)
+        ), "user.{} already exists on node {}".format(cls.Names.root, node)
+
+        aboutgrp = usergrp.createChildGroup(cls.Names.root)
+        aboutgrp.createChildString(cls.Names.name, name)
+        aboutgrp.createChildString(cls.Names.version, version)
+        aboutgrp.createChildString(cls.Names.description, description)
+        aboutgrp.createChildString(cls.Names.author, author)
+        return AboutParam(node)
 
 
 class CustomTool(object):
@@ -87,7 +107,7 @@ class CustomTool(object):
         attr["ns_iconName"] = ""  # remove group icon
         node_root.setAttributes(attr)
 
-        addAboutToNode(node_root, name, "0.1.0")
+        addAboutParamToNode(node_root, name)
 
         node_opscript = NodegraphAPI.CreateNode("OpScript", node_root)
         node_opscript.setName("OpScript_{}_0001".format(name))
@@ -126,8 +146,8 @@ class CustomTool(object):
         return self.node.getParameter("user")
 
     def getAboutParam(self):
-        # type: () -> NodegraphAPI.Parameter
-        return self.getUserParam().getChild(AboutParams.self)
+        # type: () -> AboutParam
+        return AboutParam(node=self.node)
 
     def setVersion(self, version):
         # type: (str) -> None
@@ -137,19 +157,7 @@ class CustomTool(object):
         Args:
             version: ex: "0.1.0"
         """
-        self.getAboutParam().getChild(AboutParams.version).setValue(version, 0)
-
-    def setInfo(self, author=None, description=None, version=None):
-        # type: (Optional[str], Optional[str], Optional[str]) -> None
-        if author:
-            self.getAboutParam().getChild(AboutParams.author).setValue(author, 0)
-        if description:
-            self.getAboutParam().getChild(AboutParams.description).setValue(
-                description, 0
-            )
-        if version:
-            self.setVersion(version)
-        return
+        self.getAboutParam().update(version=version)
 
     def getDefaultOpScriptNode(self):
         # type: () -> Optional[NodegraphAPI.Node]
@@ -158,3 +166,31 @@ class CustomTool(object):
             if child.getType() == "OpScript":
                 return child
         return
+
+
+def addAboutParamToNode(node, name="", version="0.1.0", description="", author=""):
+    # type: (NodegraphAPI.Node, str, str, str, str) -> AboutParam
+    """
+    Add the "about" group parameter to the given node.
+    This is added on custom tool to better track their origin.
+
+    This section contains 4 params::
+
+        ["name_", "version_", "info_", "author_"]
+
+    Args:
+        node: node to add the "user.about" parameter on.
+        name: name of the tool
+        version: version of the tool
+        description: short describtion about what the tool does
+        author: initial author of the tool
+    """
+    return AboutParam.createOn(node, name, version, description, author)
+
+
+def createDefaultCustomTool(name):
+    # type: (str) -> CustomTool
+    """
+    Create and return a default custom tool node with a basic setup.
+    """
+    return CustomTool.createDefault(name)
