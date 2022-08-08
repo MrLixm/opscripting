@@ -66,13 +66,13 @@ To import a module, use the [`require`](https://www.lua.org/pil/8.1.html) functi
 ## In another lua script
 
 ```lua
-local luaing = {}
-luaing.mathing = require("opscripting.luaing.mathing")
-luaing.utils = require("opscripting.luaing.utils")
+local luabase = {}
+luabase.mathing = require("luabase.mathing")
+luabase.utils = require("luabase.utils")
 ```
 
 It's up to you to see how you want to namespace the module using a table.
-In the above example I'm namespacing it using a `luaing` named table so for
+In the above example I'm namespacing it using a `luabase` named table so for
 example the commly used name `utils` is still free.
 
 ## In an OpScript
@@ -82,7 +82,7 @@ OpScript node itself. It should be written in a library and simply importer
 and exectued in the OpScript.
 
 In the `opscripting`, script means to be used directly in an OpScript node
-are stored in the [`tools/`](../opscripting/tools) directory.
+are stored in the [`tools/`](../opscripttools/tools) directory.
 
 You can use it as such in the OpScript :
 
@@ -101,5 +101,5 @@ This package was made with a studio pipeline in mind but still accesible at a
 smaller case. 
 
 In my opinion the `tools/` directory might better live in a seperate repository,
-and even same for `katlua` and `luaing` that should also have their own
+and even same for `luakat` and `luabase` that should also have their own
 repository to keep things clean.

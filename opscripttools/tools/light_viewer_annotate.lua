@@ -17,14 +17,14 @@ user.color_saturation = "(float)(1): 0-1 range"
 user.color_value = "(float)(1): 0-1 range"
 ]]
 local katlua = {}
-katlua.retrieve = require("opscripting.katlua.retrieve")
-katlua.utils = require("opscripting.katlua.utils")
-local luaing = {}
-luaing.formatting = require("opscripting.luaing.formatting")
-luaing.mathing = require("opscripting.luaing.mathing")
+katlua.retrieve = require("luakat.retrieve")
+katlua.utils = require("luakat.utils")
+local luabase = {}
+luabase.formatting = require("luabase.formatting")
+luabase.mathing = require("luabase.mathing")
 local logging = require("lllogger")
 
-local logger = logging:get_logger("tools.light_viewer_annotate")
+local logger = logging:get_logger("opscripttools.tools.light_viewer_annotate")
 
 local LOCATION = Interface.GetInputLocationPath()
 -- scene graph location of the current light visited
@@ -40,7 +40,7 @@ local function err(...)
   ]]
   local arg = { ... }
   arg.insert("[light_viewer_annotate]", 1)
-  luaing.formatting.errorc(unpack(arg))
+  luabase.formatting.errorc(unpack(arg))
 
 end
 
@@ -100,7 +100,7 @@ local function getLightAttr(attrs_list, default_value)
   if default_value == error then
     err(
         "[getLightAttr] No attribute found from ",
-        luaing.formatting.stringify(attrs_list)
+        luabase.formatting.stringify(attrs_list)
     )
   else
     return default_value
@@ -241,7 +241,7 @@ function Light:to_annotation(annotation)
   ]]
   for attr_name, _ in pairs(self.tokens) do
     local token = ("<%s>"):format(attr_name)
-    local value = luaing.formatting.stringify(self:get(attr_name))
+    local value = luabase.formatting.stringify(self:get(attr_name))
     annotation = string.gsub(annotation, token, value)
   end
 
@@ -269,7 +269,7 @@ local function run()
   -- 2. Process the color
   -- initial color is linear
   local color = Light:get("color") -- table of float or nil
-  color = luaing.mathing.hsv(color, u_hsl_h, u_hsl_s, u_hsl_v)
+  color = luabase.mathing.hsv(color, u_hsl_h, u_hsl_s, u_hsl_v)
   -- apply a basic 2.2 transfer-function for display
   color[1] = color[1] ^ 2.2
   color[2] = color[2] ^ 2.2

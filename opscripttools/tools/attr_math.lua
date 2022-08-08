@@ -23,13 +23,13 @@ user.op_order = """
    or "multiply" for the inverse
 """
 ]]
-local katlua = {}
-katlua.retrieve = require("opscripting.katlua.retrieve")
-local luaing = {}
-luaing.formatting = require("opscripting.luaing.formatting")
+local luakat = {}
+luakat.retrieve = require("luakat.retrieve")
+local luabase = {}
+luabase.formatting = require("luabase.formatting")
 local logging = require("lllogger")
 
-local logger = logging:get_logger("tools.attr_math")
+local logger = logging:get_logger("opscripttools.tools.attr_math")
 
 local function err(...)
   --[[
@@ -38,7 +38,7 @@ local function err(...)
   ]]
   local arg = { ... }
   arg.insert("[attr_math]", 1)
-  luaing.formatting.errorc(unpack(arg))
+  luabase.formatting.errorc(unpack(arg))
 
 end
 
@@ -84,18 +84,18 @@ local function run()
   local order_add = "add"
   local order_mult = "multiply"
 
-  local u_attr_list = katlua.retrieve.getUserAttr("attributes")
+  local u_attr_list = luakat.retrieve.getUserAttr("attributes")
   assert(u_attr_list ~= nil, "[attr_math][run] Missing <user.attributes>")
 
-  local u_mult = katlua.retrieve.getUserAttr("multiply")
+  local u_mult = luakat.retrieve.getUserAttr("multiply")
   assert(u_mult ~= nil, "[attr_math][run] Missing <user.multiply>")
   u_mult = u_mult[1]
 
-  local u_add = katlua.retrieve.getUserAttr("add")
+  local u_add = luakat.retrieve.getUserAttr("add")
   assert(u_add ~= nil, "[attr_math][run] Missing <user.add>")
   u_add = u_add[1]
 
-  local u_order = katlua.retrieve.getUserAttr("op_order", { order_add })[1]
+  local u_order = luakat.retrieve.getUserAttr("op_order", { order_add })[1]
 
   local attr_skip
   local attr_path
@@ -108,8 +108,8 @@ local function run()
 
     attr_path = u_attr_list[iattr * 2 + 1]  -- string
     attr_skip = getSkipTable(u_attr_list[iattr * 2 + 2]) -- table
-    attr_data = katlua.retrieve.getAttr(attr_path)  -- DataAttribute
-    attr_type = katlua.retrieve.getAttributeClass(attr_data)  -- DataAttribute
+    attr_data = luakat.retrieve.getAttr(attr_path)  -- DataAttribute
+    attr_type = luakat.retrieve.getAttributeClass(attr_data)  -- DataAttribute
 
     -- check that the user specified tuple size seems valid
     new_value = attr_data:getNearestSample(0)

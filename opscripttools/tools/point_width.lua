@@ -8,10 +8,10 @@ parameters.location = "pointcloud scene graph location"
 parameters.applyWhere = "at specific location"
 ]]
 local katlua = {}
-katlua.retrieve = require("opscripting.katlua.retrieve")
+katlua.retrieve = require("luakat.retrieve")
 local logging = require("lllogger")
 
-local logger = logging:get_logger("tools.point_width")
+local logger = logging:get_logger("opscripttools.tools.point_width")
 
 
 local function run()

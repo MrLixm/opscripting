@@ -1,5 +1,5 @@
-local mathing = require("opscripting.luaing.mathing")
-local StrFmtSettings =  require("opscripting.luaing.formatting_settings")
+local mathing = require("luabase.mathing")
+local StrFmtSettings =  require("luabase.formatting_settings")
 local _M = {}
 
 -- we make some global functions local as this will improve performances in

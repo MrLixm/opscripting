@@ -14,12 +14,12 @@ user.method = """
 """
 ]]
 local katlua = {}
-katlua.retrieve = require("opscripting.katlua.retrieve")
-local luaing = {}
-luaing.formatting = require("opscripting.luaing.formatting")
+katlua.retrieve = require("luakat.retrieve")
+local luabase = {}
+luabase.formatting = require("luabase.formatting")
 local logging = require("lllogger")
 
-local logger = logging:get_logger("tools.attr_type_swap")
+local logger = logging:get_logger("opscripttools.tools.attr_type_swap")
 
 local function err(...)
   --[[
@@ -28,7 +28,7 @@ local function err(...)
   ]]
   local arg = { ... }
   arg.insert("[attr_type_swap]", 1)
-  luaing.formatting.errorc(unpack(arg))
+  luabase.formatting.errorc(unpack(arg))
 
 end
 

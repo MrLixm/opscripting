@@ -7,12 +7,12 @@ location = "/root"
 applyWhere = "at specific location"
 user.divider = "(int) amount to divide the current resolution by"
 ]]
-local luaing = {}
-luaing.mathing = require("opscripting.luaing.mathing")
-luaing.formatting = require("opscripting.luaing.formatting")
+local luabase = {}
+luabase.mathing = require("luabase.mathing")
+luabase.formatting = require("luabase.formatting")
 local logging = require("lllogger")
 
-local logger = logging:get_logger("tools.resolution_divide")
+local logger = logging:get_logger("opscripttools.tools.resolution_divide")
 
 
 local function getDivider()
@@ -61,9 +61,9 @@ local function run()
     return
   end
 
-  local new_resolution_x = luaing.mathing.round(resolution:getXRes() / divider, 0)
-  local new_resolution_y = luaing.mathing.round(resolution:getYRes() / divider, 0)
-  local new_resolution =  luaing.formatting.conkat(new_resolution_x,"x",new_resolution_y) -- str
+  local new_resolution_x = luabase.mathing.round(resolution:getXRes() / divider, 0)
+  local new_resolution_y = luabase.mathing.round(resolution:getYRes() / divider, 0)
+  local new_resolution =  luabase.formatting.conkat(new_resolution_x,"x",new_resolution_y) -- str
 
   Interface.SetAttr("renderSettings.resolution", StringAttribute(new_resolution))
   logger:info("[run] Resolution set to ", new_resolution)

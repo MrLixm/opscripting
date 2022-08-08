@@ -11,10 +11,10 @@ parameters.location = "location(s) to merge the xform attribute"
 parameters.applyWhere = "at specific location OR at locations matching CEL"
 ]]
 local katlua = {}
-katlua.retrieve = require("opscripting.katlua.retrieve")
+katlua.retrieve = require("luakat.retrieve")
 local logging = require("lllogger")
 
-local logger = logging:get_logger("tools.xform2P")
+local logger = logging:get_logger("opscripttools.tools.xform2P")
 
 -- make a global local to improve perfs in big loops
 local v3d = Imath.V3d
