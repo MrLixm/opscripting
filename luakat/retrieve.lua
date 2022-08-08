@@ -64,17 +64,18 @@ function _M.getAttributeClass(dataattribute)
   Returned a non-instanced version of the DataAttribute given in arg.
 
   Args:
-    dataattribute(str): DataAttribute instance
+    dataattribute(str or DataAttribute):
+      DataAttribute instance or name of the DataAttribute class
   Returns:
     table: DataAttribute class not instanced
   ]]
-  if Attribute.IsInt(dataattribute) == true then
+  if dataattribute == "IntAttribute" or Attribute.IsInt(dataattribute) == true then
     return IntAttribute
-  elseif Attribute.IsFloat(dataattribute) == true then
+  elseif  dataattribute == "FloatAttribute" or Attribute.IsFloat(dataattribute) == true then
     return FloatAttribute
-  elseif Attribute.IsDouble(dataattribute) == true then
+  elseif  dataattribute == "DoubleAttribute" or Attribute.IsDouble(dataattribute) == true then
     return DoubleAttribute
-  elseif Attribute.IsString(dataattribute) == true then
+  elseif  dataattribute == "StringAttribute" or Attribute.IsString(dataattribute) == true then
     return StringAttribute
   else
     luabase.formatting:errorc(
