@@ -12,7 +12,7 @@ luaing.mathing = require("opscripting.luaing.mathing")
 luaing.formatting = require("opscripting.luaing.formatting")
 local logging = require("lllogger")
 
-local logger = logging:get_logger("ops.resolution_divide")
+local logger = logging:get_logger("tools.resolution_divide")
 
 
 local function getDivider()

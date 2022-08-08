@@ -2,7 +2,7 @@
 
 [![root](https://img.shields.io/badge/back_to_root-536362?)](../README.md)
 [![INDEX](https://img.shields.io/badge/index-blue?labelColor=blue)](INDEX.md)
-[![ops](https://img.shields.io/badge/ops-4f4f4f)](ops.md)
+[![tools](https://img.shields.io/badge/tools-4f4f4f)](tools.md)
 
 Welcome on the `opscripting` documentation.
 
@@ -48,15 +48,15 @@ OpScript node itself. It should be written in a library and simply importer
 and exectued in the OpScript.
 
 In the `opscripting`, script means to be used directly in an OpScript node
-are stored in the [`ops/`](../opscripting/ops) directory.
+are stored in the [`tools/`](../opscripting/tools) directory.
 
 You can use it as such in the OpScript :
 
 ```lua
-local script = require("opscripting.ops.attr_math")
+local script = require("opscripting.tools.attr_math")
 script()
 ```
 
-Make sure to check what the ops script is returning. In most of the case
+Make sure to check what the tools script is returning. In most of the case
 it will be returning the `run()` function, so you can directly call the result
 , but it might also return a table with different functions.

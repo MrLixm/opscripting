@@ -1,8 +1,8 @@
-# ops
+# tools
 
 [![root](https://img.shields.io/badge/back_to_root-536362?)](../README.md)
 [![INDEX](https://img.shields.io/badge/index-blue?labelColor=blue)](INDEX.md)
-[![ops](https://img.shields.io/badge/ops-fcb434)](ops.md)
+[![tools](https://img.shields.io/badge/tools-fcb434)](tools.md)
 
 This is where we store script to be used directly in OpScript nodes.
 
@@ -24,7 +24,7 @@ return run
 So then in the OpScript it can be imported as :
 
 ```lua
-local script = require("opscripting.ops.attr_math")  -- return run function
+local script = require("opscripting.tools.attr_math")  -- return run function
 script()
 ```
 

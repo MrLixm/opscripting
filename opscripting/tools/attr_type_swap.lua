@@ -19,7 +19,7 @@ local luaing = {}
 luaing.formatting = require("opscripting.luaing.formatting")
 local logging = require("lllogger")
 
-local logger = logging:get_logger("ops.attr_type_swap")
+local logger = logging:get_logger("tools.attr_type_swap")
 
 local function err(...)
   --[[

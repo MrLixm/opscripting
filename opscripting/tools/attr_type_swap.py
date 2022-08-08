@@ -10,7 +10,7 @@ def build():
     # type: () -> NodegraphAPI.Node
 
     script = """
-local script = require("opscripting.ops.{NAME}")
+local script = require("opscripting.tools.{NAME}")
 script()"""
     script = script.format(NAME=NAME)
 
