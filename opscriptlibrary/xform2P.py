@@ -47,6 +47,7 @@ def build():
     configOpScript(nodetool.getDefaultOpScriptNode())
     configTool(node=nodetool.node)
 
+    nodetool.getAboutParam().moveToBottom()
     return nodetool.node
 
 

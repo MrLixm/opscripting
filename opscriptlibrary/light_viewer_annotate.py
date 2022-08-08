@@ -120,6 +120,7 @@ def build():
     configNodeTool(nodetool)
     configOpScript(nodetool.getDefaultOpScriptNode())
 
+    nodetool.getAboutParam().moveToBottom()
     return nodetool.node
 
 
