@@ -16,7 +16,7 @@ __all__ = (
 logger = logging.getLogger(__name__)
 
 
-VersionableType = Union[str, Union[List[int, int, int], Tuple[int, int, int]]]
+VersionableType = Union[str, Union[List[int], Tuple[int, int, int]]]
 
 
 def versionize(version):
