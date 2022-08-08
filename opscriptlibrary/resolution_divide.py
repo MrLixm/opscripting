@@ -3,7 +3,7 @@ import os.path
 from Katana import NodegraphAPI
 
 NAME = os.path.splitext(os.path.basename(__file__))[0]
-VERSION = "1.0.1"
+VERSION = (1, 0, 1)
 
 
 def build():

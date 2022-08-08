@@ -5,7 +5,7 @@ from Katana import NodegraphAPI
 from opscripttools.tooling import createDefaultCustomTool
 
 NAME = os.path.splitext(os.path.basename(__file__))[0]
-VERSION = "1.0.2"
+VERSION = (1, 0, 2)
 
 
 def createUserParam(userparam, set_as_expression=False):
