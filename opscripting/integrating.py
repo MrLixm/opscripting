@@ -15,6 +15,7 @@ from Katana import NodegraphAPI
 from Katana import LayeredMenuAPI
 
 from opscripting import tools
+from opscripting import c
 
 __all__ = (
     "getAllTools",
@@ -23,19 +24,6 @@ __all__ = (
 )
 
 logger = logging.getLogger(__name__)
-
-COLOR_DEFAULT = (0.39, 0.35, 0.466)
-"""
-Default color for the entries in the LayeredMenu.
-Low contrast purple.
-"""
-
-SHORTCUT = "S"
-"""
-Shortcut to use in the Nodegraph to make the LayeredMenu appears.
-"""
-
-ENVVAR_EXCLUDED_TOOLS = "OPSCRIPTING_TOOLS_EXCLUDED"
 
 
 def getAllTools():
@@ -62,7 +50,7 @@ def getAvailableTools():
     """
     all_tools = getAllTools()
 
-    excluded_tool_var = os.environ.get(ENVVAR_EXCLUDED_TOOLS)
+    excluded_tool_var = os.environ.get(c.ENVVAR_EXCLUDED_TOOLS)
     if not excluded_tool_var:
         return all_tools
 
@@ -79,7 +67,7 @@ def getLayeredMenu():
     layeredMenu = LayeredMenuAPI.LayeredMenu(
         _populateCallback,
         _actionCallback,
-        keyboardShortcut=SHORTCUT,
+        keyboardShortcut=c.SHORTCUT,
         alwaysPopulate=False,
         onlyMatchWordStart=False,
         sortAlphabetically=True,
@@ -113,7 +101,7 @@ def _populateCallback(layered_menu):
         try:
             entry_color = module.COLOR
         except Exception:
-            entry_color = COLOR_DEFAULT
+            entry_color = c.COLORS.default
 
         layered_menu.addEntry(
             module_name,
