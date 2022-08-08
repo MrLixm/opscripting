@@ -7,6 +7,7 @@ from opscripttools.tooling import createDefaultCustomTool
 
 NAME = os.path.splitext(os.path.basename(__file__))[0]
 VERSION = "1.5.0"
+COLOR = (129 / 255, 117 / 255, 75 / 255)
 
 
 def configOpScript(node):
