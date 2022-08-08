@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 class AboutParams:
+    self = "about"
     name = "name_"
     version = "version_"
     description = "info_"
@@ -43,7 +44,7 @@ def addAboutToNode(node, name, version, description="", author=""):
         hint = {"hideTitle": True}
         usergrp.setHintString(repr(hint))
 
-    aboutgrp = usergrp.createChildGroup("about")
+    aboutgrp = usergrp.createChildGroup(AboutParams.self)
     aboutgrp.createChildString(AboutParams.name, name)
     aboutgrp.createChildString(AboutParams.version, version)
     aboutgrp.createChildString(AboutParams.description, description)
@@ -124,6 +125,10 @@ class CustomTool(object):
         # type: () -> NodegraphAPI.Parameter
         return self.node.getParameter("user")
 
+    def getAboutParam(self):
+        # type: () -> NodegraphAPI.Parameter
+        return self.getUserParam().getChild(AboutParams.self)
+
     def setVersion(self, version):
         # type: (str) -> None
         """
@@ -132,15 +137,14 @@ class CustomTool(object):
         Args:
             version: ex: "0.1.0"
         """
-
-        self.getUserParam().getChild(AboutParams.version).setValue(version, 0)
+        self.getAboutParam().getChild(AboutParams.version).setValue(version, 0)
 
     def setInfo(self, author=None, description=None, version=None):
         # type: (Optional[str], Optional[str], Optional[str]) -> None
         if author:
-            self.getUserParam().getChild(AboutParams.author).setValue(author, 0)
+            self.getAboutParam().getChild(AboutParams.author).setValue(author, 0)
         if description:
-            self.getUserParam().getChild(AboutParams.description).setValue(
+            self.getAboutParam().getChild(AboutParams.description).setValue(
                 description, 0
             )
         if version:
