@@ -1,5 +1,8 @@
 import logging
 from typing import Optional
+from typing import Union
+from typing import Tuple
+from typing import List
 
 from Katana import NodegraphAPI
 
@@ -11,6 +14,25 @@ __all__ = (
 )
 
 logger = logging.getLogger(__name__)
+
+
+VersionableType = Union[str, Union[List[int, int, int], Tuple[int, int, int]]]
+
+
+def versionize(version):
+    # type: (VersionableType) -> str
+
+    if isinstance(version, str):
+        return version
+
+    if isinstance(version, (tuple, list)) and len(version) == 3:
+        version = map(str, version)
+        return ".".join(version)
+
+    raise TypeError(
+        "Can't create a version object from arg <{}> of type {}"
+        "".format(version, type(version))
+    )
 
 
 class AboutParam:
@@ -47,11 +69,11 @@ class AboutParam:
         return
 
     def update(self, name="", version="", description="", author=""):
-        # type: (str, str, str, str) -> None
+        # type: (str, VersionableType, str, str) -> None
         if name:
             self.name.setValue(name, 0)
         if version:
-            self.version.setValue(version, 0)
+            self.version.setValue(versionize(version), 0)
         if description:
             self.description.setValue(description, 0)
         if author:
@@ -60,7 +82,7 @@ class AboutParam:
 
     @classmethod
     def createOn(cls, node, name="", version="0.1.0", description="", author=""):
-        # type: (NodegraphAPI.Node, str, str, str, str) -> AboutParam
+        # type: (NodegraphAPI.Node, str, VersionableType, str, str) -> AboutParam
 
         usergrp = node.getParameter("user")
         if not usergrp:
@@ -74,7 +96,7 @@ class AboutParam:
 
         aboutgrp = usergrp.createChildGroup(cls.Names.root)
         aboutgrp.createChildString(cls.Names.name, name)
-        aboutgrp.createChildString(cls.Names.version, version)
+        aboutgrp.createChildString(cls.Names.version, versionize(version))
         aboutgrp.createChildString(cls.Names.description, description)
         aboutgrp.createChildString(cls.Names.author, author)
         return AboutParam(node)
@@ -150,7 +172,7 @@ class CustomTool(object):
         return AboutParam(node=self.node)
 
     def setVersion(self, version):
-        # type: (str) -> None
+        # type: (VersionableType) -> None
         """
         Set the tool version on the ``user.about.version_`` parameter.
 
@@ -169,7 +191,7 @@ class CustomTool(object):
 
 
 def addAboutParamToNode(node, name="", version="0.1.0", description="", author=""):
-    # type: (NodegraphAPI.Node, str, str, str, str) -> AboutParam
+    # type: (NodegraphAPI.Node, str, VersionableType, str, str) -> AboutParam
     """
     Add the "about" group parameter to the given node.
     This is added on custom tool to better track their origin.
