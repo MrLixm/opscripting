@@ -4,6 +4,8 @@ import sys
 import traceback
 from types import ModuleType
 from typing import Dict
+from typing import Type
+from typing import Optional
 
 if sys.version_info[0] == 2:
     from pkgutil import ImpImporter as FileFinder
@@ -12,42 +14,93 @@ else:
 
 from Katana import NodegraphAPI
 from Katana import LayeredMenuAPI
-import opscriptlibrary as toollibrary
 
 from . import c
+from . import tooling
 
 __all__ = (
     "getAllTools",
     "getAvailableTools",
     "getLayeredMenu",
+    "registerTools",
 )
 
 logger = logging.getLogger(__name__)
 
 
+REGISTERED = False
+
+
 def getAllTools():
-    # type: () -> Dict[str, ModuleType]
+    # type: () -> Dict[str, Type[tooling.CustomTool]]
     """
     Get a list of all the "tools" modules available.
 
+    Not recommended to use directly. See ``getAvailableTools()`` instead.
+
     SRC: https://stackoverflow.com/a/1310912/13806195
     """
-    import os  # defer import to get the latest version of os.environ
 
-    pkgpath = os.path.dirname(toollibrary.__file__)
+    def loadModule(module_loader_, module_name_):
+        # type: (FileFinder, str) -> Optional[ModuleType]
+        """
+        Python 2 and 3 compatible.
+        """
+        try:
+            module_ = module_loader_.find_module(module_name_).load_module(module_name_)
+        except Exception as excp:
+            logger.error(
+                "[getAllTools][_loadModule] Cannot load <{}>: {}"
+                "".format(module_name_, excp)
+            )
+            return
+
+        return module_
+
+    import os  # defer import to get the latest version of os.environ
+    import opscriptlibrary
+
     out = dict()
+    pkgpath = os.path.dirname(opscriptlibrary.__file__)
+
     for module_loader, name, ispkg in pkgutil.iter_modules([pkgpath]):
-        if ispkg:  # tools can only be modules
+
+        # tools can only be modules
+        if ispkg:
             continue
-        out[name] = _loadModule(module_loader, name)
+
+        module = loadModule(module_loader, name)
+        if not module:
+            continue
+
+        try:
+            node_class = module.NODE
+        except AttributeError:
+            logger.error(
+                "[getAllTools] tool module <{}> doesn't declare the NODE variable."
+                "".format(name)
+            )
+            continue
+
+        if not issubclass(node_class, tooling.CustomTool):
+            logger.error(
+                "[getAllTools] InvalidNodeClass: class <{}> for module {} is not "
+                "a subclass of {}"
+                "".format(node_class, module, tooling.CustomTool)
+            )
+            continue
+
+        out[name] = node_class
+        logger.debug("[getAllTools] Found [{}]={}".format(name, node_class))
 
     return out
 
 
 def getAvailableTools():
-    # type: () -> Dict[str, ModuleType]
+    # type: () -> Dict[str, Type[tooling.CustomTool]]
     """
-    getAllTools() but filtered to remove the tools that have been asked to be ignored.
+    getAllTools() but filtered to remove the tools that have been asked to be ignored
+    using an environment variable.
     """
     import os  # defer import to get the latest version of os.environ
 
@@ -57,11 +110,28 @@ def getAvailableTools():
     if not excluded_tool_var:
         return all_tools
 
-    for excluded_tool in excluded_tool_var.split(os.pathsep):
-        if excluded_tool in all_tools:
-            del all_tools[excluded_tool]
+    for excluded_tool_name in excluded_tool_var.split(os.pathsep):
+        if excluded_tool_name in all_tools:
+            del all_tools[excluded_tool_name]
 
     return all_tools
+
+
+def registerTools():
+
+    global REGISTERED
+
+    if REGISTERED:
+        logger.warning("[registerTools] Called but REGISTERED=True. Returning early.")
+        return
+
+    for tool_name, tool in getAvailableTools().items():
+        NodegraphAPI.RegisterPythonGroupType(tool.name, tool)
+        NodegraphAPI.AddNodeFlavor(tool.name, c.FLAVOR_NAME)
+        logger.debug("[registerTools] registered ({}){}".format(tool_name, tool))
+
+    REGISTERED = True
+    return
 
 
 def getLayeredMenu():
@@ -77,38 +147,21 @@ def getLayeredMenu():
         checkAvailabilityCallback=None,
     )
 
-    all_tools = getAvailableTools()
-    logger.debug(
-        "[getLayeredMenu] Created menu for {} tools : {}"
-        "".format(len(all_tools), all_tools)
-    )
-
+    logger.debug("[getLayeredMenu] Finished.")
     return layeredMenu
-
-
-def _loadModule(module_loader, module_name):
-    # type: (FileFinder, str) -> ModuleType
-    """
-    Python 2 and 3 compatible.
-    """
-    module = module_loader.find_module(module_name).load_module(module_name)
-    return module
 
 
 def _populateCallback(layered_menu):
     # type: (LayeredMenuAPI.LayeredMenu) -> None
 
-    for module_name, module in getAvailableTools().items():
+    available_tools = NodegraphAPI.GetFlavorNodes(c.FLAVOR_NAME, filterExists=True)
+    for tool_name in available_tools:  # type: str
 
-        entry_name = module_name.title()
-        try:
-            entry_color = module.COLOR
-        except AttributeError:
-            entry_color = c.COLORS.default
+        entry_color = tool_name.color or c.COLORS.default
 
         layered_menu.addEntry(
-            module_name,
-            text=entry_name,
+            tool_name,
+            text=tool_name,
             color=entry_color,
         )
 
@@ -118,18 +171,19 @@ def _populateCallback(layered_menu):
 def _actionCallback(key):
     # type: (str) -> NodegraphAPI.Node
 
-    for module_name, module in getAvailableTools().items():
+    available_tools = NodegraphAPI.GetFlavorNodes(c.FLAVOR_NAME, filterExists=True)
+    for tool in available_tools:  # type: tooling.CustomTool
 
-        if key != module_name:
+        if key != tool.name:
             continue
 
         try:
-            node = module.build()
+            node = NodegraphAPI.CreateNode(tool.name, NodegraphAPI.GetRootNode())
         except Exception as excp:
             traceback.print_exc()
             logger.error(
-                "[__actionCallback] Error when trying to call build() on module <{}>"
-                "".format(module_name),
+                "[__actionCallback] Error when trying to create node <{}>: {}"
+                "".format(tool.name, excp),
             )
             raise
         return node
