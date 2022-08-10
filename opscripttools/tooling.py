@@ -1,4 +1,5 @@
 import logging
+from abc import abstractmethod
 from typing import Optional
 from typing import Union
 from typing import Tuple
@@ -10,7 +11,6 @@ __all__ = (
     "AboutParam",
     "CustomTool",
     "addAboutParamToNode",
-    "createDefaultCustomTool",
 )
 
 logger = logging.getLogger(__name__)
@@ -102,50 +102,54 @@ class AboutParam:
         return AboutParam(node)
 
 
-class CustomTool(object):
+class CustomTool(NodegraphAPI.PythonGroupNode):
 
     port_in_name = "in"
     port_out_name = "out"
 
-    def __init__(self, node, name):
-        self.name = name
-        self.node = node
+    name = NotImplemented
+    color = None
+    version = NotImplemented
+    luamodule = None
 
-    @classmethod
-    def createDefault(cls, name):
-        # type: (str) -> CustomTool
+    def __init__(self):
+        super(CustomTool, self).__init__()
+
+        self.buildDefaultStructure()
+        self.__build()
+
+    def buildDefaultStructure(self):
         """
         Create the basic nodegraph representation of a custom tool.
         This is a styled GroupNode with an OpScript node connected inside.
         """
 
-        node_root = NodegraphAPI.CreateNode("Group", NodegraphAPI.GetRootNode())
-        node_root.addInputPort(cls.port_in_name)
-        node_root.addOutputPort(cls.port_out_name)
-        node_root.setName("{}_0001".format(name.capitalize()))
+        self.addInputPort(self.port_in_name)
+        self.addOutputPort(self.port_out_name)
+        self.setName("{}_0001".format(self.name))
 
-        attr = node_root.getAttributes()
-        attr["ns_basicDisplay"] = 1  # remove group shape
-        attr["ns_iconName"] = ""  # remove group icon
-        node_root.setAttributes(attr)
+        # attr = self.getAttributes()
+        # attr["ns_basicDisplay"] = 1  # remove group shape
+        # attr["ns_iconName"] = ""  # remove group icon
+        # self.setAttributes(attr)
 
-        addAboutParamToNode(node_root, name)
+        addAboutParamToNode(self, self.name)
 
-        node_opscript = NodegraphAPI.CreateNode("OpScript", node_root)
-        node_opscript.setName("OpScript_{}_0001".format(name))
+        node_opscript = NodegraphAPI.CreateNode("OpScript", self)
+        node_opscript.setName("OpScript_{}_0001".format(self.name))
         node_opscript.getParameters().createChildGroup("user")
 
-        pos = NodegraphAPI.GetNodePosition(node_root)
+        pos = NodegraphAPI.GetNodePosition(self)
 
-        node_dot_up = NodegraphAPI.CreateNode("Dot", node_root)
+        node_dot_up = NodegraphAPI.CreateNode("Dot", self)
         NodegraphAPI.SetNodePosition(node_dot_up, (pos[0], pos[1] + 150))
-        node_dot_up.setName("Dot_{}_0001".format(name))
+        node_dot_up.setName("Dot_{}_0001".format(self.name))
 
-        node_dot_down = NodegraphAPI.CreateNode("Dot", node_root)
+        node_dot_down = NodegraphAPI.CreateNode("Dot", self)
         NodegraphAPI.SetNodePosition(node_dot_down, (pos[0], pos[1] - 150))
-        node_dot_down.setName("Dot_{}_0001".format(name))
+        node_dot_down.setName("Dot_{}_0001".format(self.name))
 
-        port_a = node_root.getSendPort(cls.port_in_name)
+        port_a = self.getSendPort(self.port_in_name)
         port_b = node_dot_up.getInputPortByIndex(0)
         port_a.connect(port_b)
 
@@ -158,18 +162,22 @@ class CustomTool(object):
         port_a.connect(port_b)
 
         port_a = node_dot_down.getOutputPortByIndex(0)
-        port_b = node_root.getReturnPort(cls.port_out_name)
+        port_b = self.getReturnPort(self.port_out_name)
         port_a.connect(port_b)
 
-        return CustomTool(node=node_root, name=name)
+        return
+
+    @abstractmethod
+    def __build(self):
+        pass
 
     def getUserParam(self):
         # type: () -> NodegraphAPI.Parameter
-        return self.node.getParameter("user")
+        return self.getParameter("user")
 
     def getAboutParam(self):
         # type: () -> AboutParam
-        return AboutParam(node=self.node)
+        return AboutParam(node=self)
 
     def setVersion(self, version):
         # type: (VersionableType) -> None
@@ -183,7 +191,7 @@ class CustomTool(object):
 
     def getDefaultOpScriptNode(self):
         # type: () -> Optional[NodegraphAPI.Node]
-        children = self.node.getChildren()
+        children = self.getChildren()
         for child in children:
             if child.getType() == "OpScript":
                 return child
@@ -208,11 +216,3 @@ def addAboutParamToNode(node, name="", version="0.1.0", description="", author="
         author: initial author of the tool
     """
     return AboutParam.createOn(node, name, version, description, author)
-
-
-def createDefaultCustomTool(name):
-    # type: (str) -> CustomTool
-    """
-    Create and return a default custom tool node with a basic setup.
-    """
-    return CustomTool.createDefault(name)
