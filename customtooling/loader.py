@@ -2,7 +2,6 @@ import importlib
 import logging
 import pkgutil
 import sys
-import traceback
 from typing import Dict
 from typing import List
 from types import ModuleType
@@ -15,7 +14,6 @@ else:
     from importlib.machinery import FileFinder
 
 from Katana import NodegraphAPI
-from Katana import LayeredMenuAPI
 
 from . import c
 from . import nodebase
@@ -160,63 +158,3 @@ def _getAllToolsInPackage(package):
         logger.debug("[getAllToolsInPackage] Found [{}]={}".format(name, node_class))
 
     return out
-
-
-# -------------------------------
-
-
-def getLayeredMenu():
-    # type: () -> LayeredMenuAPI.LayeredMenu
-
-    layeredMenu = LayeredMenuAPI.LayeredMenu(
-        _populateCallback,
-        _actionCallback,
-        keyboardShortcut=c.SHORTCUT,
-        alwaysPopulate=False,
-        onlyMatchWordStart=False,
-        sortAlphabetically=True,
-        checkAvailabilityCallback=None,
-    )
-
-    logger.debug("[getLayeredMenu] Finished.")
-    return layeredMenu
-
-
-def _populateCallback(layered_menu):
-    # type: (LayeredMenuAPI.LayeredMenu) -> None
-
-    available_tools = NodegraphAPI.GetFlavorNodes(c.FLAVOR_NAME, filterExists=True)
-    for tool_name in available_tools:  # type: str
-
-        entry_color = tool_name.color or c.COLORS.default
-
-        layered_menu.addEntry(
-            tool_name,
-            text=tool_name,
-            color=entry_color,
-        )
-
-    return
-
-
-def _actionCallback(key):
-    # type: (str) -> NodegraphAPI.Node
-
-    available_tools = NodegraphAPI.GetFlavorNodes(c.FLAVOR_NAME, filterExists=True)
-    for tool in available_tools:  # type: nodebase.CustomToolNode
-
-        if key != tool.name:
-            continue
-
-        try:
-            node = NodegraphAPI.CreateNode(tool.name, NodegraphAPI.GetRootNode())
-        except Exception as excp:
-            traceback.print_exc()
-            logger.error(
-                "[__actionCallback] Error when trying to create node <{}>: {}"
-                "".format(tool.name, excp),
-            )
-            raise
-        return node
-
-    return
