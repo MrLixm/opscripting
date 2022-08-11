@@ -12,7 +12,10 @@ def onStartupComplete(objectHash):
 
     from customtooling.loader import registerTools
 
-    registerTools()
+    # make sure "opscriptlibrary" parent dir is in the PYTHONPATH
+    locations_to_register = ("opscriptlibrary",)
+
+    registerTools(locations_to_register)
     return
 
 
