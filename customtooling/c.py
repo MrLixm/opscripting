@@ -26,7 +26,7 @@ class COLORS:
     default = purple  # fallback if color not specified on subclass
 
 
-ENVVAR_EXCLUDED_TOOLS = "OPSCRIPTTOOLS_EXCLUDED_TOOLS"
+ENVVAR_EXCLUDED_TOOLS = "CUSTOMTOOLING_EXCLUDED_TOOLS"
 """
 Environment variable name that must specify a list of tools name to NOT show in
 the LayeredMenu. Separator is the system path sperator (; or :):
@@ -38,4 +38,11 @@ FLAVOR_NAME = "customTool"
 """
 As each CustomTool is registered as a separate node type, to quickly find all the custom
 tool, they are assigned a flavor using ``NodegraphAPI.AddNodeFlavor()``
+"""
+
+
+LAYEREDMENU_SHORTCUT = "O"
+"""
+Shortcut to use in the Nodegraph to make the LayeredMenu appears.
+This is the LayeredMenu for ALL the tools that might be disabled.
 """
