@@ -1,3 +1,8 @@
+"""
+Constants
+"""
+
+
 class COLORS:
     """
     Colors for the entries in the LayeredMenu.
@@ -18,13 +23,8 @@ class COLORS:
     red = (0.46, 0.16, 0.18)
     yellow = (0.46, 0.41, 0.28)
 
-    default = purple
+    default = purple  # fallback if color not specified on subclass
 
-
-SHORTCUT = "O"
-"""
-Shortcut to use in the Nodegraph to make the LayeredMenu appears.
-"""
 
 ENVVAR_EXCLUDED_TOOLS = "OPSCRIPTTOOLS_EXCLUDED_TOOLS"
 """
@@ -35,3 +35,7 @@ ex: ``"attr_math;xform2P;point_width"``
 """
 
 FLAVOR_NAME = "customTool"
+"""
+As each CustomTool is registered as a separate node type, to quickly find all the custom
+tool, they are assigned a flavor using ``NodegraphAPI.AddNodeFlavor()``
+"""

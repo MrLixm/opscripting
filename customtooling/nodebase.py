@@ -7,6 +7,8 @@ from typing import List
 
 from Katana import NodegraphAPI
 
+from . import c
+
 __all__ = (
     "CustomToolNode",
     "OpScriptTool",
@@ -48,6 +50,11 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
 
     Its default structure correpond to one input and output port, and two dot nodes
     connected together in the inside.
+    """
+
+    Colors = c.COLORS  # convenience, to not have to import multiple module for use
+    """
+    All pre-defined color available to assign to this tool.
     """
 
     port_in_name = "in"
