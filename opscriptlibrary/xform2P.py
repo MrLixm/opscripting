@@ -2,54 +2,44 @@ import os.path
 
 from Katana import NodegraphAPI
 
-from opscripttools.tooling import createDefaultCustomTool
-
-NAME = os.path.splitext(os.path.basename(__file__))[0]
-VERSION = (1, 0, 0)
+from opscripttools.tooling import OpScriptTool
 
 
-def configOpScript(node):
-    # type: (NodegraphAPI.Node) -> None
+class Xform2P(OpScriptTool):
 
-    script = """
-local script = require("opscriptlibrary.{NAME}")
-script()"""
-    script = script.format(NAME=NAME)
+    name = "Xform2P"
+    version = (1, 0, 0)
+    color = None
+    description = "Merge xform transformations to the geometry.point.P attribute."
+    author = "<Liam Collod pyco.liam.business@gmail.com>"
+    maintainers = []
 
-    node.getParameter("CEL").setExpression("=^/user.CEL", True)
-    node.getParameter("applyWhere").setValue("at locations matching CEL", 0)
-    node.getParameter("script.lua").setValue(script, 0)
-    return
+    luamodule = os.path.splitext(os.path.basename(__file__))[0]
 
+    def _buildOpScript(self):
 
-def configTool(node):
-    # type: (NodegraphAPI.Node) -> None
+        script = """
+    local script = require("opscriptlibrary.{module}")
+    script()"""
+        script = script.format(module=self.luamodule)
 
-    userparam = node.getParameter("user")
+        self.getParameter("CEL").setExpression("=^/user.CEL", True)
+        self.getParameter("applyWhere").setValue("at locations matching CEL", 0)
+        self.getParameter("script.lua").setValue(script, 0)
+        return
 
-    p = userparam.createChildString("CEL", "")
-    hint = {"widget": "cel"}
-    p.setHintString(repr(hint))
+    def __build(self):
+        # type: () -> NodegraphAPI.Node
 
-    return
+        userparam = self.getParameter("user")
+        p = userparam.createChildString("CEL", "")
+        hint = {"widget": "cel"}
+        p.setHintString(repr(hint))
 
+        self._buildOpScript()
 
-def build():
-    # type: () -> NodegraphAPI.Node
-
-    nodetool = createDefaultCustomTool(NAME)
-    nodetool.getAboutParam().update(
-        author="Liam Collod",
-        description="Merge xform transformations to the geometry.point.P attribute.",
-        version=VERSION,
-    )
-
-    configOpScript(nodetool.getDefaultOpScriptNode())
-    configTool(node=nodetool.node)
-
-    nodetool.getAboutParam().moveToBottom()
-    return nodetool.node
+        self.moveAboutParamToBottom()
+        return
 
 
-if __name__ in ["__main__", "__builtin__", "Katana"]:
-    build()
+NODE = Xform2P
