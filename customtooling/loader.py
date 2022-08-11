@@ -1,11 +1,13 @@
+import importlib
 import logging
 import pkgutil
 import sys
 import traceback
-from types import ModuleType
 from typing import Dict
-from typing import Type
+from typing import List
+from types import ModuleType
 from typing import Optional
+from typing import Type
 
 if sys.version_info[0] == 2:
     from pkgutil import ImpImporter as FileFinder
@@ -18,25 +20,90 @@ from Katana import LayeredMenuAPI
 from . import c
 from . import nodebase
 
-__all__ = (
-    "getAllTools",
-    "getAvailableTools",
-    "getLayeredMenu",
-    "registerTools",
-)
+__all__ = ("registerTools",)
 
 logger = logging.getLogger(__name__)
 
 
-REGISTERED = False
-
-
-def getAllTools():
-    # type: () -> Dict[str, Type[tooling.CustomToolNode]]
+def registerTools(tools_packages_list):
+    # type: (List[str]) -> None
     """
-    Get a list of all the "tools" modules available.
+    Register the CustomTool declared in the given locations names.
+    Those locations must be python package names registered in the PYTHONPATH, so they
+    can be converted to modules and imported.
 
-    Not recommended to use directly. See ``getAvailableTools()`` instead.
+    Args:
+        tools_packages_list:
+            list of python packages name. Those package must be registered in the PYTHONPATH.
+    """
+
+    for package_id in tools_packages_list:
+
+        try:
+            package = importlib.import_module(package_id)  # type: ModuleType
+        except Exception as excp:
+            logger.exception(
+                "[registerTools] Cannot import package <{}>: {}"
+                "".format(package_id, excp)
+            )
+            continue
+
+        _registerToolPackage(package=package)
+
+    return
+
+
+def _registerToolPackage(package):
+    # type: (ModuleType) -> None
+
+    customtool_list = _getAvailableTools(package=package)
+
+    for tool_name, tool in customtool_list:
+
+        NodegraphAPI.RegisterPythonGroupType(tool.name, tool)
+        NodegraphAPI.AddNodeFlavor(tool.name, c.FLAVOR_NAME)
+
+        logger.debug("[registerTools] registered ({}){}".format(tool_name, tool))
+        continue
+
+    logger.debug(
+        "[registerTools] Finished registering {}, {} tools found."
+        "".format(package, len(customtool_list))
+    )
+    return
+
+
+def _getAvailableTools(package):
+    # type: (ModuleType) -> Dict[str, Type[nodebase.CustomToolNode]]
+    """
+    getAllTools() but filtered to remove the tools that have been asked to be ignored
+    using an environment variable.
+    """
+    import os  # defer import to get the latest version of os.environ
+
+    all_tools = _getAllToolsInPackage(package)
+
+    excluded_tool_var = os.environ.get(c.ENVVAR_EXCLUDED_TOOLS)
+    if not excluded_tool_var:
+        return all_tools
+
+    tools_to_exclude = excluded_tool_var.split(os.pathsep)
+    nexcluded = 0
+    for excluded_tool_name in tools_to_exclude:
+        if excluded_tool_name in all_tools:
+            del all_tools[excluded_tool_name]
+            nexcluded += 1
+
+    logger.debug("[getAvailableTools] Finished. Excluded {} tools.".format(nexcluded))
+    return all_tools
+
+
+def _getAllToolsInPackage(package):
+    # type: (ModuleType) -> Dict[str, Type[nodebase.CustomToolNode]]
+    """
+    Get a list of all the "tools" modules available in the given package.
+
+    Not recommended to use as the "final" function. See ``getAvailableTools()`` instead.
 
     SRC: https://stackoverflow.com/a/1310912/13806195
     """
@@ -50,7 +117,7 @@ def getAllTools():
             module_ = module_loader_.find_module(module_name_).load_module(module_name_)
         except Exception as excp:
             logger.error(
-                "[getAllTools][_loadModule] Cannot load <{}>: {}"
+                "[getAllToolsInPackage][loadModule] Cannot load <{}>: {}"
                 "".format(module_name_, excp)
             )
             return
@@ -59,16 +126,8 @@ def getAllTools():
 
     import os  # defer import to get the latest version of os.environ
 
-    try:
-        import opscriptlibrary
-    except ImportError:
-        raise ImportError(
-            "While importing opscriptlibrary. Make sure the library directory is "
-            "properly registered in the PYTHONPATH."
-        )
-
     out = dict()
-    pkgpath = os.path.dirname(opscriptlibrary.__file__)
+    pkgpath = os.path.dirname(package.__file__)
 
     for module_loader, name, ispkg in pkgutil.iter_modules([pkgpath]):
 
@@ -84,61 +143,26 @@ def getAllTools():
             node_class = module.NODE
         except AttributeError:
             logger.error(
-                "[getAllTools] tool module <{}> doesn't declare the NODE variable."
-                "".format(name)
+                "[getAllToolsInPackage] tool module <{}> doesn't declare the "
+                "NODE variable.".format(name)
             )
             continue
 
         if not issubclass(node_class, nodebase.CustomToolNode):
             logger.error(
-                "[getAllTools] InvalidNodeClass: class <{}> for module {} is not "
-                "a subclass of {}"
-                "".format(node_class, module, tooling.CustomToolNode)
+                "[getAllToolsInPackage] InvalidNodeClass: class <{}> for module {} "
+                "is not a subclass of {}"
+                "".format(node_class, module, nodebase.CustomToolNode)
             )
             continue
 
         out[name] = node_class
-        logger.debug("[getAllTools] Found [{}]={}".format(name, node_class))
+        logger.debug("[getAllToolsInPackage] Found [{}]={}".format(name, node_class))
 
     return out
 
 
-def getAvailableTools():
-    # type: () -> Dict[str, Type[tooling.CustomToolNode]]
-    """
-    getAllTools() but filtered to remove the tools that have been asked to be ignored
-    using an environment variable.
-    """
-    import os  # defer import to get the latest version of os.environ
-
-    all_tools = getAllTools()
-
-    excluded_tool_var = os.environ.get(c.ENVVAR_EXCLUDED_TOOLS)
-    if not excluded_tool_var:
-        return all_tools
-
-    for excluded_tool_name in excluded_tool_var.split(os.pathsep):
-        if excluded_tool_name in all_tools:
-            del all_tools[excluded_tool_name]
-
-    return all_tools
-
-
-def registerTools():
-
-    global REGISTERED
-
-    if REGISTERED:
-        logger.warning("[registerTools] Called but REGISTERED=True. Returning early.")
-        return
-
-    for tool_name, tool in getAvailableTools().items():
-        NodegraphAPI.RegisterPythonGroupType(tool.name, tool)
-        NodegraphAPI.AddNodeFlavor(tool.name, c.FLAVOR_NAME)
-        logger.debug("[registerTools] registered ({}){}".format(tool_name, tool))
-
-    REGISTERED = True
-    return
+# -------------------------------
 
 
 def getLayeredMenu():
