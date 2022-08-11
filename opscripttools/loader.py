@@ -58,7 +58,14 @@ def getAllTools():
         return module_
 
     import os  # defer import to get the latest version of os.environ
-    import opscriptlibrary
+
+    try:
+        import opscriptlibrary
+    except ImportError:
+        raise ImportError(
+            "While importing opscriptlibrary. Make sure the library directory is "
+            "properly registered in the PYTHONPATH."
+        )
 
     out = dict()
     pkgpath = os.path.dirname(opscriptlibrary.__file__)
