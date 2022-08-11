@@ -145,6 +145,11 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
 
 
 class OpScriptTool(CustomToolNode):
+    """
+    Abstract class to create a tool based on at least one OpScript node.
+    The OpScript configuration (OpArg) is accessible to the user via parameters
+    declared in the ``__build()`` method that must be overriden.
+    """
 
     luamodule = NotImplemented
     """
@@ -173,4 +178,8 @@ class OpScriptTool(CustomToolNode):
 
     def getDefaultOpScriptNode(self):
         # type: () -> Optional[NodegraphAPI.Node]
+        """
+        Return the OpScript node created at init. BUt the node might have other
+        OpScript node inside.
+        """
         return self._node_opscript
