@@ -79,10 +79,27 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
 
         self._about_param = None  # type: NodegraphAPI.Parameter
         self.__buildAboutParam()
-        self.__buildDefaultStructure()
-        self.__build()
+        self._buildDefaultStructure()
+        self._build()
 
-    def __buildDefaultStructure(self):
+    def __buildAboutParam(self):
+
+        usergrp = self.getParameter("user")
+        if not usergrp:
+            usergrp = self.getParameters().createChildGroup("user")
+            hint = {"hideTitle": True}
+            usergrp.setHintString(repr(hint))
+
+        param = usergrp.createChildGroup(self.AboutParamNames.root)
+        param.createChildString(self.AboutParamNames.name, self.name)
+        param.createChildString(self.AboutParamNames.version, versionize(self.version))
+        param.createChildString(self.AboutParamNames.description, self.description)
+        param.createChildString(self.AboutParamNames.author, self.author)
+
+        self._about_param = param
+        return
+
+    def _buildDefaultStructure(self):
         """
         Create the basic nodegraph representation of a custom tool.
         This is a styled GroupNode with an OpScript node connected inside.
@@ -121,25 +138,8 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
 
         return
 
-    def __buildAboutParam(self):
-
-        usergrp = self.getParameter("user")
-        if not usergrp:
-            usergrp = self.getParameters().createChildGroup("user")
-            hint = {"hideTitle": True}
-            usergrp.setHintString(repr(hint))
-
-        param = usergrp.createChildGroup(self.AboutParamNames.root)
-        param.createChildString(self.AboutParamNames.name, self.name)
-        param.createChildString(self.AboutParamNames.version, versionize(self.version))
-        param.createChildString(self.AboutParamNames.description, self.description)
-        param.createChildString(self.AboutParamNames.author, self.author)
-
-        self._about_param = param
-        return
-
     @abstractmethod
-    def __build(self):
+    def _build(self):
         pass
 
     @property
@@ -171,23 +171,23 @@ class OpScriptTool(CustomToolNode):
     This means the OpScript.script will only import it using ``require()``
     """
 
-    def __buildDefaultStructure(self):
+    def _buildDefaultStructure(self):
 
-        super(OpScriptTool, self).__buildDefaultStructure()
+        super(OpScriptTool, self)._buildDefaultStructure()
 
         self._node_opscript = NodegraphAPI.CreateNode("OpScript", self)
         self._node_opscript.setName("OpScript_{}_0001".format(self.name))
         self._node_opscript.getParameters().createChildGroup("user")
 
-        NodegraphAPI.PackageSuperToolAPI.NodeUtils.WireInlineNodes(
-            parentGroupNode=self,
-            nodes=self.getChildren(),
-            x=150,
-        )
+        # NodegraphAPI.PackageSuperToolAPI.NodeUtils.WireInlineNodes(
+        #     parentGroupNode=self,
+        #     nodes=self.getChildren(),
+        #     x=150,
+        # )
         return
 
     @abstractmethod
-    def __build(self):
+    def _build(self):
         pass
 
     def getDefaultOpScriptNode(self):
