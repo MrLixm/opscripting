@@ -61,7 +61,7 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
     maintainers = []  # type: List[str]
 
     def __init__(self):
-        super(CustomTool, self).__init__()
+        super(CustomToolNode, self).__init__()
 
         self._about_param = None  # type: NodegraphAPI.Parameter
         self.__buildAboutParam()
