@@ -32,7 +32,7 @@ REGISTERED = False
 
 
 def getAllTools():
-    # type: () -> Dict[str, Type[tooling.CustomTool]]
+    # type: () -> Dict[str, Type[tooling.CustomToolNode]]
     """
     Get a list of all the "tools" modules available.
 
@@ -82,11 +82,11 @@ def getAllTools():
             )
             continue
 
-        if not issubclass(node_class, tooling.CustomTool):
+        if not issubclass(node_class, tooling.CustomToolNode):
             logger.error(
                 "[getAllTools] InvalidNodeClass: class <{}> for module {} is not "
                 "a subclass of {}"
-                "".format(node_class, module, tooling.CustomTool)
+                "".format(node_class, module, tooling.CustomToolNode)
             )
             continue
 
@@ -97,7 +97,7 @@ def getAllTools():
 
 
 def getAvailableTools():
-    # type: () -> Dict[str, Type[tooling.CustomTool]]
+    # type: () -> Dict[str, Type[tooling.CustomToolNode]]
     """
     getAllTools() but filtered to remove the tools that have been asked to be ignored
     using an environment variable.
@@ -172,7 +172,7 @@ def _actionCallback(key):
     # type: (str) -> NodegraphAPI.Node
 
     available_tools = NodegraphAPI.GetFlavorNodes(c.FLAVOR_NAME, filterExists=True)
-    for tool in available_tools:  # type: tooling.CustomTool
+    for tool in available_tools:  # type: tooling.CustomToolNode
 
         if key != tool.name:
             continue
