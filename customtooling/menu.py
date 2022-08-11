@@ -1,5 +1,4 @@
 import logging
-import traceback
 
 from Katana import NodegraphAPI
 from Katana import LayeredMenuAPI
@@ -59,12 +58,19 @@ def _actionCallback(key):
         try:
             node = NodegraphAPI.CreateNode(tool_name, NodegraphAPI.GetRootNode())
         except Exception as excp:
-            traceback.print_exc()
             logger.error(
                 "[__actionCallback] Error when trying to create node <{}>: {}"
                 "".format(tool_name, excp),
             )
             raise
+
+        if node is None:
+            logger.error(
+                "[_actionCallback] CreateNode({}) returned None. This might comes "
+                "from any error in the class registered for this tool so check the "
+                "code.".format(key)
+            )
+
         return node
 
     return
