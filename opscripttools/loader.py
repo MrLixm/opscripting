@@ -16,7 +16,7 @@ from Katana import NodegraphAPI
 from Katana import LayeredMenuAPI
 
 from . import c
-from . import tooling
+from . import nodebase
 
 __all__ = (
     "getAllTools",
@@ -89,7 +89,7 @@ def getAllTools():
             )
             continue
 
-        if not issubclass(node_class, tooling.CustomToolNode):
+        if not issubclass(node_class, nodebase.CustomToolNode):
             logger.error(
                 "[getAllTools] InvalidNodeClass: class <{}> for module {} is not "
                 "a subclass of {}"
@@ -179,7 +179,7 @@ def _actionCallback(key):
     # type: (str) -> NodegraphAPI.Node
 
     available_tools = NodegraphAPI.GetFlavorNodes(c.FLAVOR_NAME, filterExists=True)
-    for tool in available_tools:  # type: tooling.CustomToolNode
+    for tool in available_tools:  # type: nodebase.CustomToolNode
 
         if key != tool.name:
             continue
