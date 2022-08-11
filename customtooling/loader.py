@@ -3,7 +3,7 @@ import logging
 import pkgutil
 import sys
 from typing import Dict
-from typing import List
+from typing import Iterable
 from types import ModuleType
 from typing import Optional
 from typing import Type
@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 
 def registerTools(tools_packages_list):
-    # type: (List[str]) -> None
+    # type: (Iterable[str]) -> None
     """
     Register the CustomTool declared in the given locations names.
     Those locations must be python package names registered in the PYTHONPATH, so they
@@ -56,7 +56,7 @@ def _registerToolPackage(package):
 
     customtool_list = _getAvailableTools(package=package)
 
-    for tool_name, tool in customtool_list:
+    for tool_name, tool in customtool_list.items():
 
         NodegraphAPI.RegisterPythonGroupType(tool.name, tool)
         NodegraphAPI.AddNodeFlavor(tool.name, c.FLAVOR_NAME)
