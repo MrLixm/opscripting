@@ -67,6 +67,13 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
     author = ""  # type: str
     maintainers = []  # type: List[str]
 
+    class AboutParamNames:
+        root = "About"
+        name = "name_"
+        version = "version_"
+        description = "info_"
+        author = "author_"
+
     def __init__(self):
         super(CustomToolNode, self).__init__()
 
@@ -122,13 +129,13 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
             hint = {"hideTitle": True}
             usergrp.setHintString(repr(hint))
 
-        self._about_param = usergrp.createChildGroup(self.Names.root)
-        self._about_param.createChildString(self.Names.name, self.name)
-        self._about_param.createChildString(
-            self.Names.version, versionize(self.version)
-        )
-        self._about_param.createChildString(self.Names.description, self.description)
-        self._about_param.createChildString(self.Names.author, self.author)
+        param = usergrp.createChildGroup(self.AboutParamNames.root)
+        param.createChildString(self.AboutParamNames.name, self.name)
+        param.createChildString(self.AboutParamNames.version, versionize(self.version))
+        param.createChildString(self.AboutParamNames.description, self.description)
+        param.createChildString(self.AboutParamNames.author, self.author)
+
+        self._about_param = param
         return
 
     @abstractmethod
