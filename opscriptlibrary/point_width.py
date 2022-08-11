@@ -2,7 +2,7 @@ import os.path
 
 from Katana import NodegraphAPI
 
-from opscripttools.nodebase import createDefaultCustomTool
+from customtooling.nodebase import createDefaultCustomTool
 
 NAME = os.path.splitext(os.path.basename(__file__))[0]
 VERSION = (1, 0, 0)

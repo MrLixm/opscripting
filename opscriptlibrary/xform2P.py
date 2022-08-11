@@ -2,7 +2,7 @@ import os.path
 
 from Katana import NodegraphAPI
 
-from opscripttools.nodebase import OpScriptTool
+from customtooling.nodebase import OpScriptTool
 
 
 class Xform2P(OpScriptTool):

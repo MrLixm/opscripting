@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 def onStartupComplete(objectHash):
 
-    from opscripttools.loader import registerTools
+    from customtooling.loader import registerTools
 
     registerTools()
     return

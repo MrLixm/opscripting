@@ -82,7 +82,7 @@ OpScript node itself. It should be written in a library and simply importer
 and exectued in the OpScript.
 
 In the `opscripting`, script means to be used directly in an OpScript node
-are stored in the [`tools/`](../opscripttools/tools) directory.
+are stored in the [`tools/`](../customtooling/tools) directory.
 
 You can use it as such in the OpScript :
 
