@@ -1,5 +1,5 @@
 import logging
-import customtooling.loader
+import customtooling.menu
 
 from Katana import LayeredMenuAPI
 
@@ -8,11 +8,14 @@ logger = logging.getLogger(__name__)
 
 
 def registerLayeredMenus():
-    layeredMenu = customtooling.loader.getLayeredMenu()
-    LayeredMenuAPI.RegisterLayeredMenu(layeredMenu, "opscripting")
+
+    layered_menu_name = "customtooling"
+
+    layered_menu = customtooling.menu.getLayeredMenuForAllCUstomTool()
+    LayeredMenuAPI.RegisterLayeredMenu(layered_menu, layered_menu_name)
     logger.info(
-        "[registerLayeredMenus] Registered <opscripting> with shortcut <{}>"
-        "".format(layeredMenu.getKeyboardShortcut())
+        "[registerLayeredMenus] Registered <{}> with shortcut <{}>"
+        "".format(layered_menu_name, layered_menu.getKeyboardShortcut())
     )
     return
 
