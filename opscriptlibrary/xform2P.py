@@ -19,16 +19,18 @@ class Xform2P(OpScriptTool):
     def _buildOpScript(self):
 
         script = """
-    local script = require("opscriptlibrary.{module}")
-    script()"""
+local script = require("opscriptlibrary.{module}")
+script()"""
         script = script.format(module=self.luamodule)
 
-        self.getParameter("CEL").setExpression("=^/user.CEL", True)
-        self.getParameter("applyWhere").setValue("at locations matching CEL", 0)
-        self.getParameter("script.lua").setValue(script, 0)
+        node = self.getDefaultOpScriptNode()
+
+        node.getParameter("CEL").setExpression("=^/user.CEL", True)
+        node.getParameter("applyWhere").setValue("at locations matching CEL", 0)
+        node.getParameter("script.lua").setValue(script, 0)
         return
 
-    def __build(self):
+    def _build(self):
         # type: () -> NodegraphAPI.Node
 
         userparam = self.getParameter("user")
