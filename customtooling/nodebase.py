@@ -82,11 +82,11 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
 
         self._check()
 
-        self.__buildAboutParam()
+        self._buildAboutParam()
         self._buildDefaultStructure()
         self._build()
 
-    def __buildAboutParam(self):
+    def _buildAboutParam(self):
 
         usergrp = self.getParameter("user")
         if not usergrp:
