@@ -8,6 +8,7 @@ from typing import List
 from Katana import NodegraphAPI
 
 from . import c
+from . import util
 
 __all__ = (
     "CustomToolNode",
@@ -78,6 +79,9 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
         super(CustomToolNode, self).__init__()
 
         self._about_param = None  # type: NodegraphAPI.Parameter
+
+        self._check()
+
         self.__buildAboutParam()
         self._buildDefaultStructure()
         self._build()
@@ -135,6 +139,38 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
         port_a = node_dot_down.getOutputPortByIndex(0)
         port_b = self.getReturnPort(self.port_out_name)
         port_a.connect(port_b)
+
+        return
+
+    def _check(self):
+        """
+        Raise an error if the class is malformed.
+        """
+
+        util.asserting(
+            isinstance(self.name, str),
+            "name=<{}> is not a str".format(self.name),
+        )
+        util.asserting(
+            isinstance(self.version, tuple) and len(self.version) == 3,
+            "version=<{}> is not a tuple or of length 3".format(self.version),
+        )
+        util.asserting(
+            not self.color or isinstance(self.color, tuple) and len(self.color) == 3,
+            "color=<{}> is not a tuple or of length 3".format(self.color),
+        )
+        util.asserting(
+            isinstance(self.description, str),
+            "description=<{}> is not a str".format(self.description),
+        )
+        util.asserting(
+            isinstance(self.author, str),
+            "author=<{}> is not a str".format(self.author),
+        )
+        util.asserting(
+            isinstance(self.maintainers, (list, tuple)),
+            "maintainers=<{}> is not a list or tuple".format(self.maintainers),
+        )
 
         return
 
