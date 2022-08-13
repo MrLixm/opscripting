@@ -1,4 +1,5 @@
 import logging
+import re
 import traceback
 from abc import abstractmethod
 from pprint import pprint
@@ -113,8 +114,6 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
         self._node_dot_up = None  # type: NodegraphAPI.Node
         self._node_dot_down = None  # type: NodegraphAPI.Node
 
-        self._check()
-
         self._buildAboutParam()
         self._buildDefaultStructure()
         self._build()
@@ -182,34 +181,40 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
         self._node_dot_down = node_dot_down
         return
 
-    def _check(self):
+    @classmethod
+    def _check(cls):
         """
         Raise an error if the class is malformed.
         """
 
         util.asserting(
-            isinstance(self.name, str),
-            "name=<{}> is not a str".format(self.name),
+            isinstance(cls.name, str),
+            "name=<{}> is not a str".format(cls.name),
         )
         util.asserting(
-            isinstance(self.version, tuple) and len(self.version) == 3,
-            "version=<{}> is not a tuple or of length 3".format(self.version),
+            False if re.search(r"\W", cls.name) else True,
+            "name=<{}> contains unsupported characters".format(cls.name),
+        )
+
+        util.asserting(
+            isinstance(cls.version, tuple) and len(cls.version) == 3,
+            "version=<{}> is not a tuple or of length 3".format(cls.version),
         )
         util.asserting(
-            not self.color or isinstance(self.color, tuple) and len(self.color) == 3,
-            "color=<{}> is not a tuple or of length 3".format(self.color),
+            not cls.color or isinstance(cls.color, tuple) and len(cls.color) == 3,
+            "color=<{}> is not a tuple or of length 3".format(cls.color),
         )
         util.asserting(
-            isinstance(self.description, str),
-            "description=<{}> is not a str".format(self.description),
+            isinstance(cls.description, str),
+            "description=<{}> is not a str".format(cls.description),
         )
         util.asserting(
-            isinstance(self.author, str),
-            "author=<{}> is not a str".format(self.author),
+            isinstance(cls.author, str),
+            "author=<{}> is not a str".format(cls.author),
         )
         util.asserting(
-            isinstance(self.maintainers, (list, tuple)),
-            "maintainers=<{}> is not a list or tuple".format(self.maintainers),
+            isinstance(cls.maintainers, (list, tuple)),
+            "maintainers=<{}> is not a list or tuple".format(cls.maintainers),
         )
 
         return

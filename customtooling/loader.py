@@ -158,6 +158,15 @@ def _getAllToolsInPackage(package):
             )
             continue
 
+        try:
+            node_class._check()
+        except AssertionError as excp:
+            logger.exception(
+                "[getAllToolsInPackage] InvalidNodeClass: class <{}> for module {}:\n"
+                "   {}".format(node_class, module, excp)
+            )
+            continue
+
         out[name] = node_class
         logger.debug("[getAllToolsInPackage] Found [{}]={}".format(name, node_class))
 
