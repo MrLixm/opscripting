@@ -7,12 +7,12 @@ from Katana import Utils
 from . import c
 
 
-__all__ = ("getLayeredMenuForAllCUstomTool",)
+__all__ = ("getLayeredMenuForAllCustomTool",)
 
 logger = logging.getLogger(__name__)
 
 
-def getLayeredMenuForAllCUstomTool():
+def getLayeredMenuForAllCustomTool():
     # type: () -> LayeredMenuAPI.LayeredMenu
 
     layeredMenu = LayeredMenuAPI.LayeredMenu(

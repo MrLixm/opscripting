@@ -11,7 +11,7 @@ def registerLayeredMenus():
 
     layered_menu_name = "customtooling"
 
-    layered_menu = customtooling.menu.getLayeredMenuForAllCUstomTool()
+    layered_menu = customtooling.menu.getLayeredMenuForAllCustomTool()
     LayeredMenuAPI.RegisterLayeredMenu(layered_menu, layered_menu_name)
     logger.info(
         "[registerLayeredMenus] Registered <{}> with shortcut <{}>"
