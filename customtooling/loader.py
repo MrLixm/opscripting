@@ -14,6 +14,7 @@ else:
     from importlib.machinery import FileFinder
 
 from Katana import NodegraphAPI
+from Katana import Callbacks
 
 from . import c
 from . import nodebase
@@ -48,6 +49,7 @@ def registerTools(tools_packages_list):
 
         _registerToolPackage(package=package)
 
+    registerCallbackCustomTools()
     return
 
 
@@ -158,3 +160,11 @@ def _getAllToolsInPackage(package):
         logger.debug("[getAllToolsInPackage] Found [{}]={}".format(name, node_class))
 
     return out
+
+
+def registerCallbackCustomTools():
+    Callbacks.addCallback(
+        Callbacks.Type.onNodeCreate,
+        nodebase.customToolNodeCallback,
+    )
+    return

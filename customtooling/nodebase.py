@@ -1,5 +1,6 @@
 import logging
 from abc import abstractmethod
+from pprint import pprint
 from typing import Optional
 from typing import Union
 from typing import Tuple
@@ -41,6 +42,35 @@ def versionize(version):
         "Can't create a version object from arg <{}> of type {}"
         "".format(version, type(version))
     )
+
+
+def customToolNodeCallback(**kwargs):
+    """
+    This code is executed for ANY node created in the Nodegraph.
+    We use it to modify the CustomToolNode apperance after its creation.
+
+    THis is for operations that cannot be performed while the node instancing is not
+    terminated like ``node.getAttributes()``.
+
+    kwargs example ::
+
+        {'node': <Xform2P Xform2P 'Xform2P_0002'>,
+         'nodeName': 'Xform2P',
+         'nodeType': 'Xform2P',
+         'objectHash': -38886720}
+
+    Args:
+        **kwargs: see kwars example above
+    """
+    node = kwargs.get("node")
+    if not isinstance(node, CustomToolNode):
+        return
+
+    attr = node.getAttributes()
+    attr["ns_basicDisplay"] = 1  # remove group shape
+    attr["ns_iconName"] = ""  # remove group icon
+    node.setAttributes(attr)
+    return
 
 
 class CustomToolNode(NodegraphAPI.PythonGroupNode):
@@ -112,11 +142,6 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
         self.addInputPort(self.port_in_name)
         self.addOutputPort(self.port_out_name)
         self.setName("{}_0001".format(self.name))
-
-        # attr = self.getAttributes()
-        # attr["ns_basicDisplay"] = 1  # remove group shape
-        # attr["ns_iconName"] = ""  # remove group icon
-        # self.setAttributes(attr)
 
         pos = NodegraphAPI.GetNodePosition(self)
 
