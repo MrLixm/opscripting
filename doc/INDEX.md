@@ -4,9 +4,28 @@
 [![INDEX](https://img.shields.io/badge/index-blue?labelColor=blue)](INDEX.md)
 [![tools](https://img.shields.io/badge/tools-4f4f4f)](tools.md)
 
-Welcome on the `opscripting` documentation.
+Welcome on the `opscripting` package documentation.
+
+# What
+
+`opscripting` is a "proof of concept" that we can have a better OpScript
+workflow in a pipelined environement.
+
+In my opinion, OpScript code should not live in the scene, and should only
+import code stored in the pipeline arborescence.
+
+This package offers the tools to get started on that road, but would deserve to
+be a bit modified if actually used in a studio pipeline.
 
 # Install
+
+> **Info**: 
+> You can check [../dev/launcher.Katana...sh](../dev/launcher.Katana-4.5.1.sh) to see some
+> launcher examples.
+
+This will explain how to use the package "as it is" but as mentionned,
+ideally it would be better to create separate packages for all the components.
+
 
 1. Add the repo root directory to the `PYTHONPATH` env variable.
 
@@ -23,7 +42,7 @@ LUA_PATH="z/any/opscripting/?.lua"
 ```
 
 If you are familiar with the LUA module syntax, this means that all the
-lua modules will be accesible from the `opscripting` namespace.
+lua modules will be accesible from the `opscriptlibrary` namespace.
 
 3. Add the only dependency `llloger` to the `LUA_PATH` too.
 
@@ -31,75 +50,109 @@ lua modules will be accesible from the `opscripting` namespace.
 
 ```shell
 LUA_PATH="$LUA_PATH:z/any/lllogerInstallDirectory/?.lua"
-# where opscripting/ contains `README.md`, ...
+# where lllogerInstallDirectory/ contains `llloger.lua`, ...
 ```
 
 llloger is directly imported as `require("llloger")`
 
 ## Registering tools
 
-For the artist to access the created tool, you need to register the
-LayerMenu created for them.
+For the artist to access the created tool, you need to register them in Katana.
+
+### 1. Registering as nodes
 
 For this you will just need to run during Katana startup something like:
 
 ```python
-from Katana import LayeredMenuAPI
+from customtooling.loader import registerTools
 
-import opscripting.integrating
+# make sure "opscriptlibrary" parent dir is in the PYTHONPATH
+locations_to_register = ("opscriptlibrary",)
 
-layeredMenu = opscripting.integrating.getLayeredMenu()
-LayeredMenuAPI.RegisterLayeredMenu(layeredMenu, "opscripting")
+registerTools(locations_to_register)
 ```
 
-As you can see the `integrating` python already offer a convenient function
-that create the LayeredMenu to register.
+Make sure this is only executed once AND in gui and headless mode. I personally
+put them in a `Startup/init.py` file registered in `KATANA_RESOURCES`.
 
-There is a proof-of-concept in [dev/KatanaResources/UIPlugins](dev/KatanaResources/UIPlugins).
-(you can add [dev/KatanaResources](dev/KatanaResources) to the `KATANA_RESOURCES` variable.)
+### 2. Registering the layeredMenu
+
+The above will allow the artist to create the tool via the traditional
+`Tab` shortcut, but they will be drowned among the other nodes. To find
+those nodes quicker there is a pre-made layeredMenu available that
+you can register :
+
+```python
+from Katana import LayeredMenuAPI
+import customtooling.menu
+
+layered_menu = customtooling.menu.getLayeredMenuForAllCustomTool()
+LayeredMenuAPI.RegisterLayeredMenu(layered_menu, "customtooling")
+```
+
+There is a demo in [../dev/KatanaResources/UIPlugins](../dev/KatanaResources/UIPlugins).
+(you can add [../dev/KatanaResources](../dev/KatanaResources) to the `KATANA_RESOURCES` variable.)
 
 
-# Use
+# Lua Use
 
 To import a module, use the [`require`](https://www.lua.org/pil/8.1.html) function.
 
-## In another lua script
-
-```lua
-local luabase = {}
-luabase.mathing = require("luabase.mathing")
-luabase.utils = require("luabase.utils")
-```
-
-It's up to you to see how you want to namespace the module using a table.
-In the above example I'm namespacing it using a `luabase` named table so for
-example the commly used name `utils` is still free.
-
 ## In an OpScript
 
-In my opinion, in a studio environement, no code should ever live in the 
-OpScript node itself. It should be written in a library and simply importer
-and exectued in the OpScript.
+No code should be found in the OpScript node. It should only import and
+execute what it needs.
 
-In the `opscripting`, script means to be used directly in an OpScript node
-are stored in the [`tools/`](../customtooling/tools) directory.
+This means we need to store the lua code on disk in a file. The proposed 
+convention is to store those file in a directory that will be registered in
+the LUA_PATH.
 
-You can use it as such in the OpScript :
+```shell
+opscriptlibrary/  <- # parent directory registered in LUA_PATH   
+    my_script.lua
+```
+
+You can then use it as such in the OpScript :
 
 ```lua
-local script = require("opscripting.tools.attr_math")
-script()
+local script = require("opscriptlibrary.my_script")
+script()  -- if your module return a function
 ```
 
 Make sure to check what the tools script is returning. In most of the case
 it will be returning the `run()` function, so you can directly call the result
 , but it might also return a table with different functions.
 
-# Recommandation
+## In another lua script
 
-This package was made with a studio pipeline in mind but still accesible at a 
-smaller case. 
+In the OpScript script file you created as mentioned above, you might also
+want to import other modules to reduce duplicated code.
 
-In my opinion the `tools/` directory might better live in a seperate repository,
-and even same for `luakat` and `luabase` that should also have their own
-repository to keep things clean.
+This package offers 2 lua package `luaing`, `luakat` as a base to create OpScripts.
+
+Here is how you could import `luaing` :
+
+```lua
+local luaing = {}
+luaing.mathing = require("luaing.formatting")
+luaing.utils = require("luaing.utils")
+```
+
+It's up to you to see how you want to namespace the module using a table.
+In the above example I'm namespacing it using a `luaing` named table so for
+example the commly used name `utils` is still free.
+
+# Recommendation
+
+This package was made with a studio pipeline in mind but kept on a structure
+accesible for a smaller scale. 
+
+The following directory better be split in their own package :
+
+- `luabase`
+- `luaing`
+- `customtool`
+
+and of course `opscriptlibrary`. In my example I only have one library location
+but you could technically have multiple of them at different stage of 
+the pipeline (studio -> prod -> sequence ...)
