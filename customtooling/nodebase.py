@@ -1,4 +1,5 @@
 import logging
+import traceback
 from abc import abstractmethod
 from pprint import pprint
 from typing import Optional
@@ -109,6 +110,8 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
         super(CustomToolNode, self).__init__()
 
         self._about_param = None  # type: NodegraphAPI.Parameter
+        self._node_dot_up = None  # type: NodegraphAPI.Node
+        self._node_dot_down = None  # type: NodegraphAPI.Node
 
         self._check()
 
@@ -165,6 +168,8 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
         port_b = self.getReturnPort(self.port_out_name)
         port_a.connect(port_b)
 
+        self._node_dot_up = node_dot_up
+        self._node_dot_down = node_dot_down
         return
 
     def _check(self):
@@ -218,6 +223,51 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
         )
         return
 
+    def wireInsertNodes(self, node_list, vertical_offset=150):
+        # type: (List[NodegraphAPI.Node], int) -> None
+        """
+        Utility method to quickly connect an ORDERED list of node to the internal network.
+        The nodes are inserted after the port connected to Output Dot node.
+
+        For convenience, it is assumed that nodes only have one input/output port.
+
+        Args:
+            vertical_offset:
+                negative offset to apply to each node position in the nodegraph
+            node_list:
+                node to connect to the internal network and between each other, in
+                the expected order.
+        """
+        # we have to make a big try/except block because Katana is shitty at catching
+        # error of creation of registered Nodes.
+        try:
+            indownport = self._node_dot_down.getInputPortByIndex(0)
+            previousOutPort = indownport.getConnectedPort(0)
+            previousPos = NodegraphAPI.GetNodePosition(previousOutPort.getNode())
+            indownport.disconnect(previousOutPort)
+
+            for node in node_list:
+
+                node.getInputPortByIndex(0).connect(previousOutPort)
+                NodegraphAPI.SetNodePosition(
+                    node,
+                    (previousPos[0], previousPos[1] - vertical_offset),
+                )
+
+                previousOutPort = node.getOutputPortByIndex(0)
+                previousPos = NodegraphAPI.GetNodePosition(node)
+                continue
+
+            indownport.connect(previousOutPort)
+        except:
+            traceback.print_exc()
+            logger.exception(
+                "[{}][wireInsertNodes] Error while trying to connect {}"
+                "".format(self.__class__.__name__, node_list)
+            )
+            raise
+        return
+
 
 class OpScriptTool(CustomToolNode):
     """
@@ -240,11 +290,7 @@ class OpScriptTool(CustomToolNode):
         self._node_opscript.setName("OpScript_{}_0001".format(self.name))
         self._node_opscript.getParameters().createChildGroup("user")
 
-        # NodegraphAPI.PackageSuperToolAPI.NodeUtils.WireInlineNodes(
-        #     parentGroupNode=self,
-        #     nodes=self.getChildren(),
-        #     x=150,
-        # )
+        self.wireInsertNodes([self._node_opscript])
         return
 
     @abstractmethod
