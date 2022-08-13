@@ -2,6 +2,7 @@ import logging
 
 from Katana import NodegraphAPI
 from Katana import LayeredMenuAPI
+from Katana import Utils
 
 from . import c
 
@@ -34,14 +35,33 @@ def _populateCallback(layered_menu):
     available_tools = NodegraphAPI.GetFlavorNodes(c.FLAVOR_NAME, filterExists=True)
     for tool_name in available_tools:  # type: str
 
-        # TODO: find a way to convet the tool_name to the tool's Class
-        entry_color = c.COLORS.default
+        # HACK: to quickly be able to access the CustomTool class for this nodeType
+        # TODO: this involve a time penalty the first time the menu is created
+        # It can become problematic when here is a lot of node.
+        try:
+            node = NodegraphAPI.CreateNode(tool_name, NodegraphAPI.GetRootNode())
+            Utils.EventModule.ProcessEvents()
+            entry_color = node.color or c.COLORS.default
+
+        except Exception as excp:
+            node = None
+            entry_color = c.COLORS.default
+            logger.warning(
+                "[_populateCallback] Can't create node for tool <{}>: {}\n"
+                "   layeredMenu Entry still created".format(tool_name, excp)
+            )
 
         layered_menu.addEntry(
             tool_name,
             text=tool_name,
             color=entry_color,
         )
+
+        if node:
+            node.delete()
+            Utils.EventModule.ProcessEvents()
+
+        continue
 
     return
 
