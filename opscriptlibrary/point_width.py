@@ -2,72 +2,62 @@ import os.path
 
 from Katana import NodegraphAPI
 
-from customtooling.nodebase import createDefaultCustomTool
-
-NAME = os.path.splitext(os.path.basename(__file__))[0]
-VERSION = (1, 0, 0)
+from customtooling.nodebase import OpScriptTool
 
 
-def configOpScript(node):
-    # type: (NodegraphAPI.Node) -> None
+def buildUserParams(userparam, as_expression=False):
+    # type: (NodegraphAPI.Parameter, bool) -> None
 
-    script = """
-local script = require("opscriptlibrary.{NAME}")
+    p = userparam.createChildNumber("point_scale", 1)
+    p.setExpression("=^/user.point_scale", as_expression)
+    hint = {
+        "slider": True,
+        "help": "multiplier of the point's scale in the viewer",
+        "slidermax": 50,
+    }
+    p.setHintString(repr(hint))
+    return
+
+
+class PointWidth(OpScriptTool):
+
+    name = "PointWidth"
+    version = (1, 0, 0)
+    color = None
+    description = "Change scale of the geometry points."
+    author = "<Liam Collod pyco.liam.business@gmail.com>"
+    maintainers = []
+
+    luamodule = os.path.splitext(os.path.basename(__file__))[0]
+
+    def _buildOpScript(self):
+
+        script = """
+local script = require("opscriptlibrary.{module}")
 script()"""
-    script = script.format(NAME=NAME)
+        script = script.format(module=self.luamodule)
 
-    node.getParameter("CEL").setExpression("=^/user.CEL", True)
-    node.getParameter("applyWhere").setValue("at locations matching CEL", 0)
-    node.getParameter("script.lua").setValue(script, 0)
+        node = self.getDefaultOpScriptNode()
 
-    userparam = node.getParameter("user")
-    p = userparam.createChildNumber("point_scale", 1)
-    hint = {
-        "slider": True,
-        "help": "multiplier of the point's scale in the viewer",
-        "sliderMax": 50,
-    }
-    p.setHintString(repr(hint))
-    p.setExpression("=^/user.point_scale", True)
+        node.getParameter("CEL").setExpression("=^/user.CEL", True)
+        node.getParameter("applyWhere").setValue("at locations matching CEL", 0)
+        node.getParameter("script.lua").setValue(script, 0)
 
-    return
+        buildUserParams(node.getParameter("user"), as_expression=True)
+        return
 
+    def _build(self):
+        # type: () -> NodegraphAPI.Node
 
-def configTool(node):
-    # type: (NodegraphAPI.Node) -> None
+        p = self.user_param.createChildString("CEL", "")
+        hint = {"widget": "cel"}
+        p.setHintString(repr(hint))
 
-    userparam = node.getParameter("user")
+        self._buildOpScript()
+        buildUserParams(self.user_param, as_expression=False)
 
-    p = userparam.createChildString("CEL", "")
-    hint = {"widget": "cel"}
-    p.setHintString(repr(hint))
-
-    p = userparam.createChildNumber("point_scale", 1)
-    hint = {
-        "slider": True,
-        "help": "multiplier of the point's scale in the viewer",
-        "sliderMax": 50,
-    }
-    p.setHintString(repr(hint))
-
-    return
+        self.moveAboutParamToBottom()
+        return
 
 
-def build():
-    # type: () -> NodegraphAPI.Node
-
-    nodetool = createDefaultCustomTool(NAME)
-    nodetool.getAboutParam().update(
-        author="Liam Collod",
-        description="Change scale of the geometry points.",
-        version=VERSION,
-    )
-
-    configOpScript(nodetool.getDefaultOpScriptNode())
-    configTool(node=nodetool.node)
-
-    return nodetool.node
-
-
-if __name__ in ["__main__", "__builtin__", "Katana"]:
-    build()
+NODE = PointWidth
