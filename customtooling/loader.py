@@ -31,6 +31,8 @@ def registerTools(tools_packages_list):
     Those locations must be python package names registered in the PYTHONPATH, so they
     can be converted to modules and imported.
 
+    Must be called once.
+
     Args:
         tools_packages_list:
             list of python packages name. Those package must be registered in the PYTHONPATH.
@@ -163,8 +165,13 @@ def _getAllToolsInPackage(package):
 
 
 def registerCallbackCustomTools():
+    """
+    Add a new callback when a node is created in the Nodegraph to apply additional
+    operations on a CustomToolNode.
+    """
     Callbacks.addCallback(
         Callbacks.Type.onNodeCreate,
         nodebase.customToolNodeCallback,
     )
+    logger.debug("[registerCallbackCustomTools] added callback onNodeCreate")
     return
