@@ -2,7 +2,7 @@ import logging
 import re
 import traceback
 from abc import abstractmethod
-from pprint import pprint
+import inspect
 from typing import Optional
 from typing import Union
 from typing import Tuple
@@ -106,6 +106,8 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
         version = "version_"
         description = "info_"
         author = "author_"
+        path = "path_"
+        documentation = "open_documentation"
 
     def __init__(self):
         super(CustomToolNode, self).__init__()
@@ -141,6 +143,22 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
 
         p = param.createChildString(self.AboutParamNames.author, self.author)
         p.setHintString(repr({"readOnly": True}))
+
+        p = param.createChildString(
+            self.AboutParamNames.path, inspect.getfile(self.__class__)
+        )
+        p.setHintString(repr({"readOnly": True, "widget": "null"}))
+
+        p = param.createChildString(
+            self.AboutParamNames.documentation, inspect.getfile(self.__class__)
+        )
+        hints = {
+            "widget": "scriptButton",
+            "scriptText": c.OPEN_DOCUMENTATION_SCRIPT.format(
+                PATH_PARAM=self.AboutParamNames.path
+            ),
+        }
+        p.setHintString(repr(hints))
 
         self._about_param = param
         return

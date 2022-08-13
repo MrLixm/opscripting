@@ -46,3 +46,15 @@ LAYEREDMENU_SHORTCUT = "O"
 Shortcut to use in the Nodegraph to make the LayeredMenu appears.
 This is the LayeredMenu for ALL the tools that might be disabled.
 """
+
+
+OPEN_DOCUMENTATION_SCRIPT = """
+import os.path
+import webbrowser
+
+tool_path = parameter.getParent().getChild("{PATH_PARAM}").getValue(0)
+doc_path = os.path.splitext(tool_path)[0] + ".md"
+
+if os.path.exists(doc_path):
+    webbrowser.open(doc_path)
+"""
