@@ -56,7 +56,7 @@ def registerTools(tools_packages_list):
 def _registerToolPackage(package):
     # type: (ModuleType) -> None
 
-    customtool_list = _getAvailableTools(package=package)
+    customtool_list = _getAvailableToolsInPackage(package=package)
 
     for tool_name, tool in customtool_list.items():
 
@@ -73,7 +73,7 @@ def _registerToolPackage(package):
     return
 
 
-def _getAvailableTools(package):
+def _getAvailableToolsInPackage(package):
     # type: (ModuleType) -> Dict[str, Type[nodebase.CustomToolNode]]
     """
     getAllTools() but filtered to remove the tools that have been asked to be ignored
