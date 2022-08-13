@@ -2,7 +2,7 @@
 
 [![root](https://img.shields.io/badge/back_to_root-536362?)](../README.md)
 [![INDEX](https://img.shields.io/badge/index-blue?labelColor=blue)](INDEX.md)
-[![tools](https://img.shields.io/badge/tools-4f4f4f)](tools.md)
+[![tools-library](https://img.shields.io/badge/tools--library-4f4f4f)](tools-library.md)
 
 Welcome on the `opscripting` package documentation.
 
