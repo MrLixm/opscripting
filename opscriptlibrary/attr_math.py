@@ -2,17 +2,14 @@ import os.path
 
 from Katana import NodegraphAPI
 
-from customtooling.nodebase import createDefaultCustomTool
-
-NAME = os.path.splitext(os.path.basename(__file__))[0]
-VERSION = (1, 5, 1)
+from customtooling.nodebase import OpScriptTool
 
 
-def createUserParam(userparam, set_as_expression=False):
+def buildUserParams(userparam, as_expression=False):
     # type: (NodegraphAPI.Parameter, bool) -> None
 
     p = userparam.createChildStringArray("attributes", 2)
-    p.setExpression("=^/user.attributes", set_as_expression)
+    p.setExpression("=^/user.attributes", as_expression)
     p.setTupleSize(2)
     hint = {
         "resize": True,
@@ -27,7 +24,7 @@ def createUserParam(userparam, set_as_expression=False):
     p.setHintString(repr(hint))
 
     p = userparam.createChildNumber("multiply", 1.0)
-    p.setExpression("=^/user.multiply", set_as_expression)
+    p.setExpression("=^/user.multiply", as_expression)
     hint = {
         "slider": True,
         "slidermax": 10,
@@ -35,7 +32,7 @@ def createUserParam(userparam, set_as_expression=False):
     p.setHintString(repr(hint))
 
     p = userparam.createChildNumber("add", 0.0)
-    p.setExpression("=^/user.add", set_as_expression)
+    p.setExpression("=^/user.add", as_expression)
     hint = {
         "slider": True,
         "slidermax": 10,
@@ -44,7 +41,7 @@ def createUserParam(userparam, set_as_expression=False):
     p.setHintString(repr(hint))
 
     p = userparam.createChildString("op_order", "add")
-    p.setExpression("=^/user.op_order", set_as_expression)
+    p.setExpression("=^/user.op_order", as_expression)
     hint = {
         "widget": "popup",
         "options": ["add", "multiply"],
@@ -55,51 +52,46 @@ def createUserParam(userparam, set_as_expression=False):
     return
 
 
-def configOpScript(node):
-    # type: (NodegraphAPI.Node) -> None
+class AttrMath(OpScriptTool):
 
-    script = """
-local script = require("opscriptlibrary.{NAME}")
+    name = "AttrMath"
+    version = (1, 0, 2)
+    color = None
+    description = "Perform some basic math operation on attributes values."
+    author = "<Liam Collod pyco.liam.business@gmail.com>"
+    maintainers = []
+
+    luamodule = os.path.splitext(os.path.basename(__file__))[0]
+
+    def _buildOpScript(self):
+
+        script = """
+local script = require("opscriptlibrary.{module}")
 script()"""
-    script = script.format(NAME=NAME)
+        script = script.format(module=self.luamodule)
 
-    node.getParameter("CEL").setExpression("=^/user.CEL", True)
-    node.getParameter("applyWhere").setValue("at locations matching CEL", 0)
-    node.getParameter("script.lua").setValue(script, 0)
-    userparam = node.getParameter("user")
-    createUserParam(userparam, set_as_expression=True)
-    return
+        node = self.getDefaultOpScriptNode()
 
+        node.getParameter("CEL").setExpression("=^/user.CEL", True)
+        node.getParameter("applyWhere").setValue("at locations matching CEL", 0)
+        node.getParameter("script.lua").setValue(script, 0)
 
-def configTool(node):
-    # type: (NodegraphAPI.Node) -> None
+        buildUserParams(node.getParameter("user"), as_expression=True)
+        return
 
-    userparam = node.getParameter("user")
+    def _build(self):
+        # type: () -> NodegraphAPI.Node
 
-    p = userparam.createChildString("CEL", "")
-    hint = {"widget": "cel"}
-    p.setHintString(repr(hint))
+        userparam = self.user_param
+        p = userparam.createChildString("CEL", "")
+        hint = {"widget": "cel"}
+        p.setHintString(repr(hint))
+        buildUserParams(userparam, as_expression=False)
 
-    createUserParam(userparam)
-    return
+        self._buildOpScript()
 
-
-def build():
-    # type: () -> NodegraphAPI.Node
-
-    nodetool = createDefaultCustomTool(NAME)
-    nodetool.getAboutParam().update(
-        author="Liam Collod",
-        description="Perform some basic math operation on attributes values.",
-        version=VERSION,
-    )
-
-    configOpScript(nodetool.getDefaultOpScriptNode())
-    configTool(node=nodetool.node)
-
-    nodetool.getAboutParam().moveToBottom()
-    return nodetool.node
+        self.moveAboutParamToBottom()
+        return
 
 
-if __name__ in ["__main__", "__builtin__", "Katana"]:
-    build()
+NODE = AttrMath
