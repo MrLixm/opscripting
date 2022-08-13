@@ -128,10 +128,20 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
             usergrp.setHintString(repr(hint))
 
         param = usergrp.createChildGroup(self.AboutParamNames.root)
-        param.createChildString(self.AboutParamNames.name, self.name)
-        param.createChildString(self.AboutParamNames.version, versionize(self.version))
-        param.createChildString(self.AboutParamNames.description, self.description)
-        param.createChildString(self.AboutParamNames.author, self.author)
+
+        p = param.createChildString(self.AboutParamNames.name, self.name)
+        p.setHintString(repr({"readOnly": True}))
+
+        p = param.createChildString(
+            self.AboutParamNames.version, versionize(self.version)
+        )
+        p.setHintString(repr({"readOnly": True}))
+
+        p = param.createChildString(self.AboutParamNames.description, self.description)
+        p.setHintString(repr({"readOnly": True}))
+
+        p = param.createChildString(self.AboutParamNames.author, self.author)
+        p.setHintString(repr({"readOnly": True}))
 
         self._about_param = param
         return
