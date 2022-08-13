@@ -38,6 +38,8 @@ def registerTools(tools_packages_list):
             list of python packages name. Those package must be registered in the PYTHONPATH.
     """
 
+    all_registered_tools = dict()
+
     for package_id in tools_packages_list:
 
         try:
@@ -49,14 +51,29 @@ def registerTools(tools_packages_list):
             )
             continue
 
-        _registerToolPackage(package=package)
+        registered = _registerToolPackage(package=package)
+        all_registered_tools.update(registered)
+        continue
 
     _registerCallbackCustomTools()
+
+    logger.info(
+        "[registerTools] Finished. Registered {} custom tools."
+        "".format(len(all_registered_tools))
+    )
     return
 
 
 def _registerToolPackage(package):
-    # type: (ModuleType) -> None
+    # type: (ModuleType) ->  Dict[str, Type[nodebase.CustomToolNode]]
+    """
+
+    Args:
+        package: python <module> object to import the custom tools from
+
+    Returns:
+        all the custom tools loaded as dict[tool_name, tool_class]
+    """
 
     customtool_list = _getAvailableToolsInPackage(package=package)
 
@@ -72,7 +89,7 @@ def _registerToolPackage(package):
         "[registerTools] Finished registering {}, {} tools found."
         "".format(package, len(customtool_list))
     )
-    return
+    return customtool_list
 
 
 def _getAvailableToolsInPackage(package):
