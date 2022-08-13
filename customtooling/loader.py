@@ -51,7 +51,7 @@ def registerTools(tools_packages_list):
 
         _registerToolPackage(package=package)
 
-    registerCallbackCustomTools()
+    _registerCallbackCustomTools()
     return
 
 
@@ -164,7 +164,7 @@ def _getAllToolsInPackage(package):
     return out
 
 
-def registerCallbackCustomTools():
+def _registerCallbackCustomTools():
     """
     Add a new callback when a node is created in the Nodegraph to apply additional
     operations on a CustomToolNode.
