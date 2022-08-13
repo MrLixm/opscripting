@@ -2,17 +2,14 @@ import os.path
 
 from Katana import NodegraphAPI
 
-from customtooling.nodebase import createDefaultCustomTool
-
-NAME = os.path.splitext(os.path.basename(__file__))[0]
-VERSION = (1, 0, 2)
+from customtooling.nodebase import OpScriptTool
 
 
-def createUserParam(userparam, set_as_expression=False):
+def buildUserParams(userparam, as_expression=False):
     # type: (NodegraphAPI.Parameter, bool) -> None
 
     p = userparam.createChildStringArray("attributes", 2)
-    p.setExpression("=^/user.attributes", set_as_expression)
+    p.setExpression("=^/user.attributes", as_expression)
     p.setTupleSize(2)
     hint = {
         "resize": True,
@@ -29,7 +26,7 @@ def createUserParam(userparam, set_as_expression=False):
     p.setHintString(repr(hint))
 
     p = userparam.createChildString("method", "array")
-    p.setExpression("=^/user.method", set_as_expression)
+    p.setExpression("=^/user.method", as_expression)
     hint = {
         "widget": "popup",
         "options": ["table", "array"],
@@ -44,51 +41,48 @@ def createUserParam(userparam, set_as_expression=False):
     return
 
 
-def configOpScript(node):
-    # type: (NodegraphAPI.Node) -> None
+class AttrTypeSwap(OpScriptTool):
 
-    script = """
-local script = require("opscriptlibrary.{NAME}")
-script()"""
-    script = script.format(NAME=NAME)
-
-    node.getParameter("CEL").setExpression("=^/user.CEL", True)
-    node.getParameter("applyWhere").setValue("at locations matching CEL", 0)
-    node.getParameter("script.lua").setValue(script, 0)
-    userparam = node.getParameter("user")
-    createUserParam(userparam, set_as_expression=True)
-    return
-
-
-def configTool(node):
-    # type: (NodegraphAPI.Node) -> None
-
-    userparam = node.getParameter("user")
-
-    p = userparam.createChildString("CEL", "")
-    hint = {"widget": "cel"}
-    p.setHintString(repr(hint))
-
-    createUserParam(userparam)
-    return
-
-
-def build():
-    # type: () -> NodegraphAPI.Node
-
-    nodetool = createDefaultCustomTool(NAME)
-    nodetool.getAboutParam().update(
-        author="Liam Collod",
-        description="Change the type of an attribute. ex: FloatAttribute -> DoubleAttribute",
-        version=VERSION,
+    name = "AttrTypeSwap"
+    version = (1, 0, 2)
+    color = None
+    description = (
+        "Change the type of an attribute. ex: FloatAttribute -> DoubleAttribute"
     )
+    author = "<Liam Collod pyco.liam.business@gmail.com>"
+    maintainers = []
 
-    configOpScript(nodetool.getDefaultOpScriptNode())
-    configTool(node=nodetool.node)
+    luamodule = os.path.splitext(os.path.basename(__file__))[0]
 
-    nodetool.getAboutParam().moveToBottom()
-    return nodetool.node
+    def _buildOpScript(self):
+
+        script = """
+local script = require("opscriptlibrary.{module}")
+script()"""
+        script = script.format(module=self.luamodule)
+
+        node = self.getDefaultOpScriptNode()
+
+        node.getParameter("CEL").setExpression("=^/user.CEL", True)
+        node.getParameter("applyWhere").setValue("at locations matching CEL", 0)
+        node.getParameter("script.lua").setValue(script, 0)
+
+        buildUserParams(node.getParameter("user"), as_expression=True)
+        return
+
+    def _build(self):
+        # type: () -> NodegraphAPI.Node
+
+        userparam = self.user_param
+        p = userparam.createChildString("CEL", "")
+        hint = {"widget": "cel"}
+        p.setHintString(repr(hint))
+        buildUserParams(userparam, as_expression=False)
+
+        self._buildOpScript()
+
+        self.moveAboutParamToBottom()
+        return
 
 
-if __name__ in ["__main__", "__builtin__", "Katana"]:
-    build()
+NODE = AttrTypeSwap
