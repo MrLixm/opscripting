@@ -51,8 +51,7 @@ def customToolNodeCallback(**kwargs):
     This code is executed for ANY node created in the Nodegraph.
     We use it to modify the CustomToolNode apperance after its creation.
 
-    THis is for operations that cannot be performed while the node instancing is not
-    terminated like ``node.getAttributes()``.
+    THIS CALLBACK IS NOT CALLED BY DEFAULT, you need to enable it in loader.py
 
     kwargs example ::
 
@@ -68,10 +67,6 @@ def customToolNodeCallback(**kwargs):
     if not isinstance(node, CustomToolNode):
         return
 
-    attr = node.getAttributes()
-    attr["ns_basicDisplay"] = 1  # remove group shape
-    attr["ns_iconName"] = ""  # remove group icon
-    node.setAttributes(attr)
     return
 
 
@@ -172,6 +167,9 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
         self.addInputPort(self.port_in_name)
         self.addOutputPort(self.port_out_name)
         self.setName("{}_0001".format(self.name))
+
+        NodegraphAPI.SetNodeShapeAttr(self, "iconName", "")
+        NodegraphAPI.SetNodeShapeAttr(self, "basicDisplay", 1)
 
         pos = NodegraphAPI.GetNodePosition(self)
 

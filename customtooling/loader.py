@@ -55,7 +55,7 @@ def registerTools(tools_packages_list):
         all_registered_tools.update(registered)
         continue
 
-    _registerCallbackCustomTools()
+    # _registerCallbackCustomTools()
 
     logger.info(
         "[registerTools] Finished. Registered {} custom tools."
