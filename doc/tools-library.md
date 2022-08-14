@@ -177,7 +177,12 @@ it to return all its modules. The actual code is :
     for module_loader, name, ispkg in pkgutil.iter_modules([pkgpath]):
         pass
     ```
-    **This implies that you must import all the modules in the `__init__` of your package.** 
+    **This implies that you must import all the modules in the `__init__` of your package.**
+    And also be careful that you don't import anything else that is not meant
+    to be registered (like just `import os`).
+
+    > **Info**:
+    > All modules names starting with a `_` will NOT be imported.
 
 - Now how do we retrieve the package as a python module object ? We will simply
 do a :
@@ -191,6 +196,7 @@ it has to be registered in the `PYTHONPATH` so it can be imported.
 - And initally we have the `registerTools()` function that will take as argument
 a list of package name to import.
 
+### library python configuration
 
 ```python
 
@@ -200,6 +206,7 @@ registerTools(["libStudio", "libProject"])
 root/  # <-- in PYTHONPATH
     libStudio/
         __init__.py  # <-- contains "from . import *"
+        _util.py  # will be ignored
         tree_generator.py
         ...
     libProject/
@@ -213,3 +220,17 @@ the artist from Katana using an automatized button on the tool's node.
 
 The file just has to be named exactly like the tool's python module/package
 and have the `.md` extension.
+
+```
+myLibrary/
+    __init__.py
+    tree_generator.py
+    tree_generator.lua
+    tree_generator.md
+```
+
+---
+
+[![root](https://img.shields.io/badge/back_to_root-536362?)](../README.md)
+[![INDEX](https://img.shields.io/badge/index-blue?labelColor=blue)](INDEX.md)
+[![tools-library](https://img.shields.io/badge/tools--library-fcb434)](tools-library.md)
