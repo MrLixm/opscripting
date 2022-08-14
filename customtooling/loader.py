@@ -150,10 +150,6 @@ def _getAllToolsInPackage(package):
 
     for module_loader, name, ispkg in pkgutil.iter_modules([pkgpath]):
 
-        # tools can only be modules
-        if ispkg:
-            continue
-
         module = loadModule(module_loader, name)
         if not module:
             continue
