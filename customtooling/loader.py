@@ -150,6 +150,9 @@ def _getAllToolsInPackage(package):
 
     for module_loader, name, ispkg in pkgutil.iter_modules([pkgpath]):
 
+        if name.startswith("_"):
+            continue
+
         module = loadModule(module_loader, name)
         if not module:
             continue
