@@ -31,14 +31,15 @@ class ResolutionDivide(OpScriptTool):
     author = "<Liam Collod pyco.liam.business@gmail.com>"
     maintainers = []
 
-    luamodule = os.path.splitext(os.path.basename(__file__))[0]
+    luamodule = "{}.{}".format(
+        os.path.split(os.path.dirname(__file__))[-1],
+        os.path.splitext(os.path.basename(__file__))[0],
+    )
 
     def _buildOpScript(self):
 
-        script = """
-local script = require("opscriptlibrary.{module}")
-script()"""
-        script = script.format(module=self.luamodule)
+        script = 'local script = require("{path}")\nscript()'
+        script = script.format(path=self.luamodule)
 
         node = self.getDefaultOpScriptNode()
 
@@ -50,11 +51,9 @@ script()"""
         return
 
     def _build(self):
-        # type: () -> NodegraphAPI.Node
 
-        self._buildOpScript()
         buildUserParams(self.user_param, as_expression=False)
-
+        self._buildOpScript()
         self.moveAboutParamToBottom()
         return
 
