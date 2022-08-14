@@ -1,8 +1,8 @@
 # opscripting
 
-![Python](https://img.shields.io/badge/Python-2+-4f4f4f?labelColor=3776ab&logo=python&logoColor=FED142)
-![lua](https://img.shields.io/badge/Lua-5.1.5+-4f4f4f?labelColor=000090&logo=lua&logoColor=white)
-![katana version](https://img.shields.io/badge/Katana-3.6+-4f4f4f?labelColor=111111&logo=katana&logoColor=FCB123)
+![Python](https://img.shields.io/badge/Python->=2.7-4f4f4f?labelColor=3776ab&logo=python&logoColor=FED142)
+![lua](https://img.shields.io/badge/Lua->=5.1.5-4f4f4f?labelColor=000090&logo=lua&logoColor=white)
+![katana version](https://img.shields.io/badge/Katana->=3.6-4f4f4f?labelColor=111111&logo=katana&logoColor=FCB123)
 
 Package for Foundry Katana software.
 
