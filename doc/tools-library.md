@@ -151,6 +151,61 @@ You simply have to override the `_build` method and write there how you want
 your node to be configured. There is also a bunch of mandatory class variable
 to override.
 
+## registering process
+
+As mentioned above, lua modules are registered by settings the `LUA_PATH`
+environment variable. (see [INDEX.md](INDEX.md))and are simply imported into
+the OpScript using `require()`.
+
+On the python side it's a bit more complex. You can have a look at 
+[../customtooling/loader.py](../customtooling/loader.py) to see what the code
+actually does. Else let's start by the end :
+
+- Each tool **class** will be registered in Katana using `NodegraphAPI.RegisterPythonGroupType`,
+it will also receive a flavor using `NodegraphAPI.AddNodeFlavor` so you can 
+quickly retrieve all custom tools.
+
+- To retrieve the tool class you must last get its `module` 
+(ex: `TreeGenerator` might be in `tree_generator.py` ). 
+So you can do `module.NODE` to retrieve the class.
+
+- The module itself is retrieved from a python package by just iterating over
+it to return all its modules. The actual code is :
+    ```python
+    pkgpath = os.path.dirname(package.__file__)
+    
+    for module_loader, name, ispkg in pkgutil.iter_modules([pkgpath]):
+        pass
+    ```
+    **This implies that you must import all the modules in the `__init__` of your package.** 
+
+- Now how do we retrieve the package as a python module object ? We will simply
+do a :
+  ```python
+  package = importlib.import_module(package_id)  # type: ModuleType
+  ```
+
+- But what is `package_id` ? It's simply the name of this package. This mean
+it has to be registered in the `PYTHONPATH` so it can be imported.
+
+- And initally we have the `registerTools()` function that will take as argument
+a list of package name to import.
+
+
+```python
+
+registerTools(["libStudio", "libProject"])
+# implies :
+
+root/  # <-- in PYTHONPATH
+    libStudio/
+        __init__.py  # <-- contains "from . import *"
+        tree_generator.py
+        ...
+    libProject/
+        ...
+```
+
 ## documentation
 
 It is possible to specify a documentation file that can be quickly opened by
