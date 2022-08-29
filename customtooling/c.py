@@ -38,10 +38,16 @@ the LayeredMenu. Separator is the system path sperator (; or :):
 ex: ``"attr_math;xform2P;point_width"``
 """
 
-FLAVOR_NAME = "customTool"
+KATANA_FLAVOR_NAME = "customTool"
 """
 As each CustomTool is registered as a separate node type, to quickly find all the custom
 tool, they are assigned a flavor using ``NodegraphAPI.AddNodeFlavor()``
+"""
+
+KATANA_TYPE_NAME = "CustomTool"
+"""
+Name used to register the base class for all CustomTools using 
+``NodegraphAPI.RegisterPythonGroupType``.
 """
 
 

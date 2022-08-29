@@ -32,7 +32,9 @@ def getLayeredMenuForAllCustomTool():
 def _populateCallback(layered_menu):
     # type: (LayeredMenuAPI.LayeredMenu) -> None
 
-    available_tools = NodegraphAPI.GetFlavorNodes(c.FLAVOR_NAME, filterExists=True)
+    available_tools = NodegraphAPI.GetFlavorNodes(
+        c.KATANA_FLAVOR_NAME, filterExists=True
+    )
     for tool_name in available_tools:  # type: str
 
         # HACK: to quickly be able to access the CustomTool class for this nodeType
@@ -69,7 +71,9 @@ def _populateCallback(layered_menu):
 def _actionCallback(key):
     # type: (str) -> NodegraphAPI.Node
 
-    available_tools = NodegraphAPI.GetFlavorNodes(c.FLAVOR_NAME, filterExists=True)
+    available_tools = NodegraphAPI.GetFlavorNodes(
+        c.KATANA_FLAVOR_NAME, filterExists=True
+    )
     for tool_name in available_tools:  # type: str
 
         if key != tool_name:
