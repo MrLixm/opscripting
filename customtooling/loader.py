@@ -2,9 +2,9 @@ import importlib
 import logging
 import pkgutil
 import sys
-from typing import Dict
-from typing import Iterable
 from types import ModuleType
+from typing import Dict
+from typing import Sequence
 from typing import Optional
 from typing import Type
 
@@ -15,6 +15,7 @@ else:
 
 from Katana import NodegraphAPI
 from Katana import Callbacks
+from Katana.Utils import UndoStack
 
 from . import c
 from . import nodebase
@@ -24,8 +25,14 @@ __all__ = ("registerTools",)
 logger = logging.getLogger(__name__)
 
 
+REGISTERED = {}  # type: Dict[str, Type[nodebase.CustomToolNode]]
+"""
+Dictionnary of CUstomTool class registered to be used in Katana.
+"""
+
+
 def registerTools(tools_packages_list):
-    # type: (Iterable[str]) -> None
+    # type: (Sequence[str]) -> None
     """
     Register the CustomTool declared in the given locations names.
     Those locations must be python package names registered in the PYTHONPATH, so they
@@ -37,8 +44,17 @@ def registerTools(tools_packages_list):
         tools_packages_list:
             list of python packages name. Those package must be registered in the PYTHONPATH.
     """
+    if REGISTERED:
+        raise RuntimeError(
+            "REGISTERED global is not empty: this means this function has already been"
+            "called. You can only call it once."
+        )
 
-    all_registered_tools = dict()
+    NodegraphAPI.RegisterPythonGroupType(c.KATANA_TYPE_NAME, nodebase.CustomToolNode)
+    NodegraphAPI.AddNodeFlavor(c.KATANA_TYPE_NAME, "_hide")  # TODO: see if kept
+    logger.debug(
+        "[registerTools] RegisterPythonGroupType for <{}>".format(c.KATANA_TYPE_NAME)
+    )
 
     for package_id in tools_packages_list:
 
@@ -52,16 +68,65 @@ def registerTools(tools_packages_list):
             continue
 
         registered = _registerToolPackage(package=package)
-        all_registered_tools.update(registered)
+        # registered tools can be found in REGISTERED global anyway
         continue
 
+    # TO uncomment if needed
     # _registerCallbackCustomTools()
 
     logger.info(
-        "[registerTools] Finished. Registered {} custom tools."
-        "".format(len(all_registered_tools))
+        "[registerTools] Finished. Registered {} custom tools for {} locations."
+        "".format(len(REGISTERED), len(tools_packages_list))
     )
     return
+
+
+def _createCustomTool(class_name):
+    # type: (str) -> NodegraphAPI.Node
+    """
+
+    Args:
+        class_name: name of the tool to create, must be previously registered.
+
+    Returns:
+        Instance of the node created in the Nodegraph.
+    """
+    custom_tool_class = REGISTERED[class_name]
+
+    UndoStack.DisableCapture()
+
+    try:
+
+        try:
+            node = NodegraphAPI.CreateNode("SuperTool")
+        except Exception:
+            logger.exception(
+                '[_createCustomTool] Error creating CustomTool of type "{}"'.format(
+                    class_name
+                )
+            )
+            return
+
+        try:
+
+            node.__class__ = custom_tool_class
+            node.setType(class_name)
+            if not NodegraphAPI.NodegraphGlobals.IsLoading():
+                node.setName(class_name)
+                node.__init__()
+
+        except Exception:
+            logger.exception(
+                '[_createCustomTool] Error creating CustomTool of type "{}"'
+                "".format(class_name)
+            )
+            node.delete()
+            return
+
+    finally:
+        UndoStack.EnableCapture()
+
+    return node
 
 
 def _registerToolPackage(package):
@@ -75,21 +140,33 @@ def _registerToolPackage(package):
         all the custom tools loaded as dict[tool_name, tool_class]
     """
 
-    customtool_list = _getAvailableToolsInPackage(package=package)
+    customtool_dict = _getAvailableToolsInPackage(package=package)
 
-    for tool_name, tool in customtool_list.items():
+    for tool_module_name, tool_class in customtool_dict.items():
 
-        NodegraphAPI.RegisterPythonGroupType(tool.name, tool)
-        NodegraphAPI.AddNodeFlavor(tool.name, c.FLAVOR_NAME)
+        if tool_class.name in REGISTERED:
+            logger.warning(
+                "[_registerToolPackage] tool from module <{}> from package {} is "
+                "already registered as <{}>."
+                "".format(tool_module_name, package, tool_class.name)
+            )
+            continue
 
-        logger.debug("[registerTools] registered ({}){}".format(tool_name, tool))
+        NodegraphAPI.RegisterPythonNodeFactory(tool_class.name, _createCustomTool)
+        NodegraphAPI.AddNodeFlavor(tool_class.name, c.KATANA_FLAVOR_NAME)
+        REGISTERED[tool_class.name] = tool_class
+
+        logger.debug(
+            "[_registerToolPackage] registered ({}){}"
+            "".format(tool_module_name, tool_class)
+        )
         continue
 
     logger.debug(
-        "[registerTools] Finished registering {}, {} tools found."
-        "".format(package, len(customtool_list))
+        "[_registerToolPackage] Finished registering package {}, {} tools found."
+        "".format(package, len(customtool_dict))
     )
-    return customtool_list
+    return customtool_dict
 
 
 def _getAvailableToolsInPackage(package):
