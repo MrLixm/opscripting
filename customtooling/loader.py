@@ -95,8 +95,11 @@ def _registerToolPackage(package):
 def _getAvailableToolsInPackage(package):
     # type: (ModuleType) -> Dict[str, Type[nodebase.CustomToolNode]]
     """
-    getAllTools() but filtered to remove the tools that have been asked to be ignored
-    using an environment variable.
+    _getAllToolsInPackage() but filtered to remove the tools that have been asked to be
+    ignored using an environment variable.
+
+    Returns:
+        dict of module_name, CustomToolNode class defined in the module
     """
     import os  # defer import to get the latest version of os.environ
 
@@ -113,7 +116,9 @@ def _getAvailableToolsInPackage(package):
             del all_tools[excluded_tool_name]
             nexcluded += 1
 
-    logger.debug("[getAvailableTools] Finished. Excluded {} tools.".format(nexcluded))
+    logger.debug(
+        "[_getAvailableToolsInPackage] Finished. Excluded {} tools.".format(nexcluded)
+    )
     return all_tools
 
 
@@ -125,6 +130,9 @@ def _getAllToolsInPackage(package):
     Not recommended to use as the "final" function. See ``getAvailableTools()`` instead.
 
     SRC: https://stackoverflow.com/a/1310912/13806195
+
+    Returns:
+        dict of module_name, CustomToolNode class defined in the module
     """
 
     def loadModule(module_loader_, module_name_):
@@ -184,7 +192,7 @@ def _getAllToolsInPackage(package):
             continue
 
         out[name] = node_class
-        logger.debug("[getAllToolsInPackage] Found [{}]={}".format(name, node_class))
+        logger.debug("[_getAllToolsInPackage] Found [{}]={}".format(name, node_class))
 
     return out
 
@@ -193,10 +201,12 @@ def _registerCallbackCustomTools():
     """
     Add a new callback when a node is created in the Nodegraph to apply additional
     operations on a CustomToolNode.
+
+    .. this is not called by default. Up to the developer to enable it.
     """
     Callbacks.addCallback(
         Callbacks.Type.onNodeCreate,
         nodebase.customToolNodeCallback,
     )
-    logger.debug("[registerCallbackCustomTools] added callback onNodeCreate")
+    logger.debug("[_registerCallbackCustomTools] added callback onNodeCreate")
     return
