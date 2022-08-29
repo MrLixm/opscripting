@@ -88,8 +88,9 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
     port_in_name = "in"
     port_out_name = "out"
 
-    name = NotImplemented  # type: str
-    version = NotImplemented  # type: Tuple[int,int,int]
+    # MUST be overridden
+    name = c.KATANA_TYPE_NAME  # type: str
+    version = (0, 0, 0)  # type: Tuple[int,int,int]
     color = None  # type: Tuple[float,float,float]
     description = ""  # type: str
     author = ""  # type: str
@@ -105,15 +106,25 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
         documentation = "open_documentation"
 
     def __init__(self):
-        super(CustomToolNode, self).__init__()
 
         self._about_param = None  # type: NodegraphAPI.Parameter
         self._node_dot_up = None  # type: NodegraphAPI.Node
         self._node_dot_down = None  # type: NodegraphAPI.Node
 
-        self._buildAboutParam()
-        self._buildDefaultStructure()
-        self._build()
+    def __build__(self):
+        """
+        Called when the CustomTool subclass is created in the nodegraph.
+        """
+        try:
+            self._buildAboutParam()
+            self._buildDefaultStructure()
+            self._build()
+        except Exception as excp:
+            logger.exception(
+                "[{}][__build__] {}".format(self.__class__.__name__, excp),
+                exc_info=excp,
+            )
+        return
 
     def _buildAboutParam(self):
 

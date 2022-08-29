@@ -15,7 +15,7 @@ else:
 
 from Katana import NodegraphAPI
 from Katana import Callbacks
-from Katana.Utils import UndoStack
+from Katana import Utils
 
 from . import c
 from . import nodebase
@@ -93,12 +93,14 @@ def _createCustomTool(class_name):
     """
     custom_tool_class = REGISTERED[class_name]
 
-    UndoStack.DisableCapture()
+    Utils.UndoStack.DisableCapture()
 
     try:
 
         try:
-            node = NodegraphAPI.CreateNode("SuperTool")
+            node = NodegraphAPI.CreateNode(
+                c.KATANA_TYPE_NAME
+            )  # type: nodebase.CustomToolNode
         except Exception:
             logger.exception(
                 '[_createCustomTool] Error creating CustomTool of type "{}"'.format(
@@ -113,7 +115,7 @@ def _createCustomTool(class_name):
             node.setType(class_name)
             if not NodegraphAPI.NodegraphGlobals.IsLoading():
                 node.setName(class_name)
-                node.__init__()
+                node.__build__()
 
         except Exception:
             logger.exception(
@@ -124,7 +126,7 @@ def _createCustomTool(class_name):
             return
 
     finally:
-        UndoStack.EnableCapture()
+        Utils.UndoStack.EnableCapture()
 
     return node
 
