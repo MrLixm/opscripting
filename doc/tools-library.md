@@ -23,7 +23,10 @@ myLibrary/
 The .py file will be in charge to describe how to create the node, and the .lua
 file, the entry point for the OpScript, that will be imported.
 
-You may find multplie libraries of tool to register.
+You may find multiple libraries of tool to register.
+
+> **Info**: note that actually you could only have a single .py file declaring
+> a node interface to register simple tools.
 
 
 # Structure
@@ -45,7 +48,7 @@ looks to be more abstract, it's best to put it in `luakat` or `luabase`.
 
 This file will drive how we will build the node in python later, mainly for
 its `oparg` that must be implemented as user parameters on the OpScript node,
-but also cause it might require to use some other nodes before/after the OpScript.
+but also because it might require to use some other nodes before/after the OpScript.
 So it is good to start by here.
 
 ### file-name
@@ -161,11 +164,12 @@ On the python side it's a bit more complex. You can have a look at
 [../customtooling/loader.py](../customtooling/loader.py) to see what the code
 actually does. Else let's start by the end :
 
-- Each tool **class** will be registered in Katana using `NodegraphAPI.RegisterPythonGroupType`,
-it will also receive a flavor using `NodegraphAPI.AddNodeFlavor` so you can 
+- Each tool **class** will be registered in Katana using `NodegraphAPI.RegisterPythonNodeFactory` 
+and a callback function when the node is created.
+It will also receive a flavor using `NodegraphAPI.AddNodeFlavor` so you can 
 quickly retrieve all custom tools.
 
-- To retrieve the tool class you must last get its `module` 
+- To retrieve the tool class you must **last** get its `module` 
 (ex: `TreeGenerator` might be in `tree_generator.py` ). 
 So you can do `module.NODE` to retrieve the class.
 
