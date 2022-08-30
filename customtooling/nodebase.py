@@ -127,6 +127,11 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
         return
 
     def _buildAboutParam(self):
+        """
+        Build the "About" parameter on the top node.
+
+        It contains information and context about the tool.
+        """
 
         usergrp = self.getParameter("user")
         if not usergrp:
@@ -172,7 +177,7 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
     def _buildDefaultStructure(self):
         """
         Create the basic nodegraph representation of a custom tool.
-        This is a styled GroupNode with an OpScript node connected inside.
+        This is a styled GroupNode with simply 2 connected dots inside.
         """
 
         self.addInputPort(self.port_in_name)
@@ -248,6 +253,11 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
 
     @abstractmethod
     def _build(self):
+        """
+        Build the interface and the content of the node.
+
+        Abstract method to override by the developper in the subclass.
+        """
         pass
 
     @property
@@ -258,6 +268,8 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
     def moveAboutParamToBottom(self):
         """
         Move the AboutParam parameter to the bottom of the `user` parameter layout.
+
+        To call usually at the end of ``_build()``
         """
         self.user_param.reorderChild(
             self._about_param,
@@ -322,6 +334,8 @@ class OpScriptTool(CustomToolNode):
     """
     Every OpScript must live in a .lua registered in the LUA_PATH.
     This means the OpScript.script will only import it using ``require()``
+    
+    This is not used by default and its up to the developer subclassing this to use it.
     """
 
     def _buildDefaultStructure(self):
@@ -342,7 +356,8 @@ class OpScriptTool(CustomToolNode):
     def getDefaultOpScriptNode(self):
         # type: () -> Optional[NodegraphAPI.Node]
         """
-        Return the OpScript node created at init. BUt the node might have other
-        OpScript node inside.
+        Return the OpScript node created at init.
+
+        But be aware the node might have other OpScript node inside.
         """
         return self._node_opscript
