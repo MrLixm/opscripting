@@ -2,7 +2,6 @@ import logging
 
 from Katana import NodegraphAPI
 from Katana import LayeredMenuAPI
-from Katana import Utils
 
 from . import c
 from .loader import REGISTERED
@@ -15,6 +14,10 @@ logger = logging.getLogger(__name__)
 
 def getLayeredMenuForAllCustomTool():
     # type: () -> LayeredMenuAPI.LayeredMenu
+    """
+    Get a LayeredMenu instance to display that list all the CustomTool registered in
+    Katana.
+    """
 
     layeredMenu = LayeredMenuAPI.LayeredMenu(
         _populateCallback,
@@ -32,6 +35,15 @@ def getLayeredMenuForAllCustomTool():
 
 def _populateCallback(layered_menu):
     # type: (LayeredMenuAPI.LayeredMenu) -> None
+    """
+    Called when the shortcut to raise the layeredMenu is pressed.
+
+    This is called usually once and cached in memory unless specified otherwise
+    on the LayeredMenu instance.
+
+    Args:
+        layered_menu:
+    """
 
     available_tools = NodegraphAPI.GetFlavorNodes(
         c.KATANA_FLAVOR_NAME, filterExists=True
@@ -66,6 +78,15 @@ def _populateCallback(layered_menu):
 
 def _actionCallback(key):
     # type: (str) -> NodegraphAPI.Node
+    """
+    Called when an entry is clicked by the user.
+
+    Args:
+        key: value of the entry clicked
+
+    Returns:
+        created node corresponding ot the given key
+    """
 
     available_tools = NodegraphAPI.GetFlavorNodes(
         c.KATANA_FLAVOR_NAME, filterExists=True
