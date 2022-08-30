@@ -5,6 +5,7 @@ from Katana import LayeredMenuAPI
 from Katana import Utils
 
 from . import c
+from .loader import REGISTERED
 
 
 __all__ = ("getLayeredMenuForAllCustomTool",)
@@ -37,20 +38,19 @@ def _populateCallback(layered_menu):
     )
     for tool_name in available_tools:  # type: str
 
-        # HACK: to quickly be able to access the CustomTool class for this nodeType
-        # TODO: this involve a time penalty the first time the menu is created
-        # It can become problematic when here is a lot of node.
-        try:
-            node = NodegraphAPI.CreateNode(tool_name, NodegraphAPI.GetRootNode())
-            Utils.EventModule.ProcessEvents()
-            entry_color = node.color or c.COLORS.default
+        tool = REGISTERED.get(tool_name)
+        entry_color = c.COLORS.default
 
-        except Exception as excp:
-            node = None
-            entry_color = c.COLORS.default
+        if tool:
+            try:
+                entry_color = tool.color or c.COLORS.default
+            except AttributeError as excp:
+                pass
+
+        else:
             logger.warning(
-                "[_populateCallback] Can't create node for tool <{}>: {}\n"
-                "   layeredMenu Entry still created".format(tool_name, excp)
+                "[_populateCallback] tool name <{}> doesn't seems to be registered "
+                "which shouldn't happens.".format(tool_name)
             )
 
         layered_menu.addEntry(
@@ -58,10 +58,6 @@ def _populateCallback(layered_menu):
             text=tool_name,
             color=entry_color,
         )
-
-        if node:
-            node.delete()
-            Utils.EventModule.ProcessEvents()
 
         continue
 

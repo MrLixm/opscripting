@@ -91,7 +91,7 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
     # MUST be overridden
     name = c.KATANA_TYPE_NAME  # type: str
     version = (0, 0, 0)  # type: Tuple[int,int,int]
-    color = None  # type: Tuple[float,float,float]
+    color = None  # type: Optional[Tuple[float,float,float]]
     description = ""  # type: str
     author = ""  # type: str
     maintainers = []  # type: List[str]

@@ -20,7 +20,7 @@ from Katana import Utils
 from . import c
 from . import nodebase
 
-__all__ = ("registerTools",)
+__all__ = ("registerTools", "REGISTERED")
 
 logger = logging.getLogger(__name__)
 
