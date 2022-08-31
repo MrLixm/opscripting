@@ -277,6 +277,19 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
         )
         return
 
+    def upgrade(self):
+        """
+        Read the version stored on the node interface and compare it with the version
+        specified on this class (latest). If inferior an upgrade is performed
+        as specified.
+
+        This is called on existing scene loading AND when a node is created for the
+        first time in the scene.
+
+        Must be overriden by developer in subclasses.
+        """
+        pass
+
     def wireInsertNodes(self, node_list, vertical_offset=150):
         # type: (List[NodegraphAPI.Node], int) -> None
         """

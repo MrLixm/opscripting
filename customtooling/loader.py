@@ -94,6 +94,50 @@ def registerCallbacks():
     #     "[_registerCallbackCustomTools] added callback onNodeCreate with"
     #     "<nodebase.customToolNodeCallback>"
     # )
+
+    Utils.EventModule.RegisterEventHandler(upgradeOnNodeCreateEvent, "node_create")
+    logger.debug(
+        '[_registerCallbackCustomTools] registered event handler "node_create" with'
+        "<upgradeOnNodeCreateEvent>"
+    )
+    return
+
+
+def upgradeOnNodeCreateEvent(*args, **kwargs):
+    """
+    Called during the ``node_create`` event.
+
+    Perform an upgrade on all the CustomToolNode instances.
+
+    Exemple of parameters::
+
+        (u'node_create', 1811058784)
+        {'node': <RootNode NodegraphAPI_cmodule.GroupNode 'rootNode'>,
+         'nodeType': 'Group', 'nodeName': 'Group'}
+
+    Args:
+        *args: (event name, event id)
+        **kwargs: {node, nodeType, nodeName}
+    """
+    # remember CustomTool loading is performed in 2 parts:
+    #   first a simple CustomTool instanc eis created and then its being assigned
+    #   its subclass which will give a different nodeType.
+    if kwargs.get("nodeType") == "CustomTool":
+        return
+
+    node = kwargs.get("node")
+    if not isinstance(node, nodebase.CustomToolNode):
+        return
+
+    try:
+        node.upgrade()
+    except Exception as excp:
+        logger.exception(
+            "[upgradeOnNodeCreateEvent] Cannot upgrade CustomTool node {}: {}"
+            "".format(node, excp),
+            exc_info=excp,
+        )
+
     return
 
 
