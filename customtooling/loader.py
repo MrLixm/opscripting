@@ -95,11 +95,12 @@ def registerCallbacks():
     #     "<nodebase.customToolNodeCallback>"
     # )
 
-    Utils.EventModule.RegisterEventHandler(upgradeOnNodeCreateEvent, "node_create")
-    logger.debug(
-        '[_registerCallbackCustomTools] registered event handler "node_create" with'
-        "<upgradeOnNodeCreateEvent>"
-    )
+    if not c.Env.get(c.Env.UPGRADE_DISABLE):
+        Utils.EventModule.RegisterEventHandler(upgradeOnNodeCreateEvent, "node_create")
+        logger.debug(
+            '[_registerCallbackCustomTools] registered event handler "node_create" with'
+            "<upgradeOnNodeCreateEvent>"
+        )
     return
 
 
@@ -244,7 +245,7 @@ def _getAvailableToolsInPackage(package):
 
     all_tools = _getAllToolsInPackage(package)
 
-    excluded_tool_var = os.environ.get(c.ENVVAR_EXCLUDED_TOOLS)
+    excluded_tool_var = c.Env.get(c.Env.EXCLUDED_TOOLS)
     if not excluded_tool_var:
         return all_tools
 

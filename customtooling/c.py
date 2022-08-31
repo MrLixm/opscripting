@@ -6,6 +6,11 @@ __version_minor__ = 1
 __version_patch__ = 0
 __version__ = "{}.{}.{}".format(__version_major__, __version_minor__, __version_patch__)
 
+from typing import Any
+from typing import Dict
+from typing import Optional
+from typing import List
+
 
 class COLORS:
     """
@@ -30,13 +35,50 @@ class COLORS:
     default = purple  # fallback if color not specified on subclass
 
 
-ENVVAR_EXCLUDED_TOOLS = "CUSTOMTOOLING_EXCLUDED_TOOLS"
-"""
-Environment variable name that must specify a list of tools name to NOT show in
-the LayeredMenu. Separator is the system path sperator (; or :):
+class Env:
+    """
+    Environment variable used by package.
+    """
 
-ex: ``"attr_math;xform2P;point_width"``
-"""
+    _PREFIX = "KATANA_CUSTOMTOOLING"
+
+    EXCLUDED_TOOLS = "{}_EXCLUDED_TOOLS".format(_PREFIX)
+    """
+    Environment variable name that must specify a list of tools name to NOT show in
+    the LayeredMenu. Separator is the system path separator (; or :):
+
+    ex: ``"attr_math;xform2P;point_width"``
+    """
+
+    UPGRADE_DISABLE = "{}_UPGRADE_DISABLE".format(_PREFIX)
+    """
+    Set to 1 (or actually to anythin non-empty) to disable the upgrading process
+    when CustomTool nodes are loaded from previous version.
+    """
+
+    @classmethod
+    def __all__(cls):
+        # type: () -> List[str]
+        return [
+            cls.EXCLUDED_TOOLS,
+            cls.UPGRADE_DISABLE,
+        ]
+
+    @classmethod
+    def __asdict__(cls):
+        # type: () -> Dict[str, str]
+        out = dict()
+        for attr in cls.__all__():
+            out[attr] = cls.get(attr)
+        return out
+
+    @classmethod
+    def get(cls, key, default=None):
+        # type: (str, Any) -> Optional[str]
+        import os  # defer import for the first time we actually need it
+
+        return os.environ.get(key, default)
+
 
 KATANA_FLAVOR_NAME = "customTool"
 """
