@@ -1,4 +1,5 @@
 import importlib
+import inspect
 import logging
 import pkgutil
 import sys
@@ -275,63 +276,31 @@ def _getAllToolsInPackage(package):
         dict of module_name, CustomToolNode class defined in the module
     """
 
-    def loadModule(module_loader_, module_name_):
-        # type: (FileFinder, str) -> Optional[ModuleType]
-        """
-        Python 2 and 3 compatible.
-        """
-        try:
-            module_ = module_loader_.find_module(module_name_).load_module(module_name_)
-        except Exception as excp:
-            logger.error(
-                "[getAllToolsInPackage][loadModule] Cannot load <{}>: {}"
-                "".format(module_name_, excp)
-            )
-            return
-
-        return module_
-
-    import os  # defer import to get the latest version of os.environ
-
     out = dict()
-    pkgpath = os.path.dirname(package.__file__)
 
-    for module_loader, name, ispkg in pkgutil.iter_modules([pkgpath]):
+    for objectName, objectData in package.__dict__.items():
 
-        if name.startswith("_"):
+        if objectName.startswith("_"):
             continue
 
-        module = loadModule(module_loader, name)
-        if not module:
+        if not inspect.isclass(objectData):
             continue
 
-        try:
-            node_class = module.NODE
-        except AttributeError:
-            logger.error(
-                "[getAllToolsInPackage] tool module <{}> doesn't declare the "
-                "NODE variable.".format(name)
-            )
-            continue
-
-        if not issubclass(node_class, nodebase.CustomToolNode):
-            logger.error(
-                "[getAllToolsInPackage] InvalidNodeClass: class <{}> for module {} "
-                "is not a subclass of {}"
-                "".format(node_class, module, nodebase.CustomToolNode)
-            )
+        if not issubclass(objectData, nodebase.CustomToolNode):
             continue
 
         try:
-            node_class._check()
+            objectData._check()
         except AssertionError as excp:
             logger.exception(
-                "[getAllToolsInPackage] InvalidNodeClass: class <{}> for module {}:\n"
-                "   {}".format(node_class, module, excp)
+                "[getAllToolsInPackage] InvalidNodeClass: class <{}> for package {}:\n"
+                "   {}".format(objectData, package, excp)
             )
             continue
 
-        out[name] = node_class
-        logger.debug("[_getAllToolsInPackage] Found [{}]={}".format(name, node_class))
+        out[objectName] = objectData
+        logger.debug(
+            "[_getAllToolsInPackage] Found [{}]={}".format(objectName, objectData)
+        )
 
     return out

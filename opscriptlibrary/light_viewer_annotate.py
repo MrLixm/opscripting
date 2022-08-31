@@ -127,6 +127,3 @@ class LightViewerAnnotate(OpScriptTool):
         self._buildOpScript()
         self.moveAboutParamToBottom()
         return
-
-
-NODE = LightViewerAnnotate

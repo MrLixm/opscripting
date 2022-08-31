@@ -1,7 +1,5 @@
 import os.path
 
-from Katana import NodegraphAPI
-
 from customtooling.nodebase import OpScriptTool
 
 
@@ -40,6 +38,3 @@ class Xform2P(OpScriptTool):
         self._buildOpScript()
         self.moveAboutParamToBottom()
         return
-
-
-NODE = Xform2P

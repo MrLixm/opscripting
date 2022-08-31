@@ -92,10 +92,10 @@ be registered as a custom type of node in Katana.
 
 Same as for the lua file, the slugified tool name. If you need more than one
 file, to not break the registering workflow it is recommended to use a python
-package instead. As long as you have the `NODE` variable in the `__init__` 
-(more under)
+package instead.
 
 ```shell
+__init__.py
 my_script.lua
 # this one handle the node creation
 my_script.py
@@ -103,7 +103,7 @@ my_script.py
 # if very big tool
 my_script.lua
 my_script/
-    __init__.py  # <- must contains the `NODE = CustomToolNode` variable
+    __init__.py
     gen_something.py
     editor.py
     node.py
@@ -111,8 +111,8 @@ my_script/
 
 ### content
 
-The registering process will except one thing : a global variable named `NODE`
-whose value is a class, that nust be a subclass of `customtooling.nodebase.CustomToolNode`.
+The registering process will except one thing : a package whose namespace list
+all the `customtooling.nodebase.CustomToolNode` subclasses that must be registered.
 
 So all we have to do will be to subclass `CustomToolNode`. But this class is 
 actually a "general" class made for any kind of tool. In our case we will
@@ -145,7 +145,6 @@ script()"""
         node.getParameter("script.lua").setValue(script, 0)
         return
 
-NODE = MyToolName
 ```
 
 The above is a minimal working example that will simply load the lua script.
@@ -169,24 +168,9 @@ and a callback function when the node is created.
 It will also receive a flavor using `NodegraphAPI.AddNodeFlavor` so you can 
 quickly retrieve all custom tools.
 
-- To retrieve the tool class you must **last** get its `module` 
-(ex: `TreeGenerator` might be in `tree_generator.py` ). 
-So you can do `module.NODE` to retrieve the class.
-
-- The module itself is retrieved from a python package by just iterating over
-it to return all its modules. The actual code is :
-    ```python
-    pkgpath = os.path.dirname(package.__file__)
-    
-    for module_loader, name, ispkg in pkgutil.iter_modules([pkgpath]):
-        pass
-    ```
-    **This implies that you must import all the modules in the `__init__` of your package.**
-    And also be careful that you don't import anything else that is not meant
-    to be registered (like just `import os`).
-
-    > **Info**:
-    > All modules names starting with a `_` will NOT be imported.
+- To retrieve the tool class we iterate through the given package object in
+search for all objects which are subclasses of CustomToolNode (and whose name
+doesn't start with `_`)
 
 - Now how do we retrieve the package as a python module object ? We will simply
 do a :
@@ -209,11 +193,11 @@ registerTools(["libStudio", "libProject"])
 
 root/  # <-- in PYTHONPATH
     libStudio/
-        __init__.py  # <-- contains "from . import *"
-        _util.py  # will be ignored
+        __init__.py  # <-- contains "from . import MySubclass ..."
         tree_generator.py
         ...
     libProject/
+        __init__.py
         ...
 ```
 

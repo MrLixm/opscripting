@@ -82,6 +82,3 @@ class AttrTypeSwap(OpScriptTool):
         self._buildOpScript()
         self.moveAboutParamToBottom()
         return
-
-
-NODE = AttrTypeSwap

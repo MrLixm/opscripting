@@ -57,6 +57,3 @@ class PointWidth(OpScriptTool):
         self._buildOpScript()
         self.moveAboutParamToBottom()
         return
-
-
-NODE = PointWidth

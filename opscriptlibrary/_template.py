@@ -50,6 +50,3 @@ class _Template(OpScriptTool):
         self.moveAboutParamToBottom()
 
         return
-
-
-NODE = _Template

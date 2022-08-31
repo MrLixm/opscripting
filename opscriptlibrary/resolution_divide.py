@@ -56,6 +56,3 @@ class ResolutionDivide(OpScriptTool):
         self._buildOpScript()
         self.moveAboutParamToBottom()
         return
-
-
-NODE = ResolutionDivide
