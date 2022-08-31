@@ -20,7 +20,11 @@ from Katana import Utils
 from . import c
 from . import nodebase
 
-__all__ = ("registerTools", "REGISTERED")
+__all__ = (
+    "REGISTERED",
+    "registerCallbacks",
+    "registerTools",
+)
 
 logger = logging.getLogger(__name__)
 
@@ -71,13 +75,25 @@ def registerTools(tools_packages_list):
         # registered tools can be found in REGISTERED global anyway
         continue
 
-    # TO uncomment if needed
-    # _registerCallbackCustomTools()
-
     logger.info(
         "[registerTools] Finished. Registered {} custom tools for {} locations."
         "".format(len(REGISTERED), len(tools_packages_list))
     )
+    return
+
+
+def registerCallbacks():
+    """
+    Register callback for CustomTool nodes events.
+    """
+    # Callbacks.addCallback(
+    #     Callbacks.Type.onNodeCreate,
+    #     nodebase.customToolNodeCallback,
+    # )
+    # logger.debug(
+    #     "[_registerCallbackCustomTools] added callback onNodeCreate with"
+    #     "<nodebase.customToolNodeCallback>"
+    # )
     return
 
 
@@ -274,18 +290,3 @@ def _getAllToolsInPackage(package):
         logger.debug("[_getAllToolsInPackage] Found [{}]={}".format(name, node_class))
 
     return out
-
-
-def _registerCallbackCustomTools():
-    """
-    Add a new callback when a node is created in the Nodegraph to apply additional
-    operations on a CustomToolNode.
-
-    .. this is not called by default. Up to the developer to enable it.
-    """
-    Callbacks.addCallback(
-        Callbacks.Type.onNodeCreate,
-        nodebase.customToolNodeCallback,
-    )
-    logger.debug("[_registerCallbackCustomTools] added callback onNodeCreate")
-    return
