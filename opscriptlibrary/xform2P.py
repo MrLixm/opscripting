@@ -1,6 +1,6 @@
 import os.path
 
-from katananodling.nodebase import OpScriptTool
+from katananodling.entities import OpScriptTool
 
 
 class Xform2P(OpScriptTool):

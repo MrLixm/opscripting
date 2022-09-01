@@ -2,7 +2,7 @@ import os.path
 
 from Katana import NodegraphAPI
 
-from katananodling.nodebase import OpScriptTool
+from katananodling.entities import OpScriptTool
 
 
 ANNOTATIONS_TOKENS = [

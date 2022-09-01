@@ -45,7 +45,7 @@ parentDir/  # <- registered in PYTHONPATH
             """
         myTool.py
             """
-            from katananodling.nodebase import CustomToolNode
+            from katananodling.entities import CustomToolNode
 
             class MyTool(CustomToolNode):
             
@@ -89,7 +89,7 @@ a list of package name to import.
 
 # Creating CustomTools
 
-A custom tool will always be a subclass of `nodebase.CustomToolNode`, but
+A custom tool will always be a subclass of `entities.CustomToolNode`, but
 it can also be a subclass of a subclass of CustomToolNode and so on ...
 
 As it most basic structure, a CustomTool is :
@@ -100,7 +100,7 @@ As it most basic structure, a CustomTool is :
   - an optional `upgrade()` method to handle porting of older version to newer ones.
 
 ```python
-from katananodling.nodebase import CustomToolNode
+from katananodling.entities import CustomToolNode
 
 # class can actually be named anything but let's keep it clean :)
 class MyToolName(CustomToolNode):

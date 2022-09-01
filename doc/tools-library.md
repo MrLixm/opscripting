@@ -112,7 +112,7 @@ my_script/
 ### content
 
 The registering process will except one thing : a package whose namespace list
-all the `katananodling.nodebase.CustomToolNode` subclasses that must be registered.
+all the `katananodling.entities.CustomToolNode` subclasses that must be registered.
 
 So all we have to do will be to subclass `CustomToolNode`. But this class is 
 actually a "general" class made for any kind of tool. In our case we will
@@ -121,29 +121,29 @@ named `OpScriptTool` that will do half the work for us:
 
 ```python
 import os.path
-from katananodling.nodebase import OpScriptTool
+from katananodling.entities import OpScriptTool
 
 
 # class can actually be named anything but let's keep it clean :)
 class MyToolName(OpScriptTool):
-    name = "MyToolName"  # identifier used to register the tool in Katana !
-    version = (0, 1, 0)
-    color = None
-    description = "What the tool does in a few words."
-    author = "<FirstName Name email@provider.com>"
-    maintainers = []
+  name = "MyToolName"  # identifier used to register the tool in Katana !
+  version = (0, 1, 0)
+  color = None
+  description = "What the tool does in a few words."
+  author = "<FirstName Name email@provider.com>"
+  maintainers = []
 
-    luamodule = os.path.splitext(os.path.basename(__file__))[0]
+  luamodule = os.path.splitext(os.path.basename(__file__))[0]
 
-    def _build(self):
-        script = """
+  def _build(self):
+    script = """
 local script = require("opscriptlibrary.{module}")
 script()"""
-        script = script.format(module=self.luamodule)
+    script = script.format(module=self.luamodule)
 
-        node = self.getDefaultOpScriptNode()
-        node.getParameter("script.lua").setValue(script, 0)
-        return
+    node = self.getDefaultOpScriptNode()
+    node.getParameter("script.lua").setValue(script, 0)
+    return
 
 ```
 
