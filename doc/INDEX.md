@@ -86,7 +86,7 @@ you can register :
 from Katana import LayeredMenuAPI
 import katananodling.menu
 
-layered_menu = katananodling.menu.getLayeredMenuForAllCustomTool()
+layered_menu = katananodling.menu.getLayeredMenuForAllCustomNodes()
 LayeredMenuAPI.RegisterLayeredMenu(layered_menu, "katananodling")
 ```
 
