@@ -8,6 +8,8 @@ KATANA_TAGLINE="Opscripting DEV"
 
 export PATH="$PATH;$KATANA_HOME\bin"
 export KATANA_CATALOG_RECT_UPDATE_BUFFER_SIZE=1
+export FNLOGGING_CONFIG=".\dev\KatanaResources\log.conf"
+export KATANA_LOGGING_LEVEL_PYTHON="INFO"  # custom added in log.conf
 
 export KATANA_USER_RESOURCE_DIRECTORY="Z:\dccs\katana\library\shelf0007\prefs"
 export KATANA_RESOURCES="$KATANA_RESOURCES;.\dev\KatanaResources"
