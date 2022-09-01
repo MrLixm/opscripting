@@ -82,6 +82,113 @@ def customToolNodeCallback(**kwargs):
     return
 
 
+class AboutParamGroup:
+    """
+    A group parameter that provide contextual information on a CustomTool and allow
+    to have them stored and persistent on the node.
+    """
+
+    class ParamNames:
+        group = "About"
+        name = "name_"
+        version = "version_"
+        description = "info_"
+        author = "author_"
+        path = "path_"
+        documentation = "open_documentation"
+
+        @classmethod
+        def getPath(cls, param_name):
+            # type: (str) -> str
+            if param_name == cls.group:
+                return "user.{}".format(cls.group, param_name)
+            return "{}.{}".format(cls.getPath(cls.group), param_name)
+
+    def __init__(self, node):
+        # type: (NodegraphAPI.Node) -> None
+
+        self.node = node  # type: CustomToolNode
+        self.param = None  # type: Optional[NodegraphAPI.Parameter]
+        self.param = node.getParameter(self.ParamNames.getPath(self.ParamNames.group))
+
+    def __build__(self):
+        """
+        Create and configure the ``About`` parameter on the current node.
+        Must be called once in the lifetime on the node.
+        """
+
+        parent = self.node.getParameter("user")
+        if not parent:
+            parent = self.node.getParameters().createChildGroup("user")
+            hint = {"hideTitle": True}
+            parent.setHintString(repr(hint))
+
+        grpparam = parent.createChildGroup(self.ParamNames.group)
+
+        p = grpparam.createChildString(self.ParamNames.name, self.node.name)
+        p.setHintString(repr({"readOnly": True}))
+
+        p = grpparam.createChildString(
+            self.ParamNames.version, str(Version(self.node.version))
+        )
+        p.setHintString(repr({"readOnly": True}))
+
+        p = grpparam.createChildString(
+            self.ParamNames.description, self.node.description
+        )
+        p.setHintString(repr({"readOnly": True}))
+
+        p = grpparam.createChildString(self.ParamNames.author, self.node.author)
+        p.setHintString(repr({"readOnly": True}))
+
+        p = grpparam.createChildString(
+            self.ParamNames.path, inspect.getfile(self.node.__class__)
+        )
+        p.setHintString(repr({"readOnly": True, "widget": "null"}))
+
+        p = grpparam.createChildString(
+            self.ParamNames.documentation, inspect.getfile(self.node.__class__)
+        )
+        hints = {
+            "widget": "scriptButton",
+            "scriptText": c.OPEN_DOCUMENTATION_SCRIPT.format(
+                PATH_PARAM=self.ParamNames.path
+            ),
+        }
+        p.setHintString(repr(hints))
+        return
+
+    def _getValue(self, info_name):
+        # type: (str) -> Optional[Any]
+        p = self.node.getParameter(self.ParamNames.getPath(info_name))
+        if not p:
+            return
+        return p.getValue(0)
+
+    @property
+    def name(self):
+        # type: () -> Optional[str]
+        return self._getValue(self.ParamNames.name)
+
+    @property
+    def version(self):
+        # type: () -> Optional[Version]
+        v = self._getValue(self.ParamNames.version)
+        if not v:
+            return
+        return Version(v)
+
+    @property
+    def description(self):
+        # type: () -> Optional[str]
+        return self._getValue(self.ParamNames.description)
+
+    @property
+    def author(self):
+        # type: () -> Optional[str]
+        return self._getValue(self.ParamNames.author)
+
+
 class CustomToolNode(NodegraphAPI.PythonGroupNode):
     """
     Abstract base class to create "CustomTool" nodes.
@@ -108,27 +215,19 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
     author = ""  # type: str
     maintainers = []  # type: List[str]
 
-    class AboutParamNames:
-        root = "About"
-        name = "name_"
-        version = "version_"
-        description = "info_"
-        author = "author_"
-        path = "path_"
-        documentation = "open_documentation"
-
     def __init__(self):
 
-        self._about_param = None  # type: NodegraphAPI.Parameter
+        self.about = AboutParamGroup(self)  # type: AboutParamGroup
         self._node_dot_up = None  # type: NodegraphAPI.Node
         self._node_dot_down = None  # type: NodegraphAPI.Node
+        return
 
     def __build__(self):
         """
         Called when the CustomTool subclass is created in the nodegraph.
         """
         try:
-            self._buildAboutParam()
+            self.about.__build__()
             self._buildDefaultStructure()
             self._build()
         except Exception as excp:
@@ -136,54 +235,6 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
                 "[{}][__build__] {}".format(self.__class__.__name__, excp),
                 exc_info=excp,
             )
-        return
-
-    def _buildAboutParam(self):
-        """
-        Build the "About" parameter on the top node.
-
-        It contains information and context about the tool.
-        """
-
-        usergrp = self.getParameter("user")
-        if not usergrp:
-            usergrp = self.getParameters().createChildGroup("user")
-            hint = {"hideTitle": True}
-            usergrp.setHintString(repr(hint))
-
-        param = usergrp.createChildGroup(self.AboutParamNames.root)
-
-        p = param.createChildString(self.AboutParamNames.name, self.name)
-        p.setHintString(repr({"readOnly": True}))
-
-        p = param.createChildString(
-            self.AboutParamNames.version, versionize(self.version)
-        )
-        p.setHintString(repr({"readOnly": True}))
-
-        p = param.createChildString(self.AboutParamNames.description, self.description)
-        p.setHintString(repr({"readOnly": True}))
-
-        p = param.createChildString(self.AboutParamNames.author, self.author)
-        p.setHintString(repr({"readOnly": True}))
-
-        p = param.createChildString(
-            self.AboutParamNames.path, inspect.getfile(self.__class__)
-        )
-        p.setHintString(repr({"readOnly": True, "widget": "null"}))
-
-        p = param.createChildString(
-            self.AboutParamNames.documentation, inspect.getfile(self.__class__)
-        )
-        hints = {
-            "widget": "scriptButton",
-            "scriptText": c.OPEN_DOCUMENTATION_SCRIPT.format(
-                PATH_PARAM=self.AboutParamNames.path
-            ),
-        }
-        p.setHintString(repr(hints))
-
-        self._about_param = param
         return
 
     def _buildDefaultStructure(self):
@@ -284,7 +335,7 @@ class CustomToolNode(NodegraphAPI.PythonGroupNode):
         To call usually at the end of ``_build()``
         """
         self.user_param.reorderChild(
-            self._about_param,
+            self.about.param,
             self.user_param.getNumChildren() - 1,
         )
         return
