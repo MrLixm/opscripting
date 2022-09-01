@@ -69,7 +69,7 @@ class AboutParamGroup:
             return "{}.{}".format(cls.getPath(cls.group), param_name)
 
     def __init__(self, node):
-        # type: (NodegraphAPI.Node) -> None
+        # type: (CustomToolNode) -> None
 
         self.node = node  # type: CustomToolNode
         self.param = None  # type: Optional[NodegraphAPI.Parameter]
@@ -87,30 +87,30 @@ class AboutParamGroup:
             hint = {"hideTitle": True}
             parent.setHintString(repr(hint))
 
-        grpparam = parent.createChildGroup(self.ParamNames.group)
+        self.param = parent.createChildGroup(self.ParamNames.group)
 
-        p = grpparam.createChildString(self.ParamNames.name, self.node.name)
+        p = self.param.createChildString(self.ParamNames.name, self.node.name)
         p.setHintString(repr({"readOnly": True}))
 
-        p = grpparam.createChildString(
+        p = self.param.createChildString(
             self.ParamNames.version, str(Version(self.node.version))
         )
         p.setHintString(repr({"readOnly": True}))
 
-        p = grpparam.createChildString(
+        p = self.param.createChildString(
             self.ParamNames.description, self.node.description
         )
         p.setHintString(repr({"readOnly": True}))
 
-        p = grpparam.createChildString(self.ParamNames.author, self.node.author)
+        p = self.param.createChildString(self.ParamNames.author, self.node.author)
         p.setHintString(repr({"readOnly": True}))
 
-        p = grpparam.createChildString(
+        p = self.param.createChildString(
             self.ParamNames.path, inspect.getfile(self.node.__class__)
         )
         p.setHintString(repr({"readOnly": True, "widget": "null"}))
 
-        p = grpparam.createChildString(
+        p = self.param.createChildString(
             self.ParamNames.documentation, inspect.getfile(self.node.__class__)
         )
         hints = {
