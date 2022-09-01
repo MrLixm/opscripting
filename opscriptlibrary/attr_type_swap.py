@@ -50,7 +50,6 @@ class AttrTypeSwap(OpScriptCustomNode):
         "Change the type of an attribute. ex: FloatAttribute -> DoubleAttribute"
     )
     author = "<Liam Collod pyco.liam.business@gmail.com>"
-    maintainers = []
 
     luamodule = "{}.{}".format(
         os.path.split(os.path.dirname(__file__))[-1],

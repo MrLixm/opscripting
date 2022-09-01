@@ -22,10 +22,9 @@ class LightViewerAnnotate(OpScriptCustomNode):
 
     name = "LightViewerAnnotate"
     version = (1, 5, 0)
-    color = (129 / 255, 117 / 255, 75 / 255)
+    color = OpScriptCustomNode.Colors.yellow
     description = "Annotate (& color) lights in the viewer using their attributes."
     author = "<Liam Collod pyco.liam.business@gmail.com>"
-    maintainers = []
 
     luamodule = "{}.{}".format(
         os.path.split(os.path.dirname(__file__))[-1],

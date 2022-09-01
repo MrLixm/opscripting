@@ -29,7 +29,6 @@ class ResolutionDivide(OpScriptCustomNode):
     color = None
     description = "Divide the current render resolution by the given amount."
     author = "<Liam Collod pyco.liam.business@gmail.com>"
-    maintainers = []
 
     luamodule = "{}.{}".format(
         os.path.split(os.path.dirname(__file__))[-1],

@@ -131,7 +131,6 @@ class MyToolName(OpScriptCustomNode):
   color = None
   description = "What the tool does in a few words."
   author = "<FirstName Name email@provider.com>"
-  maintainers = []
 
   luamodule = os.path.splitext(os.path.basename(__file__))[0]
 

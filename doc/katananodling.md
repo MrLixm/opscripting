@@ -110,7 +110,6 @@ class MyToolName(BaseCustomNode):
   color = None
   description = "What the tool does in a few words."
   author = "<FirstName Name email@provider.com>"
-  maintainers = []
 
   def _build(self):
     p = self.user_param.createChildNumber("amount", 666)

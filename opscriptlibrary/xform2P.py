@@ -10,7 +10,6 @@ class Xform2P(OpScriptCustomNode):
     color = None
     description = "Merge xform transformations to the geometry.point.P attribute."
     author = "<Liam Collod pyco.liam.business@gmail.com>"
-    maintainers = []
 
     luamodule = "{}.{}".format(
         os.path.split(os.path.dirname(__file__))[-1],

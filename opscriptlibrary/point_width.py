@@ -26,7 +26,6 @@ class PointWidth(OpScriptCustomNode):
     color = None
     description = "Change scale of the geometry points."
     author = "<Liam Collod pyco.liam.business@gmail.com>"
-    maintainers = []
 
     luamodule = "{}.{}".format(
         os.path.split(os.path.dirname(__file__))[-1],

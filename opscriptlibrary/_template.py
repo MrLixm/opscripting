@@ -17,7 +17,6 @@ class _Template(OpScriptCustomNode):
     color = None
     description = "What the tool does in a few words."
     author = "<FirstName Name email@provider.com>"
-    maintainers = []
 
     luamodule = "{}.{}".format(
         os.path.split(os.path.dirname(__file__))[-1],
