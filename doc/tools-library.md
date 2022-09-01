@@ -112,7 +112,7 @@ my_script/
 ### content
 
 The registering process will except one thing : a package whose namespace list
-all the `customtooling.nodebase.CustomToolNode` subclasses that must be registered.
+all the `katananodling.nodebase.CustomToolNode` subclasses that must be registered.
 
 So all we have to do will be to subclass `CustomToolNode`. But this class is 
 actually a "general" class made for any kind of tool. In our case we will
@@ -160,7 +160,7 @@ environment variable. (see [INDEX.md](INDEX.md))and are simply imported into
 the OpScript using `require()`.
 
 On the python side it's a bit more complex. You can have a look at 
-[../customtooling/loader.py](../katananodling/loader.py) to see what the code
+[../katananodling/loader.py](../katananodling/loader.py) to see what the code
 actually does. Else let's start by the end :
 
 - Each tool **class** will be registered in Katana using `NodegraphAPI.RegisterPythonNodeFactory` 

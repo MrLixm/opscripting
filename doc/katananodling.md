@@ -1,11 +1,11 @@
-# customtooling
+# katananodling
 
 [![root](https://img.shields.io/badge/back_to_root-536362?)](../README.md)
 [![INDEX](https://img.shields.io/badge/index-536362?labelColor=blue)](INDEX.md)
-[![customtooling](https://img.shields.io/badge/customtooling-fcb434)](customtooling.md)
+[![katananodling](https://img.shields.io/badge/katananodling-fcb434)](katananodling.md)
 [![tools-library](https://img.shields.io/badge/tools--library-536362)](tools-library.md)
 
-Documentation for the `customtooling` python package.
+Documentation for the `katananodling` python package.
 
 This package allows to register a custom type of node called CustomTool that
 allow to quickly create new node to extend Katana. It is similar to SuperTools
@@ -19,7 +19,7 @@ CustomToolNode subclasses that can be registered.
 # Registering CustomTools
 
 This is achieved via the `registerTools` function of the 
-[../customtooling/loader.py](../katananodling/loader.py) module.
+[../katananodling/loader.py](../katananodling/loader.py) module.
 
 This function will expect a list of package name as argument. Those package
 must be already registered in the PYTHONPATH, so they can be imported.
@@ -45,7 +45,7 @@ parentDir/  # <- registered in PYTHONPATH
             """
         myTool.py
             """
-            from customtooling.nodebase import CustomToolNode
+            from katananodling.nodebase import CustomToolNode
 
             class MyTool(CustomToolNode):
             

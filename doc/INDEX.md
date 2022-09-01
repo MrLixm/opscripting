@@ -151,7 +151,7 @@ The following directory better be split in their own package :
 
 - `luabase`
 - `luaing`
-- `customtooling`
+- `katananodling`
 
 and of course `opscriptlibrary`. In my example I only have one library location
 but you could technically have multiple of them at different stage of 
