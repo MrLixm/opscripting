@@ -7,7 +7,7 @@
 
 Documentation for the `katananodling` python package.
 
-This package allows to register a custom type of node called CustomTool that
+This package allows to register a custom type of node called BaseCustomNode that
 allow to quickly create new node to extend Katana. It is similar to SuperTools
 with the difference it removes the need of going through Qt to build the interface.
 
@@ -16,7 +16,7 @@ to register to a function called at startup.
 Those locations are a usual python package whose namespace list all the
 BaseCustomNode subclasses that can be registered.
 
-# Registering CustomTools
+# Registering BaseCustomNodes
 
 This is achieved via the `registerNodesFor` function of the 
 [../katananodling/loader.py](../katananodling/loader.py) module.
@@ -87,12 +87,12 @@ it has to be registered in the `PYTHONPATH` so it can be imported.
 a list of package name to import.
 
 
-# Creating CustomTools
+# Creating BaseCustomNodes
 
 A custom tool will always be a subclass of `entities.BaseCustomNode`, but
 it can also be a subclass of a subclass of BaseCustomNode and so on ...
 
-As it most basic structure, a CustomTool is :
+As it most basic structure, a BaseCustomNode is :
 
 - python :
   - some class variable for information to keep track of it
@@ -132,6 +132,6 @@ class MyToolName(BaseCustomNode):
 
 # Good to know
 
-Be aware that you cannot open a scene with saved CustomTool if at least the base
+Be aware that you cannot open a scene with saved BaseCustomNode if at least the base
 BaseCustomNode class is not registered in Katana. But you can open a scene
-with CustomTool subclass even if they are not registered.
+with BaseCustomNode subclass even if they are not registered.
