@@ -25,7 +25,7 @@ This package offer tools and conventions to facilitate the integration of such w
 ### python
 
 See the [katananodling](katananodling) package. It's a simple API to create
-and register a custom type of node called "CustomTool".
+and register a custom type of node called "CustomNode".
 
 The scope goes actually outside OpScripting and could be used to create any kind
 of node.
