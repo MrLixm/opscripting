@@ -121,11 +121,11 @@ named `OpScriptTool` that will do half the work for us:
 
 ```python
 import os.path
-from customtooling.nodebase import OpScriptTool
+from katananodling.nodebase import OpScriptTool
+
 
 # class can actually be named anything but let's keep it clean :)
 class MyToolName(OpScriptTool):
-
     name = "MyToolName"  # identifier used to register the tool in Katana !
     version = (0, 1, 0)
     color = None
@@ -140,7 +140,7 @@ class MyToolName(OpScriptTool):
 local script = require("opscriptlibrary.{module}")
 script()"""
         script = script.format(module=self.luamodule)
-        
+
         node = self.getDefaultOpScriptNode()
         node.getParameter("script.lua").setValue(script, 0)
         return
@@ -160,7 +160,7 @@ environment variable. (see [INDEX.md](INDEX.md))and are simply imported into
 the OpScript using `require()`.
 
 On the python side it's a bit more complex. You can have a look at 
-[../customtooling/loader.py](../customtooling/loader.py) to see what the code
+[../customtooling/loader.py](../katananodling/loader.py) to see what the code
 actually does. Else let's start by the end :
 
 - Each tool **class** will be registered in Katana using `NodegraphAPI.RegisterPythonNodeFactory` 

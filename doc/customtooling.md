@@ -19,13 +19,13 @@ CustomToolNode subclasses that can be registered.
 # Registering CustomTools
 
 This is achieved via the `registerTools` function of the 
-[../customtooling/loader.py](../customtooling/loader.py) module.
+[../customtooling/loader.py](../katananodling/loader.py) module.
 
 This function will expect a list of package name as argument. Those package
 must be already registered in the PYTHONPATH, so they can be imported.
 
 ```python
-from customtooling.loader import registerTools
+from katananodling.loader import registerTools
 
 locations_to_register = ["libStudio", "libProject", "opscriptlibrary"]
 
@@ -100,7 +100,7 @@ As it most basic structure, a CustomTool is :
   - an optional `upgrade()` method to handle porting of older version to newer ones.
 
 ```python
-from customtooling.nodebase import CustomToolNode
+from katananodling.nodebase import CustomToolNode
 
 # class can actually be named anything but let's keep it clean :)
 class MyToolName(CustomToolNode):

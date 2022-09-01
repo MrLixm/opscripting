@@ -64,7 +64,7 @@ For the artist to access the created tool, you need to register them in Katana.
 For this you will just need to run during Katana startup something like:
 
 ```python
-from customtooling.loader import registerTools
+from katananodling.loader import registerTools
 
 # make sure "opscriptlibrary" parent dir is in the PYTHONPATH
 locations_to_register = ("opscriptlibrary",)
@@ -84,10 +84,10 @@ you can register :
 
 ```python
 from Katana import LayeredMenuAPI
-import customtooling.menu
+import katananodling.menu
 
-layered_menu = customtooling.menu.getLayeredMenuForAllCustomTool()
-LayeredMenuAPI.RegisterLayeredMenu(layered_menu, "customtooling")
+layered_menu = katananodling.menu.getLayeredMenuForAllCustomTool()
+LayeredMenuAPI.RegisterLayeredMenu(layered_menu, "katananodling")
 ```
 
 There is a demo in [../dev/KatanaResources/UIPlugins](../dev/KatanaResources/UIPlugins).

@@ -1,5 +1,5 @@
 import logging
-import customtooling.menu
+import katananodling.menu
 
 from Katana import LayeredMenuAPI
 
@@ -9,9 +9,9 @@ logger = logging.getLogger(__name__)
 
 def registerLayeredMenus():
 
-    layered_menu_name = "customtooling"
+    layered_menu_name = "katananodling"
 
-    layered_menu = customtooling.menu.getLayeredMenuForAllCustomTool()
+    layered_menu = katananodling.menu.getLayeredMenuForAllCustomTool()
     LayeredMenuAPI.RegisterLayeredMenu(layered_menu, layered_menu_name)
     logger.info(
         "[registerLayeredMenus] Registered <{}> with shortcut <{}>"

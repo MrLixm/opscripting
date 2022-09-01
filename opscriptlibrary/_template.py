@@ -2,7 +2,7 @@ import os.path
 
 from Katana import NodegraphAPI
 
-from customtooling.nodebase import OpScriptTool
+from katananodling.nodebase import OpScriptTool
 
 
 def buildUserParams(userparam, as_expression=False):
