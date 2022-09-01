@@ -1,9 +1,9 @@
 import os.path
 
-from katananodling.entities import OpScriptTool
+from katananodling.entities import OpScriptCustomNode
 
 
-class Xform2P(OpScriptTool):
+class Xform2P(OpScriptCustomNode):
 
     name = "Xform2P"
     version = (1, 0, 0)

@@ -2,7 +2,7 @@ import os.path
 
 from Katana import NodegraphAPI
 
-from katananodling.entities import OpScriptTool
+from katananodling.entities import OpScriptCustomNode
 
 
 def buildUserParams(userparam, as_expression=False):
@@ -52,7 +52,7 @@ def buildUserParams(userparam, as_expression=False):
     return
 
 
-class AttrMath(OpScriptTool):
+class AttrMath(OpScriptCustomNode):
 
     name = "AttrMath"
     version = (1, 0, 2)

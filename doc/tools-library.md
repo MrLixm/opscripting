@@ -117,15 +117,15 @@ all the `katananodling.entities.BaseCustomNode` subclasses that must be register
 So all we have to do will be to subclass `BaseCustomNode`. But this class is 
 actually a "general" class made for any kind of tool. In our case we will
 create a tool for OpScripting, so it seems logical to use a subclass of it
-named `OpScriptTool` that will do half the work for us:
+named `OpScriptCustomNode` that will do half the work for us:
 
 ```python
 import os.path
-from katananodling.entities import OpScriptTool
+from katananodling.entities import OpScriptCustomNode
 
 
 # class can actually be named anything but let's keep it clean :)
-class MyToolName(OpScriptTool):
+class MyToolName(OpScriptCustomNode):
   name = "MyToolName"  # identifier used to register the tool in Katana !
   version = (0, 1, 0)
   color = None

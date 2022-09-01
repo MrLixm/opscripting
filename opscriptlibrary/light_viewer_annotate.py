@@ -2,7 +2,7 @@ import os.path
 
 from Katana import NodegraphAPI
 
-from katananodling.entities import OpScriptTool
+from katananodling.entities import OpScriptCustomNode
 
 
 ANNOTATIONS_TOKENS = [
@@ -18,7 +18,7 @@ Tokens available in the lua script to annotate lights.
 """
 
 
-class LightViewerAnnotate(OpScriptTool):
+class LightViewerAnnotate(OpScriptCustomNode):
 
     name = "LightViewerAnnotate"
     version = (1, 5, 0)
