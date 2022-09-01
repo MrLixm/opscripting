@@ -125,6 +125,7 @@ class MyToolName(BaseCustomNode):
     if self.version == self.about.version:
       return
     # now do whatever you need to upgrade
+    self.about.__upgrade__()
 
 ```
 
