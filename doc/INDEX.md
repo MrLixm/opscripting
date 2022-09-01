@@ -64,12 +64,12 @@ For the artist to access the created tool, you need to register them in Katana.
 For this you will just need to run during Katana startup something like:
 
 ```python
-from katananodling.loader import registerTools
+from katananodling.loader import registerNodesFor
 
 # make sure "opscriptlibrary" parent dir is in the PYTHONPATH
 locations_to_register = ("opscriptlibrary",)
 
-registerTools(locations_to_register)
+registerNodesFor(locations_to_register)
 ```
 
 Make sure this is only executed once AND in gui and headless mode. I personally

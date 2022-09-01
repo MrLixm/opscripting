@@ -181,14 +181,14 @@ do a :
 - But what is `package_id` ? It's simply the name of this package. This mean
 it has to be registered in the `PYTHONPATH` so it can be imported.
 
-- And initally we have the `registerTools()` function that will take as argument
+- And initally we have the `registerNodesFor()` function that will take as argument
 a list of package name to import.
 
 ### library python configuration
 
 ```python
 
-registerTools(["libStudio", "libProject"])
+registerNodesFor(["libStudio", "libProject"])
 # implies :
 
 root/  # <-- in PYTHONPATH

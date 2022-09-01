@@ -10,13 +10,13 @@ logger = logging.getLogger(__name__)
 
 def onStartupComplete(objectHash):
 
-    from katananodling.loader import registerTools
+    from katananodling.loader import registerNodesFor
     from katananodling.loader import registerCallbacks
 
     # make sure "opscriptlibrary" parent dir is in the PYTHONPATH
     locations_to_register = ("opscriptlibrary",)
 
-    registerTools(locations_to_register)
+    registerNodesFor(locations_to_register)
     registerCallbacks()
     return
 

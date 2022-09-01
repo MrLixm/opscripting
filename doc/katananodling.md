@@ -18,18 +18,18 @@ BaseCustomNode subclasses that can be registered.
 
 # Registering CustomTools
 
-This is achieved via the `registerTools` function of the 
+This is achieved via the `registerNodesFor` function of the 
 [../katananodling/loader.py](../katananodling/loader.py) module.
 
 This function will expect a list of package name as argument. Those package
 must be already registered in the PYTHONPATH, so they can be imported.
 
 ```python
-from katananodling.loader import registerTools
+from katananodling.loader import registerNodesFor
 
 locations_to_register = ["libStudio", "libProject", "opscriptlibrary"]
 
-registerTools(locations_to_register)
+registerNodesFor(locations_to_register)
 ```
 
 Each of this package will be imported and iterated directly to find the 
@@ -83,7 +83,7 @@ do a :
 - But what is `package_id` ? It's simply the name of this package. This mean
 it has to be registered in the `PYTHONPATH` so it can be imported.
 
-- And initally we have the `registerTools()` function that will take as argument
+- And initally we have the `registerNodesFor()` function that will take as argument
 a list of package name to import.
 
 
