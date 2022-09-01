@@ -3,6 +3,7 @@ import re
 import traceback
 from abc import abstractmethod
 import inspect
+from typing import Any
 from typing import Optional
 from typing import Union
 from typing import Tuple
@@ -24,26 +25,37 @@ logger = logging.getLogger(__name__)
 VersionableType = Union[str, Union[List[int], Tuple[int, int, int]]]
 
 
-def versionize(version):
-    # type: (VersionableType) -> str
-    """
-    Convert an object representing a potential version to a string representing
-    the version.
+class Version:
+    def __init__(self, versionable_object):
+        # type: (VersionableType) -> None
 
-    ex: (1,5,2) -> "1.5.2"
-    """
+        self.version = None  # type: Tuple[int, int, int]
 
-    if isinstance(version, str):
-        return version
+        if isinstance(versionable_object, str):
+            self.version = versionable_object.split(".")
+            self.version = tuple(map(int, self.version))
 
-    if isinstance(version, (tuple, list)) and len(version) == 3:
-        version = map(str, version)
+        elif (
+            isinstance(versionable_object, (tuple, list))
+            and len(versionable_object) == 3
+            and not filter(int, versionable_object)
+        ):
+            self.version = versionable_object
+
+        else:
+            raise TypeError(
+                "Can't create a version object from arg <{}> of type {}"
+                "".format(versionable_object, type(versionable_object))
+            )
+
+        assert len(self.version) == 3, (
+            "Given versionable_object <{}> does not produce a version of len==3 once "
+            "converted but <{}>".format(versionable_object, self.version)
+        )
+
+    def __str__(self):
+        version = map(str, self.version)
         return ".".join(version)
-
-    raise TypeError(
-        "Can't create a version object from arg <{}> of type {}"
-        "".format(version, type(version))
-    )
 
 
 def customToolNodeCallback(**kwargs):
