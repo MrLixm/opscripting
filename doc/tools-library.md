@@ -112,9 +112,9 @@ my_script/
 ### content
 
 The registering process will except one thing : a package whose namespace list
-all the `katananodling.entities.CustomToolNode` subclasses that must be registered.
+all the `katananodling.entities.BaseCustomNode` subclasses that must be registered.
 
-So all we have to do will be to subclass `CustomToolNode`. But this class is 
+So all we have to do will be to subclass `BaseCustomNode`. But this class is 
 actually a "general" class made for any kind of tool. In our case we will
 create a tool for OpScripting, so it seems logical to use a subclass of it
 named `OpScriptTool` that will do half the work for us:
@@ -169,7 +169,7 @@ It will also receive a flavor using `NodegraphAPI.AddNodeFlavor` so you can
 quickly retrieve all custom tools.
 
 - To retrieve the tool class we iterate through the given package object in
-search for all objects which are subclasses of CustomToolNode (and whose name
+search for all objects which are subclasses of BaseCustomNode (and whose name
 doesn't start with `_`)
 
 - Now how do we retrieve the package as a python module object ? We will simply

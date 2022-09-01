@@ -1,11 +1,11 @@
 """
-The goal is to have every CustomToolNode subclasses available in this namespace.
+The goal is to have every BaseCustomNode subclasses available in this namespace.
 So we can iterate over this package to retrieve all the nodes to create.
 
 This mean you can organise this package as you wish as long as the subclass that you want
 to register is imported here.
 
-All objects imported here that are not subclasses of CustomToolNode OR whose name starts
+All objects imported here that are not subclasses of BaseCustomNode OR whose name starts
 with a "_" will be ignored.
 """
 from .attr_math import AttrMath

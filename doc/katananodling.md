@@ -14,7 +14,7 @@ with the difference it removes the need of going through Qt to build the interfa
 The process of registering is also more flexible where you say which location
 to register to a function called at startup. 
 Those locations are a usual python package whose namespace list all the
-CustomToolNode subclasses that can be registered.
+BaseCustomNode subclasses that can be registered.
 
 # Registering CustomTools
 
@@ -33,7 +33,7 @@ registerTools(locations_to_register)
 ```
 
 Each of this package will be imported and iterated directly to find the 
-CustomToolNode subclasses. To declare a subclass to be registered, you just
+BaseCustomNode subclasses. To declare a subclass to be registered, you just
 need to import it in the `__init__` of your package :
 
 ```toml
@@ -45,9 +45,9 @@ parentDir/  # <- registered in PYTHONPATH
             """
         myTool.py
             """
-            from katananodling.entities import CustomToolNode
+            from katananodling.entities import BaseCustomNode
 
-            class MyTool(CustomToolNode):
+            class MyTool(BaseCustomNode):
             
                 name = "MyToolName"
                 ...
@@ -71,7 +71,7 @@ It will also receive a flavor using `NodegraphAPI.AddNodeFlavor` so you can
 quickly retrieve all custom tools.
 
 - To retrieve the tool class we iterate through the given package object in
-search for all objects which are subclasses of CustomToolNode (and whose name
+search for all objects which are subclasses of BaseCustomNode (and whose name
 doesn't start with `_`)
 
 - Now how do we retrieve the package as a python module object ? We will simply
@@ -89,8 +89,8 @@ a list of package name to import.
 
 # Creating CustomTools
 
-A custom tool will always be a subclass of `entities.CustomToolNode`, but
-it can also be a subclass of a subclass of CustomToolNode and so on ...
+A custom tool will always be a subclass of `entities.BaseCustomNode`, but
+it can also be a subclass of a subclass of BaseCustomNode and so on ...
 
 As it most basic structure, a CustomTool is :
 
@@ -100,33 +100,31 @@ As it most basic structure, a CustomTool is :
   - an optional `upgrade()` method to handle porting of older version to newer ones.
 
 ```python
-from katananodling.entities import CustomToolNode
+from katananodling.entities import BaseCustomNode
+
 
 # class can actually be named anything but let's keep it clean :)
-class MyToolName(CustomToolNode):
+class MyToolName(BaseCustomNode):
+  name = "MyToolName"  # identifier used to register the tool in Katana !
+  version = (0, 1, 0)
+  color = None
+  description = "What the tool does in a few words."
+  author = "<FirstName Name email@provider.com>"
+  maintainers = []
 
-    name = "MyToolName"  # identifier used to register the tool in Katana !
-    version = (0, 1, 0)
-    color = None
-    description = "What the tool does in a few words."
-    author = "<FirstName Name email@provider.com>"
-    maintainers = []
+  def _build(self):
+    p = self.user_param.createChildNumber("amount", 666)
+    hint = {
+      "slider": True,
+      "slidermax": 666,
+      "help": "whatever",
+    }
+    p.setHintString(repr(hint))
 
-    def _build(self):
-      
-        p = self.user_param.createChildNumber("amount", 666)
-        hint = {
-            "slider": True,
-            "slidermax": 666,
-            "help": "whatever",
-        }
-        p.setHintString(repr(hint))
-
-    def upgrade(self):
-        
-        if self.version == self.about.version:
-            return
-        # now do whatever you need to upgrade
+  def upgrade(self):
+    if self.version == self.about.version:
+      return
+    # now do whatever you need to upgrade
 
 ```
 
@@ -134,5 +132,5 @@ class MyToolName(CustomToolNode):
 # Good to know
 
 Be aware that you cannot open a scene with saved CustomTool if at least the base
-CustomToolNode class is not registered in Katana. But you can open a scene
+BaseCustomNode class is not registered in Katana. But you can open a scene
 with CustomTool subclass even if they are not registered.
