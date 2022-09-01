@@ -21,4 +21,6 @@ export PYTHONPATH="$PYTHONPATH;..\katanaingcore"
 export LUA_PATH="$LUA_PATH;.\?.lua"
 export LUA_PATH="$LUA_PATH;Z:\dccs\katana\library\shelf0006\lua\?.lua"  # llloger
 
+#export KATANA_NODLING_NODE_PARAM_DEBUG=1
+
 "$KATANA_HOME\bin\katanaBin.exe"
