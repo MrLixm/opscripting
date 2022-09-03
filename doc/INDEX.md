@@ -24,8 +24,7 @@ Nevertheless, you could totally directly use this repo :
 
 # Install
 
-> **Info**: 
-> 
+> **Note**:
 > You can check [../dev/launcher.Katana...sh](../dev/launcher.Katana-4.5.1.sh) to see some
 > launcher examples that resume all the under.
 
