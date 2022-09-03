@@ -1,0 +1,4 @@
+[submodule "katananodling"]
+	path = katananodling
+	url = https://github.com/MrLixm/katananodling
+	branch = main

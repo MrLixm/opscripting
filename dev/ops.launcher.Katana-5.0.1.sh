@@ -16,7 +16,7 @@ export KATANA_USER_RESOURCE_DIRECTORY=".\dev\_prefs"
 export KATANA_RESOURCES="$KATANA_RESOURCES;.\dev\KatanaResources"
 
 export PYTHONPATH="$PYTHONPATH;..\opscripting"
-export PYTHONPATH="$PYTHONPATH;..\katananodling"
+export PYTHONPATH="$PYTHONPATH;.\katananodling"
 
 export LUA_PATH="$LUA_PATH;.\?.lua"
 export LUA_PATH="$LUA_PATH;..\llloger\?.lua"
