@@ -2,3 +2,7 @@
 	path = katananodling
 	url = https://github.com/MrLixm/katananodling
 	branch = main
+[submodule "lllogger"]
+	path = lllogger
+	url = https://github.com/MrLixm/llloger
+	branch = main
