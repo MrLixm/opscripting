@@ -38,7 +38,7 @@ file for the node interface, and a .lua file for the OpScript logic.
 
 ---
 
-_Only have Katana and `llloger` (lua) for dependencies._
+_Only have Katana and `lllogger` (lua) for dependencies._
 
 
 # Documentation

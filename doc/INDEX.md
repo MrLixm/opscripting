@@ -44,16 +44,16 @@ LUA_PATH="z/any/opscripting/?.lua"
 If you are familiar with the LUA module syntax, this means that all the
 lua modules will be accesible from the `opscriptlibrary` namespace.
 
-3. Add the only dependency `llloger` to the `LUA_PATH` too.
+3. Add the only dependency `lllogger` to the `LUA_PATH` too.
 
 > **Download** : https://github.com/MrLixm/llloger/blob/main/lllogger.lua
 
 ```shell
-LUA_PATH="$LUA_PATH:z/any/lllogerInstallDirectory/?.lua"
-# where lllogerInstallDirectory/ contains `llloger.lua`, ...
+LUA_PATH="$LUA_PATH:z/any/llloggerInstallDirectory/?.lua"
+# where llloggerInstallDirectory/ contains `llloger.lua`, ...
 ```
 
-llloger is directly imported as `require("llloger")`
+lllogger is directly imported as `require("lllogger")`
 
 ## Registering tools
 
