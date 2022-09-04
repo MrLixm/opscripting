@@ -10,4 +10,4 @@ Supports motion blur.
 If the locations matched by the CEL doesn't have a `geometry.point.P` it will yield
 an error.
 
-![katana gif of the opscript](xform2p.gif)
+![katana gif of the opscript](xform2P.gif)
