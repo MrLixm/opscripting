@@ -20,6 +20,6 @@ export PYTHONPATH="$PYTHONPATH;.\katananodling"
 export PYTHONPATH="$PYTHONPATH;..\typing"
 
 export LUA_PATH="$LUA_PATH;.\?.lua"
-export LUA_PATH="$LUA_PATH;.\llloger\?.lua"
+export LUA_PATH="$LUA_PATH;.\lllogger\?.lua"
 
 "$KATANA_HOME\bin\katanaBin.exe"
