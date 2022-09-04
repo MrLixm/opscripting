@@ -19,7 +19,7 @@ This package offer tools and conventions to facilitate the integration of such w
 2 Low level lua package for OpScripts:
 
 - [luakat](luakat) : api to interact more easily with Katana
-- [luabase](luabase) : because everyone need to extend the base lua 
+- [luabase](luabase) : because everyone needs to extend the base lua 
 
 
 ### python
@@ -30,13 +30,12 @@ We will use it to register a subclass of it called `OpScriptCustomNode`.
 
 ### library
 
-You can see an "example" (prod-ready) in the [opscriptlibrary](opscriptlibrary)
-package. This consist on a library of tool declaring each at least one python
-file for the node interface, and a .lua file for the OpScript logic.
+Included as an example, but also for use, is my collection of existing OpScriptCustomNode
+I made. Check the [opscriptlibrary](opscriptlibrary) package. 
 
 ---
 
-_Only have Katana and [`lllogger`](https://github.com/MrLixm/llloger) (lua) for dependencies._
+_Only have Katana all the packages visible in this directory as dependencies._
 
 
 # Documentation

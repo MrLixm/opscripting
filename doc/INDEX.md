@@ -114,6 +114,25 @@ opscriptlibrary/
     nodeBeta.py
 ```
 
+To get things even cleaner, I would even recommend to use python packages :
+
+```shell
+opscriptlibrary/
+    __init__.py
+    nodeAlpha/
+        __init__.py
+        nodeAlpha.lua 
+        nodeAlpha.py
+    nodeBeta/
+        __init__.py
+        nodeBeta.lua 
+        nodeBeta.py
+```
+
+So if you have a pretty big documentation to write, or even multiple lua modules
+to use. The library doesn't become complete chaos.
+
+
 ## naming-conventons
 
 The first task will be to determine the name for your node. It will be used
