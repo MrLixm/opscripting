@@ -1,5 +1,3 @@
-import os.path
-
 from katananodling.entities import OpScriptCustomNode
 
 
@@ -11,15 +9,10 @@ class Xform2P(OpScriptCustomNode):
     description = "Merge xform transformations to the geometry.point.P attribute."
     author = "<Liam Collod pyco.liam.business@gmail.com>"
 
-    luamodule = "{}.{}".format(
-        os.path.split(os.path.dirname(__file__))[-1],
-        os.path.splitext(os.path.basename(__file__))[0],
-    )
-
     def _buildOpScript(self):
 
         script = 'local script = require("{path}")\nscript()'
-        script = script.format(path=self.luamodule)
+        script = script.format(path=self.getLuaModuleName())
         node = self.getDefaultOpScriptNode()
 
         node.getParameter("CEL").setExpression("=^/user.CEL", True)

@@ -1,7 +1,3 @@
-import os.path
-
-from Katana import NodegraphAPI
-
 from katananodling.entities import OpScriptCustomNode
 
 
@@ -26,15 +22,10 @@ class LightViewerAnnotate(OpScriptCustomNode):
     description = "Annotate (& color) lights in the viewer using their attributes."
     author = "<Liam Collod pyco.liam.business@gmail.com>"
 
-    luamodule = "{}.{}".format(
-        os.path.split(os.path.dirname(__file__))[-1],
-        os.path.splitext(os.path.basename(__file__))[0],
-    )
-
     def _buildOpScript(self):
 
         script = 'local script = require("{path}")\nscript()'
-        script = script.format(path=self.luamodule)
+        script = script.format(path=self.getLuaModuleName())
 
         node = self.getDefaultOpScriptNode()
 

@@ -1,5 +1,3 @@
-import os.path
-
 from Katana import NodegraphAPI
 
 from katananodling.entities import OpScriptCustomNode
@@ -27,15 +25,10 @@ class PointWidth(OpScriptCustomNode):
     description = "Change scale of the geometry points."
     author = "<Liam Collod pyco.liam.business@gmail.com>"
 
-    luamodule = "{}.{}".format(
-        os.path.split(os.path.dirname(__file__))[-1],
-        os.path.splitext(os.path.basename(__file__))[0],
-    )
-
     def _buildOpScript(self):
 
         script = 'local script = require("{path}")\nscript()'
-        script = script.format(path=self.luamodule)
+        script = script.format(path=self.getLuaModuleName())
 
         node = self.getDefaultOpScriptNode()
 
