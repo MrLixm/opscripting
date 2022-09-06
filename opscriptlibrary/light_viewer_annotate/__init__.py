@@ -14,7 +14,7 @@ Tokens available in the lua script to annotate lights.
 """
 
 
-class LightViewerAnnotate(OpScriptCustomNode):
+class LightViewerAnnotateNode(OpScriptCustomNode):
 
     name = "LightViewerAnnotate"
     version = (1, 5, 0)

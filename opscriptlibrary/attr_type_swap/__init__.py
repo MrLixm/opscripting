@@ -39,7 +39,7 @@ def buildUserParams(userparam, as_expression=False):
     return
 
 
-class AttrTypeSwap(OpScriptCustomNode):
+class AttrTypeSwapNode(OpScriptCustomNode):
 
     name = "AttrTypeSwap"
     version = (1, 0, 2)

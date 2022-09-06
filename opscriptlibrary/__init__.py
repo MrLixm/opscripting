@@ -8,9 +8,9 @@ to register is imported here.
 All objects imported here that are not subclasses of BaseCustomNode OR whose name starts
 with a "_" will be ignored.
 """
-from .attr_math import AttrMath
-from .attr_type_swap import AttrTypeSwap
-from .light_viewer_annotate import LightViewerAnnotate
-from .point_width import PointWidth
-from .resolution_divide import ResolutionDivide
-from .xform2P import Xform2P
+from .attr_math import AttrMathNode
+from .attr_type_swap import AttrTypeSwapNode
+from .light_viewer_annotate import LightViewerAnnotateNode
+from .point_width import PointWidthNode
+from .resolution_divide import ResolutionDivideNode
+from .xform2P import Xform2PNode

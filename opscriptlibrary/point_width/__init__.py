@@ -17,7 +17,7 @@ def buildUserParams(userparam, as_expression=False):
     return
 
 
-class PointWidth(OpScriptCustomNode):
+class PointWidthNode(OpScriptCustomNode):
 
     name = "PointWidth"
     version = (1, 0, 0)

@@ -20,7 +20,7 @@ def buildUserParams(userparam, as_expression=False):
     return
 
 
-class ResolutionDivide(OpScriptCustomNode):
+class ResolutionDivideNode(OpScriptCustomNode):
 
     name = "ResolutionDivide"
     version = (1, 0, 0)

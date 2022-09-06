@@ -1,7 +1,7 @@
 from katananodling.entities import OpScriptCustomNode
 
 
-class Xform2P(OpScriptCustomNode):
+class Xform2PNode(OpScriptCustomNode):
 
     name = "Xform2P"
     version = (1, 0, 0)

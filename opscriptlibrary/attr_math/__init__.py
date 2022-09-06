@@ -50,7 +50,7 @@ def buildUserParams(userparam, as_expression=False):
     return
 
 
-class AttrMath(OpScriptCustomNode):
+class AttrMathNode(OpScriptCustomNode):
 
     name = "AttrMath"
     version = (1, 0, 2)
