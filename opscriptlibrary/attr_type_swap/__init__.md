@@ -20,7 +20,7 @@ Each row corresponds to an attribute to modify where :
 
 Example : 
 
-![opscript interface screenshot](attr_type_swap.doc.png)
+![opscript interface screenshot](doc-user_attributes.png)
 
 List of DataAttribute can be found on
 [the Katana documentation](https://learn.foundry.com/katana/5.0/dev-guide/OpsAndOpScript/Attributes/OpScript.html#IntAttribute)
