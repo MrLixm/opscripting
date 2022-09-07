@@ -1,5 +1,3 @@
-import os.path
-
 from Katana import NodegraphAPI
 
 from katananodling.entities import OpScriptCustomNode
@@ -7,27 +5,28 @@ from katananodling.entities import OpScriptCustomNode
 
 def buildUserParams(userparam, as_expression=False):
     # type: (NodegraphAPI.Parameter, bool) -> None
+    """
+    Allow to create the same paramater on the OpScript node and on its parent node.
+    The difference being that will set `as_expression=True` when called on the OpScript
+    node so the value is retrived from the parent.
+
+    You can choose to not use this function and delete it.
+    """
     pass
 
 
-class _Template(OpScriptCustomNode):
+class _TemplateNode(OpScriptCustomNode):
 
     name = "_Template"
     version = (0, 1, 0)
     color = None
-    description = "What the tool does in a few words."
+    description = "What the node does in a few words."
     author = "<FirstName Name email@provider.com>"
-
-    luamodule = "{}.{}".format(
-        os.path.split(os.path.dirname(__file__))[-1],
-        os.path.splitext(os.path.basename(__file__))[0],
-    )
 
     def _buildOpScript(self):
 
         script = 'local script = require("{path}")\nscript()'
-        script = script.format(path=self.luamodule)
-
+        script = script.format(path=self.getLuaModuleName())
         node = self.getDefaultOpScriptNode()
 
         node.getParameter("CEL").setExpression("=^/user.CEL", True)
@@ -49,3 +48,7 @@ class _Template(OpScriptCustomNode):
         self.moveAboutParamToBottom()
 
         return
+
+    def upgrade(self):
+        # optional
+        pass
