@@ -1,0 +1,16 @@
+name = "opscripting"
+version = "1.0.0"
+description = "Resources to integrate the Katana OpScript workflow in a version-controled pipeline."
+license = "Apache-2.0"
+authors = ["Liam Collod <monsieurlixm@gmail.com>"]
+readme = "README.md"
+repository = "https://github.com/MrLixm/opscripting"
+keywords = ["vfx", "katana", "opscript"]
+dependencies = [
+    "lua>=5.1.5",
+    "python>=2.7",
+    "katananodling>=1.0.0",
+    "luabased>=1.0.0",
+    "katana>=3.6",
+    "lllogger>=2.0.0",
+]
