@@ -13,13 +13,11 @@ user.method = """
     - array (default): a bit slower, no limit
 """
 ]]
-local katlua = {}
-katlua.retrieve = require("luakat.retrieve")
-local luabase = {}
-luabase.formatting = require("luabase.formatting")
+local luakat = require("luakat")
+local luabased = require("luabased")
 local logging = require("lllogger")
 
-local logger = logging:get_logger("opscriptlibrary.attr_type_swap")
+local logger = logging.getLogger(...)
 
 local function err(...)
   --[[
@@ -28,18 +26,18 @@ local function err(...)
   ]]
   local arg = { ... }
   arg.insert("[attr_type_swap]", 1)
-  luabase.formatting.errorc(unpack(arg))
+  luabased.raising.errorc(unpack(arg))
 
 end
 
 local function run()
 
-  local u_attr_list = katlua.retrieve.getUserAttr("attributes")
+  local u_attr_list = luakat.attribute.getUserAttrValue("attributes")
   assert(u_attr_list ~= nil, "[attr_type_swap][run] Missing <user.attributes>")
 
   local method_table = "table"
   local method_array = "array"
-  local u_method = katlua.retrieve.getUserAttr("method", {method_array})[1]
+  local u_method = luakat.attribute.getUserAttrValue("method", {method_array})[1]
 
   local attr
   local data
@@ -51,8 +49,8 @@ local function run()
   for i=0, #u_attr_list / 2 - 1 do
 
     attr = u_attr_list[i*2+1]
-    attr_type = katlua.retrieve.getAttributeClass(u_attr_list[i*2+2])
-    data = katlua.retrieve.getAttr(attr)
+    attr_type = luakat.attribute.getAttributeClass(u_attr_list[i*2+2])
+    data = luakat.attribute.getAttr(attr)
     new_value = {}
 
     if u_method == method_table then

@@ -10,11 +10,10 @@ Supports motion blur.
 parameters.location = "location(s) to merge the xform attribute"
 parameters.applyWhere = "at specific location OR at locations matching CEL"
 ]]
-local katlua = {}
-katlua.retrieve = require("luakat.retrieve")
+local luakat = require("luakat")
 local logging = require("lllogger")
 
-local logger = logging:get_logger("opscriptlibrary.xform2P")
+local logger = logging.getLogger(...)
 
 -- make a global local to improve perfs in big loops
 local v3d = Imath.V3d
@@ -24,7 +23,7 @@ local function run()
   logger:debug("[run] Started for location=", Interface.GetInputLocationPath())
   local stime = os.clock()
 
-  local points_attr = katlua.retrieve.getAttr("geometry.point.P")
+  local points_attr = luakat.attribute.getAttr("geometry.point.P")
 
   local xform = Interface.GetGlobalXFormGroup(Interface.GetInputLocationPath(), 0)
   local matrix_attr = XFormUtils.CalcTransformMatrixAtExistingTimes(xform)  -- DoubleAttribute

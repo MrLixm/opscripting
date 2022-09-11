@@ -23,13 +23,11 @@ user.op_order = """
    or "multiply" for the inverse
 """
 ]]
-local luakat = {}
-luakat.retrieve = require("luakat.retrieve")
-local luabase = {}
-luabase.formatting = require("luabase.formatting")
+local luakat = require("luakat")
+local luabased = require("luabased")
 local logging = require("lllogger")
 
-local logger = logging:get_logger("opscriptlibrary.attr_math")
+local logger = logging.getLogger(...)
 
 local function err(...)
   --[[
@@ -38,7 +36,7 @@ local function err(...)
   ]]
   local arg = { ... }
   arg.insert("[attr_math]", 1)
-  luabase.formatting.errorc(unpack(arg))
+  luabased.raising.errorc(unpack(arg))
 
 end
 
@@ -84,18 +82,18 @@ local function run()
   local order_add = "add"
   local order_mult = "multiply"
 
-  local u_attr_list = luakat.retrieve.getUserAttr("attributes")
+  local u_attr_list = luakat.attribute.getUserAttrValue("attributes")
   assert(u_attr_list ~= nil, "[attr_math][run] Missing <user.attributes>")
 
-  local u_mult = luakat.retrieve.getUserAttr("multiply")
+  local u_mult = luakat.attribute.getUserAttrValue("multiply")
   assert(u_mult ~= nil, "[attr_math][run] Missing <user.multiply>")
   u_mult = u_mult[1]
 
-  local u_add = luakat.retrieve.getUserAttr("add")
+  local u_add = luakat.attribute.getUserAttrValue("add")
   assert(u_add ~= nil, "[attr_math][run] Missing <user.add>")
   u_add = u_add[1]
 
-  local u_order = luakat.retrieve.getUserAttr("op_order", { order_add })[1]
+  local u_order = luakat.attribute.getUserAttrValue("op_order", { order_add })[1]
 
   local attr_skip
   local attr_path
@@ -108,8 +106,8 @@ local function run()
 
     attr_path = u_attr_list[iattr * 2 + 1]  -- string
     attr_skip = getSkipTable(u_attr_list[iattr * 2 + 2]) -- table
-    attr_data = luakat.retrieve.getAttr(attr_path)  -- DataAttribute
-    attr_type = luakat.retrieve.getAttributeClass(attr_data)  -- DataAttribute
+    attr_data = luakat.attribute.getAttr(attr_path)  -- DataAttribute
+    attr_type = luakat.attribute.getAttributeClass(attr_data)  -- DataAttribute
 
     -- check that the user specified tuple size seems valid
     new_value = attr_data:getNearestSample(0)

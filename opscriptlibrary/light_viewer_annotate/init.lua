@@ -16,15 +16,11 @@ user.color_hue = "(float)(1): 0-1 range"
 user.color_saturation = "(float)(1): 0-1 range"
 user.color_value = "(float)(1): 0-1 range"
 ]]
-local katlua = {}
-katlua.retrieve = require("luakat.retrieve")
-katlua.utils = require("luakat.utils")
-local luabase = {}
-luabase.formatting = require("luabase.formatting")
-luabase.mathing = require("luabase.mathing")
+local luakat = require("luakat")
+local luabased = require("luabased")
 local logging = require("lllogger")
 
-local logger = logging:get_logger("opscriptlibrary.light_viewer_annotate")
+local logger = logging.getLogger(...)
 
 local LOCATION = Interface.GetInputLocationPath()
 -- scene graph location of the current light visited
@@ -40,7 +36,7 @@ local function err(...)
   ]]
   local arg = { ... }
   arg.insert("[light_viewer_annotate]", 1)
-  luabase.formatting.errorc(unpack(arg))
+  luabased.raising.errorc(unpack(arg))
 
 end
 
@@ -100,7 +96,7 @@ local function getLightAttr(attrs_list, default_value)
   if default_value == error then
     err(
         "[getLightAttr] No attribute found from ",
-        luabase.formatting.stringify(attrs_list)
+        luabased.stringing.stringify(attrs_list)
     )
   else
     return default_value
@@ -113,7 +109,7 @@ local function getLightName()
   Returns:
     str: name of the light based on its scene graph location.
   ]]
-  return katlua.utils.getLocationName(LOCATION)
+  return luakat.location.getLocationName(LOCATION)
 end
 
 --[[
@@ -241,7 +237,7 @@ function Light:to_annotation(annotation)
   ]]
   for attr_name, _ in pairs(self.tokens) do
     local token = ("<%s>"):format(attr_name)
-    local value = luabase.formatting.stringify(self:get(attr_name))
+    local value = luabased.stringing.stringify(self:get(attr_name))
     annotation = string.gsub(annotation, token, value)
   end
 
@@ -251,13 +247,13 @@ end
 
 local function run()
 
-  local u_annotation_template = katlua.retrieve.getUserAttr("annotation_template", "<name>")
-  local u_annotation_colored = katlua.retrieve.getUserAttr("annotation_colored", 1)
-  local u_lights_colored = katlua.retrieve.getUserAttr("lights_colored", 1)
+  local u_annotation_template = luakat.attribute.getUserAttrValue("annotation_template", "<name>")
+  local u_annotation_colored = luakat.attribute.getUserAttrValue("annotation_colored", 1)
+  local u_lights_colored = luakat.attribute.getUserAttrValue("lights_colored", 1)
 
-  local u_hsl_h = katlua.retrieve.getUserAttr("color_hue", 0)
-  local u_hsl_s = katlua.retrieve.getUserAttr("color_saturation", 1)
-  local u_hsl_v = katlua.retrieve.getUserAttr("color_value", 1)
+  local u_hsl_h = luakat.attribute.getUserAttrValue("color_hue", 0)
+  local u_hsl_s = luakat.attribute.getUserAttrValue("color_saturation", 1)
+  local u_hsl_v = luakat.attribute.getUserAttrValue("color_value", 1)
 
   -- 1. Process the annotation
   local annotation = Light:to_annotation(u_annotation_template)
@@ -269,7 +265,7 @@ local function run()
   -- 2. Process the color
   -- initial color is linear
   local color = Light:get("color") -- table of float or nil
-  color = luabase.mathing.hsv(color, u_hsl_h, u_hsl_s, u_hsl_v)
+  color = luabased.coloring.hsv(color, u_hsl_h, u_hsl_s, u_hsl_v)
   -- apply a basic 2.2 transfer-function for display
   color[1] = color[1] ^ 2.2
   color[2] = color[2] ^ 2.2

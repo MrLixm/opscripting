@@ -7,17 +7,16 @@ user.point_scale = "(float)(1): multiplier of the points scale in the viewer"
 parameters.location = "pointcloud scene graph location"
 parameters.applyWhere = "at specific location"
 ]]
-local katlua = {}
-katlua.retrieve = require("luakat.retrieve")
+local luakat =  require("luakat")
 local logging = require("lllogger")
 
-local logger = logging:get_logger("opscriptlibrary.point_width")
+local logger = logging.getLogger(...)
 
 
 local function run()
 
   -- get OpArg
-  local point_scale = katlua.retrieve.getUserAttr("point_scale", { 1.0 })[1]
+  local point_scale = luakat.attribute.getUserAttrValue("point_scale", { 1.0 })[1]
 
   local points_width = Interface.GetAttr("geometry.point.width")
   if points_width then

@@ -7,14 +7,11 @@ location = "/root"
 applyWhere = "at specific location"
 user.divider = "(int) amount to divide the current resolution by"
 ]]
-local katlua = {}
-katlua.retrieve = require("luakat.retrieve")
-local luabase = {}
-luabase.mathing = require("luabase.mathing")
-luabase.formatting = require("luabase.formatting")
+local luakat = require("luakat")
+local luabased = require("luabased")
 local logging = require("lllogger")
 
-local logger = logging:get_logger("opscriptlibrary.resolution_divide")
+local logger = logging.getLogger(...)
 
 
 local function getDivider()
@@ -52,7 +49,7 @@ local function run()
     return
   end
 
-  local resolution = katlua.retrieve.getAttr("renderSettings.resolution"):getValue()
+  local resolution = luakat.attribute.getAttr("renderSettings.resolution"):getValue()
   resolution = ResolutionTable.GetResolution(resolution)
   if not resolution then
     error(
@@ -62,9 +59,9 @@ local function run()
     return
   end
 
-  local new_resolution_x = luabase.mathing.round(resolution:getXRes() / divider, 0)
-  local new_resolution_y = luabase.mathing.round(resolution:getYRes() / divider, 0)
-  local new_resolution =  luabase.formatting.conkat(new_resolution_x,"x",new_resolution_y) -- str
+  local new_resolution_x = luabased.mathing.toint(resolution:getXRes() / divider, 0)
+  local new_resolution_y = luabased.mathing.toint(resolution:getYRes() / divider, 0)
+  local new_resolution =  luabased.stringing.conkat(new_resolution_x,"x",new_resolution_y) -- str
 
   Interface.SetAttr("renderSettings.resolution", StringAttribute(new_resolution))
   logger:info("[run] Resolution set to ", new_resolution)
