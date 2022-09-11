@@ -12,20 +12,21 @@ studio environment, and should only import code stored in the pipeline arboresce
 
 This package offer tools and conventions to facilitate the integration of such workflow.
 
-Most of the update on this package will be to add new custom nodes I created
-in the [opscriptlibrary](opscriptlibrary/).
-
 ## Content
 
 Most of the content is just linking dependencies and documenting how they
 work together.
 
+Future update on this package will be to add new custom nodes I created
+in the [opscriptlibrary](opscriptlibrary/).
+
+
 ### lua
 
 2 Low level lua package for OpScripts:
 
-- [luakat](luakat) : api to interact more easily with Katana
-- [luabase](luabase) : because everyone needs to extend the base lua 
+- [luakat](luakat/) : api to interact more easily with Katana
+- [luabased](luabased/) : because everyone needs to extend the base lua 
 
 
 ### python
