@@ -6,3 +6,11 @@
 	path = lllogger
 	url = https://github.com/MrLixm/llloger
 	branch = main
+[submodule "luabased"]
+	path = luabased
+	url = https://github.com/MrLixm/luabased
+	branch = main
+[submodule "luakat"]
+	path = luakat
+	url = https://github.com/MrLixm/luakat
+	branch = main
