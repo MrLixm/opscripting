@@ -12,7 +12,13 @@ studio environment, and should only import code stored in the pipeline arboresce
 
 This package offer tools and conventions to facilitate the integration of such workflow.
 
+Most of the update on this package will be to add new custom nodes I created
+in the [opscriptlibrary](opscriptlibrary/).
+
 ## Content
+
+Most of the content is just linking dependencies and documenting how they
+work together.
 
 ### lua
 
@@ -24,21 +30,42 @@ This package offer tools and conventions to facilitate the integration of such w
 
 ### python
 
-See the [katananodling](katananodling) package. It's a simple API to create
+See the [katananodling](katananodling/) package. It's a simple API to create
 and register a custom type of node called "CustomNode".
 We will use it to register a subclass of it called `OpScriptCustomNode`.
 
 ### library
 
 Included as an example, but also for use, is my collection of existing OpScriptCustomNode
-I made. Check the [opscriptlibrary](opscriptlibrary) package. 
+I made. Check the [opscriptlibrary](opscriptlibrary/) package. 
 
 ---
 
-_Only have Katana all the packages visible in this directory as dependencies._
+_Only have Katana and all the packages visible in this directory as dependencies._
 
 
 # Documentation
 
 > [![documentation](https://img.shields.io/badge/visit_documentation-blue)](./doc/INDEX.md)
 > Or see the [./doc directory](./doc).
+
+
+# Legal
+
+Apache License 2.0
+
+See [LICENSE.md](LICENSE.md) for full licence.
+
+- ✅ The licensed material and derivatives may be used for commercial purposes.
+- ✅ The licensed material may be distributed.
+- ✅ The licensed material may be modified.
+- ✅ The licensed material may be used and modified in private.
+- ✅ This license provides an express grant of patent rights from contributors.
+- 📏 A copy of the license and copyright notice must be included with the licensed material.
+- 📏 Changes made to the licensed material must be documented
+
+You can request a specific license by contacting me at [monsieurlixm@gmail.com](mailto:monsieurlixm@gmail.com) .
+
+<a href='https://ko-fi.com/E1E3ALNSG' target='_blank'>
+<img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' />
+</a> 
