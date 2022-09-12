@@ -17,44 +17,52 @@ This package offers the tools to get started on that road, but would deserve to
 be a bit modified if actually used in a studio pipeline.
 
 Right now all depencies and packages are regrouped under this single repo for
-conveniency. But it made sense that in a pipeline, this repo wouldn't exist
-and would be just split across multiples places, combined at runtime.
+conveniency. But it made sense that in a pipeline, this repo wouldn't exist (
+or would just be for the `opscriptlibrary`) and would be just split across
+multiples places, combined at runtime.
 
 Nevertheless, you could totally directly use this repo :
 
 # Install
 
-> **Note**:
+> **Note**
 > You can check [../dev/launcher.Katana...sh](../dev/launcher.Katana-4.5.1.sh) to see some
 > launcher examples that resume all the under.
 
-This will explain how to use the package "as it is" but as mentionned,
-ideally it would be better to create separate packages for all the components.
+This will explain how to register all the dependencies and the `opscriptlibrary` :
 
 1. Add the repo root directory to the `PYTHONPATH` env variable.
 
 ```shell
-PYTHONPATH="z/any/opscripting"
+export PYTHONPATH="z/any/opscripting"
 # where opscripting/ contains `README.md`, ...
 ```
+
+This will allow `opscriptlibrary` to be registered for python.
 
 2. Add the repo root directory to the `LUA_PATH` env variable.
 
 ```shell
-LUA_PATH="z/any/opscripting/?.lua"
+export LUA_PATH="z/any/opscripting/?.lua"
 # where opscripting/ contains `README.md`, ...
 ```
 
-If you are familiar with the LUA module syntax, this means that all the
-lua modules will be accesible from the `opscriptlibrary` namespace.
+This will allow `opscriptlibrary` to be registered for lua.
 
-3. Add the only dependency `lllogger` to the `LUA_PATH` too.
+If you are familiar with the LUA module syntax, this means that all the
+lua modules will be accessible from the `opscriptlibrary` namespace.
+
+3. Register the dependencies
 
 ```shell
-LUA_PATH="$LUA_PATH:z/any/opscripting/lllogger/?.lua"
+# where CWD = opscripting/
+export PYTHONPATH="$PYTHONPATH;.\katananodling"
+
+export LUA_PATH="$LUA_PATH;.\luabased\?.lua"
+export LUA_PATH="$LUA_PATH;.\luakat\?.lua"
+export LUA_PATH="$LUA_PATH;.\lllogger\?.lua"
 ```
 
-lllogger is directly imported as `require("lllogger")`
 
 ## Registering node libraries
 
@@ -102,6 +110,8 @@ bunch of what you need to know, so please read it first.
 
 There is just a few minor changes for our OpScript workflow.
 
+## hierarchy
+
 First I think it is really important to respect the convention one custom-node = one module.
 Because each module will also have an associated lua module :
 
@@ -121,16 +131,17 @@ opscriptlibrary/
     __init__.py
     nodeAlpha/
         __init__.py
-        nodeAlpha.lua 
-        nodeAlpha.py
+        init.lua 
     nodeBeta/
         __init__.py
-        nodeBeta.lua 
-        nodeBeta.py
+        init.lua 
 ```
 
 So if you have a pretty big documentation to write, or even multiple lua modules
 to use. The library doesn't become complete chaos.
+
+To avoid having too much modules we just defined the node in the `__init__.py`,
+same goes for the lua script even if it doesn't work the same way as python.
 
 
 ## naming-conventons
@@ -166,24 +177,19 @@ class MyNodeName(OpScriptCustomNode):
     color = OpScriptCustomNode.Colors.blue
     description = "What the node does in a few words."
     author = "<FirstName Name email@provider.com>"
-    
-    luamodule = "{}.{}".format(
-        os.path.split(os.path.dirname(__file__))[-1],
-        os.path.splitext(os.path.basename(__file__))[0],
-    )
-    
+
     def _build(self):
         script = 'local script = require("{path}")\nscript()'
-        script = script.format(path=self.luamodule)
-    
+        script = script.format(path=self.getLuaModuleName())
         node = self.getDefaultOpScriptNode()
+        
         node.getParameter("script.lua").setValue(script, 0)
         return
 
 ```
 
-As you can see we can use a simple expression with `os.path` to get the path
-of the lua module and set on the OpScript node script.
+Having a proper hierarchy allow us to use `getLuaModuleName()` which will
+find the name of the lua module to use for this node by itself.
 
 # Lua Use
 
@@ -228,6 +234,8 @@ You can do whatever you want inside, but it will usually have a `run()` function
 that will be the only object returned when imported as a module :
 
 ```lua
+-- opscriptlibrary/attr_math.lua
+
 local function run()
   -- do something
 end
@@ -252,16 +260,11 @@ enough.
 In the OpScript script file you created as mentioned above, you might also
 want to import other modules to reduce duplicated code.
 
-This package offers 2 lua package `luaing`, `luakat` as a base to create OpScripts.
+This package offers 2 lua package `luabased`, `luakat` as a base to create OpScripts.
 
-Here is how you could import `luaing` :
+Here is how you import them :
 
 ```lua
-local luaing = {}
-luaing.mathing = require("luaing.formatting")
-luaing.utils = require("luaing.utils")
+local luabased = require("luabased")
+local luakat = require("luakat")
 ```
-
-It's up to you to see how you want to namespace the module using a table.
-In the above example I'm namespacing it using a `luaing` named table so for
-example the commly used name `utils` is still free.
