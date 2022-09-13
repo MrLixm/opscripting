@@ -1,13 +1,15 @@
 --[[
 
 ]]
+local _M_ = {}
+
 local logging = require("lllogger")
 
 local logger = logging.getLogger(...)
 
 
-local function run()
+function _M_.run()
 
 end
 
-return run
+return _M_

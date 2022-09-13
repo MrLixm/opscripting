@@ -27,7 +27,7 @@ class PointWidthNode(OpScriptCustomNode):
 
     def _buildOpScript(self):
 
-        script = 'local script = require("{path}")\nscript()'
+        script = 'local module = require("{path}")\nmodule.run()'
         script = script.format(path=self.getLuaModuleName())
 
         node = self.getDefaultOpScriptNode()

@@ -13,6 +13,8 @@ user.method = """
     - array (default): a bit slower, no limit
 """
 ]]
+local _M_ = {}
+
 local luakat = require("luakat")
 local luabased = require("luabased")
 local logging = require("lllogger")
@@ -30,7 +32,7 @@ local function err(...)
 
 end
 
-local function run()
+function _M_.run()
 
   local u_attr_list = luakat.attribute.getUserAttrValue("attributes")
   assert(u_attr_list ~= nil, "[attr_type_swap][run] Missing <user.attributes>")
@@ -82,4 +84,4 @@ local function run()
 
 end
 
-return run
+return _M_

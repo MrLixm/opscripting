@@ -166,7 +166,6 @@ Then instead of inheriting our node class from `BaseCustomNode` we will be using
 using the base class.
 
 ```python
-import os.path
 from katananodling.entities import OpScriptCustomNode
 
 # class can actually be named anything but its name is used as identifier
@@ -179,7 +178,7 @@ class MyNodeName(OpScriptCustomNode):
     author = "<FirstName Name email@provider.com>"
 
     def _build(self):
-        script = 'local script = require("{path}")\nscript()'
+        script = 'local module = require("{path}")\nmodule.run()'
         script = script.format(path=self.getLuaModuleName())
         node = self.getDefaultOpScriptNode()
         
@@ -212,13 +211,12 @@ opscriptlibrary/  <- # parent directory registered in LUA_PATH
 You can then use it as such in the OpScript :
 
 ```lua
-local script = require("opscriptlibrary.my_script")
-script()  -- if your module return a function
+local module = require("opscriptlibrary.my_script")
+module.run()  -- depends what your module returns
 ```
 
-Make sure to check what the lua script is returning. In most of the case
-it will be returning the `run()` function, so you can directly call the result
-, but it might also return a table with different functions.
+Make sure to check what the lua script is returning. The standard will be to return
+a "module" table with a run function but it might be something else.
 
 ## Lua module for the OpScriptCustomNode
 
@@ -230,29 +228,29 @@ So it's a good idea to start by it.
 As mentioned previously, the `.lua` file (or even the lua "package") will live 
 alongside the python module for the node.
 
-You can do whatever you want inside, but it will usually have a `run()` function
-that will be the only object returned when imported as a module :
+You can do whatever you want inside, but to let's define standard to uniform things.
+The module MUST always return a table that CAN have a function named `run` as
+main function.
+
+The table module is named `_M_` and is always at the top-most of the file
 
 ```lua
 -- opscriptlibrary/attr_math.lua
+local _M_ = {}
 
-local function run()
+function _M_.run()
   -- do something
 end
 
-return run
+return _M_
 ```
 
 So then in the OpScript it can be imported as :
 
 ```lua
-local script = require("opscriptlibrary.attr_math")  -- return run function
-script()
+local module = require("opscriptlibrary.attr_math")  -- return run function
+module.run()
 ```
-
-Nothing prevent you to use the other lua way to create a module by returning
-a table, but it is safe to say that is most of the case, a simple function is 
-enough.
 
 
 ### Importing other lua modules

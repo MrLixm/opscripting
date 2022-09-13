@@ -16,6 +16,8 @@ user.color_hue = "(float)(1): 0-1 range"
 user.color_saturation = "(float)(1): 0-1 range"
 user.color_value = "(float)(1): 0-1 range"
 ]]
+local _M_ = {}
+
 local luakat = require("luakat")
 local luabased = require("luabased")
 local logging = require("lllogger")
@@ -245,7 +247,7 @@ function Light:to_annotation(annotation)
 
 end
 
-local function run()
+function _M_.run()
 
   local u_annotation_template = luakat.attribute.getUserAttrValue("annotation_template", "<name>")
   local u_annotation_colored = luakat.attribute.getUserAttrValue("annotation_colored", 1)
@@ -289,4 +291,4 @@ local function run()
 
 end
 
-return run
+return _M_

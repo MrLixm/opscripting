@@ -10,6 +10,8 @@ Supports motion blur.
 parameters.location = "location(s) to merge the xform attribute"
 parameters.applyWhere = "at specific location OR at locations matching CEL"
 ]]
+local _M_ = {}
+
 local luakat = require("luakat")
 local logging = require("lllogger")
 
@@ -18,7 +20,7 @@ local logger = logging.getLogger(...)
 -- make a global local to improve perfs in big loops
 local v3d = Imath.V3d
 
-local function run()
+function _M_.run()
 
   logger:debug("[run] Started for location=", Interface.GetInputLocationPath())
   local stime = os.clock()
@@ -71,4 +73,4 @@ local function run()
 
 end
 
-return run
+return _M_

@@ -7,6 +7,8 @@ location = "/root"
 applyWhere = "at specific location"
 user.divider = "(int) amount to divide the current resolution by"
 ]]
+local _M_ = {}
+
 local luakat = require("luakat")
 local luabased = require("luabased")
 local logging = require("lllogger")
@@ -40,7 +42,7 @@ local function getDivider()
 end
 
 
-local function run()
+function _M_.run()
 
   local divider = getDivider()
 
@@ -68,4 +70,4 @@ local function run()
 
 end
 
-return run
+return _M_

@@ -23,6 +23,8 @@ user.op_order = """
    or "multiply" for the inverse
 """
 ]]
+local _M_ = {}
+
 local luakat = require("luakat")
 local luabased = require("luabased")
 local logging = require("lllogger")
@@ -77,7 +79,7 @@ local function getSkipTable(arguments)
 
 end
 
-local function run()
+function _M_.run()
 
   local order_add = "add"
   local order_mult = "multiply"
@@ -165,4 +167,4 @@ local function run()
 
 end
 
-return run
+return _M_

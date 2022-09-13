@@ -7,13 +7,15 @@ user.point_scale = "(float)(1): multiplier of the points scale in the viewer"
 parameters.location = "pointcloud scene graph location"
 parameters.applyWhere = "at specific location"
 ]]
+local _M_ = {}
+
 local luakat =  require("luakat")
 local logging = require("lllogger")
 
 local logger = logging.getLogger(...)
 
 
-local function run()
+function _M_.run()
 
   -- get OpArg
   local point_scale = luakat.attribute.getUserAttrValue("point_scale", { 1.0 })[1]
@@ -38,4 +40,4 @@ local function run()
 
 end
 
-return run
+return _M_
