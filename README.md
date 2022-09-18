@@ -12,6 +12,9 @@ studio environment, and should only import code stored in the pipeline arboresce
 
 This package offer tools and conventions to facilitate the integration of such workflow.
 
+![opscripting repository logic diagram](./doc/img/diagram-overall.png)
+
+
 ## Content
 
 Most of the content is just linking dependencies and documenting how they

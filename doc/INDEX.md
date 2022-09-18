@@ -21,7 +21,11 @@ conveniency. But it made sense that in a pipeline, this repo wouldn't exist (
 or would just be for the `opscriptlibrary`) and would be just split across
 multiples places, combined at runtime.
 
-Nevertheless, you could totally directly use this repo :
+Nevertheless, you could totally directly use this repo.
+
+If things are not clear, here is a diagram
+
+![opscripting repository logic diagram](./img/diagram-overall.png)
 
 # Install
 
