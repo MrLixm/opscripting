@@ -29,12 +29,22 @@ Nevertheless, you could totally directly use this repo :
 > You can check [../dev/launcher.Katana...sh](../dev/launcher.Katana-4.5.1.sh) to see some
 > launcher examples that resume all the under.
 
-This will explain how to register all the dependencies and the `opscriptlibrary` :
+This will explain how to register all the dependencies and the `opscriptlibrary`.
+
+Assuming we have this hierarchy to starts with :
+
+```ini
+z/stuff/
+    opscripting/
+        README.md
+        opscriptlibrary/
+        ...
+```
 
 1. Add the repo root directory to the `PYTHONPATH` env variable.
 
 ```shell
-export PYTHONPATH="z/any/opscripting"
+export PYTHONPATH="z/stuff/opscripting"
 # where opscripting/ contains `README.md`, ...
 ```
 
@@ -43,7 +53,7 @@ This will allow `opscriptlibrary` to be registered for python.
 2. Add the repo root directory to the `LUA_PATH` env variable.
 
 ```shell
-export LUA_PATH="z/any/opscripting/?.lua"
+export LUA_PATH="z/stuff/opscripting/?.lua"
 # where opscripting/ contains `README.md`, ...
 ```
 
@@ -55,13 +65,15 @@ lua modules will be accessible from the `opscriptlibrary` namespace.
 3. Register the dependencies
 
 ```shell
-# where CWD = opscripting/
-export PYTHONPATH="$PYTHONPATH;.\katananodling"
+export PYTHONPATH=$PYTHONPATH:'z/stuff/opscripting/katananodling'
 
-export LUA_PATH="$LUA_PATH;.\luabased\?.lua"
-export LUA_PATH="$LUA_PATH;.\luakat\?.lua"
-export LUA_PATH="$LUA_PATH;.\lllogger\?.lua"
+export LUA_PATH=$LUA_PATH:'z/stuff/opscripting/luabased/?.lua'
+export LUA_PATH=$LUA_PATH:'z/stuff/opscripting/luakat/?.lua'
+export LUA_PATH=$LUA_PATH:'z/stuff/opscripting/lllogger/?.lua'
 ```
+
+> **Warning** Be aware that those dependencies might also have dependencies.
+> For example `katananodling` need the python `typing` module. 
 
 
 ## Registering node libraries
