@@ -25,13 +25,13 @@ in the [opscriptlibrary](opscriptlibrary/).
 
 2 Low level lua package for OpScripts:
 
-- [luakat](luakat/) : api to interact more easily with Katana
-- [luabased](luabased/) : because everyone needs to extend the base lua 
+- [luakat](https://github.com/MrLixm/luakat) : api to interact more easily with Katana
+- [luabased](https://github.com/MrLixm/luabased) : because everyone needs to extend the base lua 
 
 
 ### python
 
-See the [katananodling](katananodling/) package. It's a simple API to create
+See the [katananodling](https://github.com/MrLixm/katananodling) package. It's a simple API to create
 and register a custom type of node called "CustomNode".
 We will use it to register a subclass of it called `OpScriptCustomNode`.
 
