@@ -18,6 +18,7 @@ local logger = logging.getLogger(...)
 function _M_.run()
 
   -- get OpArg
+  --- @type number
   local point_scale = luakat.attribute.getUserAttrValue("point_scale", { 1.0 })[1]
 
   local points_width = Interface.GetAttr("geometry.point.width")

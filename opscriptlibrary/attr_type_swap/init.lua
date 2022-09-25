@@ -21,11 +21,9 @@ local logging = require("lllogger")
 
 local logger = logging.getLogger(...)
 
+--- Raise an error for this module.
+--- Concat the given arguments to string and pass them as the error's message.
 local function err(...)
-  --[[
-  Raise an error for this module.
-  Concat the given arguments to string and pass them as the error's message.
-  ]]
   local arg = { ... }
   arg.insert("[attr_type_swap]", 1)
   luabased.raising.errorc(unpack(arg))

@@ -31,22 +31,17 @@ local logging = require("lllogger")
 
 local logger = logging.getLogger(...)
 
+--- Raise an error for this module.
+--- Concat the given arguments to string and pass them as the error's message.
 local function err(...)
-  --[[
-  Raise an error for this module.
-  Concat the given arguments to string and pass them as the error's message.
-  ]]
   local arg = { ... }
   arg.insert("[attr_math]", 1)
   luabased.raising.errorc(unpack(arg))
-
 end
 
+--- @param arguments string string formatted as ``[%d,]+%/%d+``
+--- @return table|[string, string]
 local function getSkipTable(arguments)
-  --[[
-  Args:
-    arguments(str): string formatted as [%d,]+%/%d+
-  ]]
 
   -- if not specified
   if arguments == "" then
@@ -146,24 +141,23 @@ function _M_.run()
             else
               err("[run] user argument <order> value <", u_order, "> is not supported.")
             end
-            -- end if index not skipped
-          end
-          -- end tuple loop
-        end
-        -- end #new_value loop
-      end
+
+          end -- end if index not skipped
+
+        end -- end tuple loop
+
+      end -- end #new_value loop
 
       new_value_smpls[smplindex] = new_value
 
-      -- end smplidnex loop
-    end
+    end -- end smplidnex loop
 
     Interface.SetAttr(
         attr_path,
         attr_type(new_value_smpls, attr_data:getTupleSize())
     )
-    -- end attributes iterations
-  end
+
+  end -- end attributes iterations
 
 end
 

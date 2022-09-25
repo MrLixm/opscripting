@@ -15,15 +15,11 @@ local logging = require("lllogger")
 
 local logger = logging.getLogger(...)
 
-
+--- Return the resolution divider from a graphstatevariable named
+--- "resolution_divider" if it exists, else from the OpArg `user.divider`
+--- @return number resolution divider
 local function getDivider()
-  --[[
-  Return the resolution divider from a graphstatevariable named
-  "resolution_divider" if it exists, else from the OpArg `user.divider`
 
-  Returns:
-      num: resolution divider
-  ]]
   local gsv_value = Interface.GetGraphStateVariable("resolution_divider")
   if gsv_value then
     return tonumber(gsv_value:getValue())

@@ -24,34 +24,27 @@ local logging = require("lllogger")
 
 local logger = logging.getLogger(...)
 
+--- scene graph location of the current light visited
+--- @type string
 local LOCATION = Interface.GetInputLocationPath()
--- scene graph location of the current light visited
 
 -- we make some global functions local as this will improve performances in
 -- heavy loops.
 local stringfind = string.find
 
+--- Raise an error for this module.
+--- Concat the given arguments to string and pass them as the error's message.
 local function err(...)
-  --[[
-  Raise an error for this module.
-  Concat the given arguments to string and pass them as the error's message.
-  ]]
   local arg = { ... }
   arg.insert("[light_viewer_annotate]", 1)
   luabased.raising.errorc(unpack(arg))
-
 end
 
+--- From the currently visited light location, return which render-engine it
+--- was build for.
+--- Raise an error if the renderer can't be found.
+---@return string one of "ai", "dl", "prman"
 local function getLightRenderer()
-  --[[
-  From the currently visited light location, return which render-engine it
-   was build for.
-
-  Raise an error if the renderer can't be found.
-
-  Returns:
-    str: ai, dl, prman
-  ]]
 
   local mat = Interface.GetAttr("material")
   -- the shader name should always be the first Group index 0
@@ -72,19 +65,10 @@ end
 
 local RENDERER = getLightRenderer()
 
+--- @param attrs_list table numerical table of attributes path. Function return at the first attribute to return a value.
+--- @param default_value any value to return if all attributes return nothing, pass ``error`` to raise an error instead.
+--- @return any depends on parameters values
 local function getLightAttr(attrs_list, default_value)
-  --[[
-    Args:
-        attrs_list(table of str):
-          numerical table of attributes path.
-          Function return at the first attribute to return a value.
-        default_value(any):
-          value to return if all attributes return nothing, pass <error> to raise
-          an error instead.
-
-    Returns:
-        type depends of input
-    ]]
 
   for i = 1, #attrs_list do
 
@@ -106,24 +90,20 @@ local function getLightAttr(attrs_list, default_value)
 
 end
 
+--- @return string name of the light based on its scene graph location.
 local function getLightName()
-  --[[
-  Returns:
-    str: name of the light based on its scene graph location.
-  ]]
   return luakat.location.getLocationName(LOCATION)
 end
 
---[[
-Light table object
 
-the <tokens> key hold all the supported tokens.
-- Each token key hold render-engine keys
-  - each render-engine key hold a table with a <func> and a <params> key.
-
-the default value for <getLightAttr> <params> is returned if the attribute
-is not set locally (not modified)
-]]
+--- Light table object
+---
+--- the ``tokens`` key hold all the supported tokens.
+--- - Each token key hold render-engine keys
+--- - each render-engine key hold a table with a ``func`` and a ``params`` key.
+---
+--- the default value for ``getLightAttr`` ``params`` is returned if the attribute
+--- is not set locally (not modified)
 local Light = {
 
   ["tokens"] = {
@@ -207,13 +187,9 @@ local Light = {
 
 }
 
+--- Return the light attribute value for the given attribute name
+--- @return any type depends of what's queried, can be nil
 function Light:get(attr_name)
-  --[[
-  Return the light attribute value for the given attribute name
-
-  Returns:
-    type depends of what's queried, can be nil
-  ]]
   local attr = self.tokens[attr_name] or {}
   attr = attr[RENDERER] or {}  -- return the data for the current render-engine
 
@@ -230,13 +206,9 @@ function Light:get(attr_name)
   end
 end
 
+--- @param annotation string annotation template submitted by the user (with tokens)
+---@return string annotation with the tokens replaced
 function Light:to_annotation(annotation)
-  --[[
-  Args:
-    annotation(str): annotation template submitted by the user (with tokens)
-  Returns:
-    str: annotation with the tokens replaced
-  ]]
   for attr_name, _ in pairs(self.tokens) do
     local token = ("<%s>"):format(attr_name)
     local value = luabased.stringing.stringify(self:get(attr_name))
