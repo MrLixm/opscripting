@@ -282,3 +282,20 @@ Here is how you import them :
 local luabased = require("luabased")
 local luakat = require("luakat")
 ```
+
+## Documenting Lua Code
+
+At the opposite of Python, Lua doesn't define any standard to document code.
+
+Here is a few options to have a look at :
+
+1. [LDoc](https://stevedonovan.github.io/ldoc/manual/doc.md.html) 
+(previously LuaDoc) is the most known lua documentation generator.
+
+2. [EmmyLua - EmmyLua for IntelliJ IDEA 1.3.2 documentation](https://emmylua.github.io/index.html),
+a PyCharm plugin for dynamic type hints. Syntax is very similar to LDoc.
+
+3. Following Python conventions. A bit wacky but better than nothing. Write docstrings
+similar to python with your favorite docstring style. (google, rest, ...)
+
+The scripts in the library of this repository are using 2.
